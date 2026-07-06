@@ -1,0 +1,1 @@
+export { getWebsiteAnimationBlend } from "./websiteScrollConfig";

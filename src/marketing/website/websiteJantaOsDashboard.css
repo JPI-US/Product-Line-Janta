@@ -1,0 +1,834 @@
+/* Portal Marketing dashboard — marketing website embed */
+
+.web-janta-os-dashboard {
+  --jos-sidebar: #1a2535;
+  --jos-sidebar-active: rgba(230, 184, 92, 0.15);
+  --jos-page: #f4f6f9;
+  --jos-card: #ffffff;
+  --jos-ink: #1a2535;
+  --jos-muted: #7a90a8;
+  --jos-body: #3d5068;
+  --jos-accent: #e8a020;
+  --jos-accent-ring: #f3b664;
+  --jos-ok: #4a9e78;
+  --jos-border: rgba(26, 37, 53, 0.08);
+
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  width: 1440px;
+  height: 677px;
+  background: var(--jos-page);
+  color: var(--jos-ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  pointer-events: none;
+  user-select: none;
+}
+
+.web-janta-os-dashboard__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 4rem;
+  min-width: 4rem;
+  flex-shrink: 0;
+  padding: 0.85rem 0.5rem;
+  background: var(--jos-sidebar);
+}
+
+.web-janta-os-dashboard__nav-btn {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-inline: auto;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(245, 240, 234, 0.58);
+}
+
+.web-janta-os-dashboard__nav-btn--active {
+  background: var(--jos-sidebar-active);
+  color: #e6b85c;
+  box-shadow: 0 0 16px rgba(230, 184, 92, 0.08);
+}
+
+.web-janta-os-dashboard__nav-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.9;
+  background: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.web-janta-os-dashboard__nav-icon--grid {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__nav-icon--chart {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='M7 16l4-6 4 3 5-8'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='M7 16l4-6 4 3 5-8'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__nav-icon--sliders {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3'/%3E%3Cpath d='M2 14h4M10 8h4M18 16h4'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3'/%3E%3Cpath d='M2 14h4M10 8h4M18 16h4'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__nav-icon--history {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3Cpath d='M12 7v5l4 2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3Cpath d='M12 7v5l4 2'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.web-janta-os-dashboard__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 3.5rem;
+  padding: 0 1.5rem;
+  background: linear-gradient(
+    to right,
+    rgba(26, 37, 53, 0.96) 0%,
+    rgba(26, 37, 53, 0.8) 25%,
+    rgba(26, 37, 53, 0.45) 55%,
+    rgba(242, 242, 242, 0) 100%
+  );
+  border-bottom: 1px solid rgba(26, 37, 53, 0.15);
+}
+
+.web-janta-os-dashboard__brand {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.web-janta-os-dashboard__brand img {
+  display: block;
+  height: 1.65rem;
+  width: auto;
+  max-width: none;
+  pointer-events: none;
+}
+
+.web-janta-os-dashboard__top-right {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  color: rgba(245, 240, 234, 0.8);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.web-janta-os-dashboard__top-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  color: rgba(245, 240, 234, 0.88);
+}
+
+.web-janta-os-dashboard__theme-icon,
+.web-janta-os-dashboard__menu-icon {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  background: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.web-janta-os-dashboard__theme-icon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__menu-icon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E");
+}
+
+.web-janta-os-dashboard__clock-inline {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.web-janta-os-dashboard__content {
+  flex: 1;
+  min-height: 0;
+  padding: 0.85rem 1.35rem 1rem;
+  overflow: hidden;
+}
+
+.web-janta-os-dashboard__section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+}
+
+.web-janta-os-dashboard__section-label {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__section-label--spaced {
+  margin-top: 0.85rem;
+  margin-bottom: 0.55rem;
+}
+
+.web-janta-os-dashboard__section-clock {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__status-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.web-janta-os-dashboard__glance-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+/* Portal-style cards */
+.web-janta-os-dashboard__portal-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--jos-card);
+  border: 1px solid rgba(26, 37, 53, 0.07);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 6px rgba(26, 37, 53, 0.04),
+    0 8px 24px rgba(26, 37, 53, 0.08),
+    0 1px 2px rgba(26, 37, 53, 0.06);
+  overflow: hidden;
+}
+
+.web-janta-os-dashboard__portal-card-head {
+  display: flex;
+  align-items: center;
+  height: 2.35rem;
+  padding: 0 1rem;
+  border-bottom: 0.5px solid var(--jos-border);
+  flex-shrink: 0;
+}
+
+.web-janta-os-dashboard__portal-card-head--split {
+  justify-content: space-between;
+}
+
+.web-janta-os-dashboard__portal-card-head p {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__portal-card-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0.65rem 0.85rem 0.75rem;
+}
+
+.web-janta-os-dashboard__portal-card-body--center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.web-janta-os-dashboard__portal-card-body--chart {
+  padding: 0.5rem 0.65rem 0.65rem;
+  height: 9.25rem;
+}
+
+.web-janta-os-dashboard__portal-card-body--health {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.web-janta-os-dashboard__gauge-portal {
+  position: relative;
+  width: 8.5rem;
+  height: 8.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.web-janta-os-dashboard__gauge-portal-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.web-janta-os-dashboard__gauge-portal-kw {
+  font-size: 2rem;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.web-janta-os-dashboard__gauge-portal-unit {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__gauge-portal svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.web-janta-os-dashboard__gauge-portal circle:last-of-type {
+  transition: stroke-dasharray 1s ease-out;
+}
+
+.web-janta-os-dashboard__conditions {
+  width: 100%;
+  text-align: center;
+  min-height: 2.5rem;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.web-janta-os-dashboard__conditions-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__conditions-value {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.3;
+}
+
+.web-janta-os-dashboard__portal-card-foot {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  width: 100%;
+  padding-top: 0.65rem;
+  margin-top: auto;
+  border-top: 0.5px solid var(--jos-border);
+  text-align: center;
+}
+
+.web-janta-os-dashboard__portal-card-foot p {
+  margin: 0 0 0.15rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard__portal-card-foot strong {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--jos-ink);
+}
+
+.web-janta-os-dashboard__portal-card-foot-divider {
+  width: 1px;
+  background: var(--jos-border);
+}
+
+.web-janta-os-dashboard__tower-visual {
+  position: relative;
+  width: 8.5rem;
+  height: 8.5rem;
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.web-janta-os-dashboard__tower-visual svg {
+  position: absolute;
+  inset: 0;
+}
+
+.web-janta-os-dashboard__tower-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 90ms ease,
+    transform 90ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.web-janta-os-dashboard__tower-img {
+  position: relative;
+  z-index: 1;
+  width: 5.5rem;
+  height: 5.5rem;
+  object-fit: contain;
+}
+
+.web-janta-os-dashboard__health-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  padding: 0 1rem;
+  min-height: 1.65rem;
+  font-size: 0.78rem;
+  color: var(--jos-body);
+}
+
+.web-janta-os-dashboard__health-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--jos-ok);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.4);
+  box-shadow: none;
+}
+
+.web-janta-os-dashboard__health-list--animate .web-janta-os-dashboard__health-dot {
+  animation: web-health-dot-online 620ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: calc(var(--health-dot-i, 0) * 92ms);
+}
+
+.web-janta-os-dashboard__health-list--exit .web-janta-os-dashboard__health-dot {
+  animation: web-health-dot-offline 520ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: calc((7 - var(--health-dot-i, 0)) * 72ms);
+}
+
+@keyframes web-health-dot-online {
+  0% {
+    opacity: 0;
+    transform: scale(0.42);
+    background: #ffbf14;
+    box-shadow: 0 0 0 0 rgba(255, 191, 20, 0);
+  }
+
+  22% {
+    opacity: 1;
+    transform: scale(1.14);
+    background: #ffbf14;
+    box-shadow: 0 0 0 3px rgba(255, 191, 20, 0.34);
+  }
+
+  48% {
+    transform: scale(1);
+    background: #ffbf14;
+    box-shadow: 0 0 0 2px rgba(255, 191, 20, 0.16);
+  }
+
+  72% {
+    background: #8fbf6a;
+    box-shadow: 0 0 0 1px rgba(74, 158, 120, 0.18);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--jos-ok);
+    box-shadow: none;
+  }
+}
+
+@keyframes web-health-dot-offline {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--jos-ok);
+    box-shadow: none;
+  }
+
+  35% {
+    background: #ffbf14;
+    transform: scale(1.12);
+    box-shadow: 0 0 0 2px rgba(255, 191, 20, 0.28);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.35);
+    background: #ffbf14;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-janta-os-dashboard__health-list--animate .web-janta-os-dashboard__health-dot {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+    background: var(--jos-ok);
+    box-shadow: none;
+  }
+
+  .web-janta-os-dashboard__health-list--exit .web-janta-os-dashboard__health-dot {
+    animation: none;
+    opacity: 0;
+    transform: scale(0.35);
+  }
+}
+
+.web-janta-os-dashboard__portal-card-body--health .web-janta-os-dashboard__portal-card-foot {
+  padding: 0.65rem 1rem 0.75rem;
+}
+
+/* SVG charts */
+.web-janta-os-dashboard__portal-chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.web-janta-os-dashboard__portal-line {
+  fill: none;
+}
+
+.web-janta-os-dashboard__portal-area {
+  fill: url(#portal-energy-fill);
+}
+
+.web-janta-os-dashboard--showcase {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  --jos-muted: #465a70;
+  --jos-body: #243446;
+  --jos-ink: #152433;
+  --jos-ring-size: 10.5rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__main {
+  min-height: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__nav {
+  padding: 0.65rem 0.45rem;
+  gap: 0.3rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__nav-btn {
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__nav-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__top {
+  height: 2.75rem;
+  padding: 0 1.1rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__top--showcase {
+  justify-content: flex-end;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__top-spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__top-icon-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__top-right {
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.65rem 1rem;
+  gap: 0.58rem;
+}
+
+/* —— Top 3 status cards: Portal proportions, px type for tablet scale —— */
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0.58rem;
+  margin-bottom: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card {
+  border-radius: 14px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-head {
+  height: 2.15rem;
+  padding: 0 0.95rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-head p {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-body {
+  flex: 1;
+  padding: 0.5rem 0.75rem 0.55rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__ring-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--jos-ring-size);
+  flex-shrink: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__ring-visual {
+  position: relative;
+  width: var(--jos-ring-size);
+  height: var(--jos-ring-size);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__gauge-portal,
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__tower-visual {
+  width: var(--jos-ring-size);
+  height: var(--jos-ring-size);
+  margin: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__gauge-portal svg,
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__tower-visual svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__gauge-portal-center {
+  gap: 0.2rem;
+  padding-bottom: 0.1rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__gauge-portal-kw {
+  font-size: 38px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--jos-ink);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__gauge-portal-unit {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 0;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__tower-img {
+  width: 6.35rem;
+  height: 6.35rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__conditions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 1.35rem;
+  margin: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__conditions-value {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--jos-ink);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-foot--values {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding-top: 0.35rem;
+  margin-top: auto;
+  border-top: 0.5px solid var(--jos-border);
+  text-align: center;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-foot--values strong {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--jos-ink);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-card--health {
+  min-height: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-card--health .web-janta-os-dashboard__portal-card-body--health {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__health-list {
+  flex: 1;
+  display: grid;
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  min-height: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__health-list-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 0.42rem;
+  align-items: center;
+  column-gap: 0.55rem;
+  padding: 0 0.95rem;
+  border-bottom: 0.5px solid var(--jos-border);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__health-list-row:last-child {
+  border-bottom: none;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__health-list-row--title .web-janta-os-dashboard__health-list-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+  white-space: nowrap;
+}
+
+.web-janta-os-dashboard--showcase
+  .web-janta-os-dashboard__health-list-row:not(.web-janta-os-dashboard__health-list-row--title)
+  .web-janta-os-dashboard__health-list-label {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--jos-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-card--health .web-janta-os-dashboard__health-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  justify-self: center;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* —— Glance row (charts) —— */
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-card {
+  border-radius: 12px;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__glance-row .web-janta-os-dashboard__portal-card-head {
+  height: 2.15rem;
+  padding: 0 0.95rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__glance-row .web-janta-os-dashboard__portal-card-head p {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--jos-muted);
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__status-row .web-janta-os-dashboard__portal-card-body--center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  min-height: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__glance-row {
+  gap: 0.58rem;
+  flex-shrink: 0;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-card-body--chart {
+  height: 5rem;
+  padding: 0.3rem 0.45rem 0.35rem;
+}
+
+.web-janta-os-dashboard--showcase .web-janta-os-dashboard__portal-chart text {
+  font-size: 13px !important;
+  font-weight: 600;
+  fill: #465a70;
+}

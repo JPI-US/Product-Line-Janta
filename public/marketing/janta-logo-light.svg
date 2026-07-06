@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 52" fill="none" aria-hidden="true">
+  <g transform="translate(124 13)" stroke="#f4b162" stroke-width="1.35" stroke-linecap="round">
+    <circle cx="0" cy="0" r="2.1" fill="#f4b162" stroke="none" />
+    <path d="M0 -4.5 V-11" />
+    <path d="M-5.5 -7.5 L-9 -11" />
+    <path d="M5.5 -7.5 L9 -11" />
+    <path d="M-7 0 H-12" />
+    <path d="M7 0 H12" />
+  </g>
+  <text
+    x="124"
+    y="42"
+    text-anchor="middle"
+    font-family="'Segoe UI', system-ui, -apple-system, sans-serif"
+    font-size="17.5"
+    font-weight="300"
+    letter-spacing="0.34em"
+  >
+    <tspan fill="#ffffff">J</tspan>
+    <tspan fill="#ffffff">Λ</tspan>
+    <tspan fill="#ffffff">NT</tspan>
+    <tspan fill="#ffffff">Λ</tspan>
+    <tspan fill="#f4b162" dx="10" letter-spacing="0.34em">POWER</tspan>
+  </text>
+</svg>

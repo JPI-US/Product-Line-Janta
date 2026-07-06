@@ -1,0 +1,74 @@
+[
+  {
+    "source": "needs",
+    "start": 10,
+    "end": 30,
+    "tag": "A typical day",
+    "title": "A typical day in Tintinto",
+    "caption": "Rural Gambia, where daily life still revolves around daylight."
+  },
+  {
+    "source": "needs",
+    "start": 42,
+    "end": 58,
+    "tag": "Before dark",
+    "title": "Gathering before dark",
+    "caption": "Firewood, water, and chores, all while the sun is still up."
+  },
+  {
+    "source": "needs",
+    "start": 72,
+    "end": 88,
+    "tag": "Sunset",
+    "title": "When the sun sets, the day ends",
+    "caption": "Without electricity, opportunity stops at nightfall."
+  },
+  {
+    "source": "hope",
+    "start": 4,
+    "end": 22,
+    "tag": "The school",
+    "title": "Tintinto Primary & Secondary School",
+    "caption": "Hundreds of students, and no reliable power for learning after dusk."
+  },
+  {
+    "source": "hope",
+    "start": 28,
+    "end": 46,
+    "tag": "What's lost",
+    "title": "What children miss",
+    "caption": "Lessons, study, and discovery cut short when classrooms go dark."
+  },
+  {
+    "source": "hope",
+    "start": 54,
+    "end": 72,
+    "tag": "Our mission",
+    "title": "Energy as a human right",
+    "caption": "The mission that became Janta: reliable, sustainable power for every community."
+  },
+  {
+    "source": "light",
+    "start": 8,
+    "end": 32,
+    "tag": "Solar arrives",
+    "title": "Solar comes to the village",
+    "caption": "Clean energy installed where the grid never reached."
+  },
+  {
+    "source": "light",
+    "start": 42,
+    "end": 66,
+    "tag": "Classrooms lit",
+    "title": "Light in the classroom",
+    "caption": "Students can learn, connect, and imagine a future after dark."
+  },
+  {
+    "source": "light",
+    "start": 108,
+    "end": 132,
+    "tag": "New chapter",
+    "title": "A new chapter for Tintinto",
+    "caption": "Proof that access to energy changes what a community can become."
+  }
+]

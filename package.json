@@ -1,0 +1,42 @@
+{
+  "name": "janta-product-line",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "optimize:models": "node scripts/optimize-models.mjs",
+    "bake:utility": "npx tsx scripts/bake-utility-ready.ts",
+    "bake:utility-prerender": "node scripts/bake-utility-prerender-browser.mjs",
+    "bake:utility-prerender:headless": "npx tsx scripts/bake-utility-prerender.ts",
+    "build:roots-video": "powershell -ExecutionPolicy Bypass -File scripts/build-roots-highlight.ps1"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.114.3",
+    "@react-three/fiber": "^8.17.10",
+    "framer-motion": "^11.11.17",
+    "gsap": "^3.15.0",
+    "ogl": "^1.0.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.3.0",
+    "@gltf-transform/functions": "^4.3.0",
+    "@types/gl": "^6.0.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.184.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "gl": "^8.0.2",
+    "playwright": "^1.49.1",
+    "sharp": "^0.33.5",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
+    "vite-plugin-svgr": "^5.2.0"
+  }
+}

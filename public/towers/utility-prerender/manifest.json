@@ -1,0 +1,8 @@
+{
+  "frameCount": 48,
+  "width": 1280,
+  "height": 720,
+  "format": "webp",
+  "pattern": "frame-{index}.webp",
+  "basePath": "/towers/utility-prerender"
+}

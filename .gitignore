@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# Environment / secrets (configure in Lovable or local .env)
+.env
+.env.*
+!.env.example
+
+# IDE / editor (local only — do not sync to GitHub/Lovable)
+.cursor/
+.cursor-video-frames/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Test / tooling artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+coverage/
+
+# Temp / cache
+tmp/
+.cache/
+.vite/
