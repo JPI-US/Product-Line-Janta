@@ -39,7 +39,7 @@ const FRAME_MS = 1000 / 12;
 const LITE_FRAME_MS = 1000 / 8;
 const MAX_DPR = 1;
 const MAX_COUNT = 72;
-const LITE_MAX_COUNT = 36;
+const LITE_MAX_COUNT = 48;
 
 function seeded(seed: number): number {
   const x = Math.sin(seed * 127.1) * 43758.5453;
@@ -73,10 +73,11 @@ function makeFireflies(count: number, aspect = 16 / 9): Firefly[] {
   });
 }
 
+/** Molten yellow-gold — warmer/brighter than brand #ffbf14, small spread */
 function fireflyColor(warmth: number, alpha: number): string {
-  const r = Math.round(232 + warmth * 20);
-  const g = Math.round(168 + warmth * 48);
-  const b = Math.round(48 + warmth * 24);
+  const r = Math.round(246 + warmth * 9);
+  const g = Math.round(202 + warmth * 30);
+  const b = Math.round(28 + warmth * 34);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
@@ -155,10 +156,10 @@ export function HubFirefliesCanvas({
     const rebuild = () => {
       const scale = Math.min(1.25, Math.sqrt((width * height) / (1280 * 720)));
       const aspect = width / Math.max(height, 1);
-      const base = lite ? 28 : 52;
+      const base = lite ? 38 : 52;
       const cap = lite ? LITE_MAX_COUNT : MAX_COUNT;
       fireflies = makeFireflies(
-        Math.min(cap, Math.max(lite ? 24 : 40, Math.round(base * scale))),
+        Math.min(cap, Math.max(lite ? 32 : 40, Math.round(base * scale))),
         aspect
       );
     };
@@ -184,13 +185,18 @@ export function HubFirefliesCanvas({
       ctx.clearRect(0, 0, width, height);
       const layerFade = opacityFadeRef.current;
 
+      // Lite (marketing hero) drifts slower so the flies read as molten specks
+      const wanderScale = lite ? 0.7 : 1;
+
       for (const fly of fireflies) {
         const wanderX =
-          Math.sin(t * fly.speed + fly.phase) * width * 0.022 +
-          Math.cos(t * fly.speed * 0.7 + fly.phase * 1.4) * width * 0.014;
+          (Math.sin(t * fly.speed + fly.phase) * width * 0.022 +
+            Math.cos(t * fly.speed * 0.7 + fly.phase * 1.4) * width * 0.014) *
+          wanderScale;
         const wanderY =
-          Math.sin(t * fly.speed * 1.15 + fly.phase * 0.8) * height * 0.02 +
-          Math.cos(t * fly.speed * 0.85 + fly.phase * 1.6) * height * 0.013;
+          (Math.sin(t * fly.speed * 1.15 + fly.phase * 0.8) * height * 0.02 +
+            Math.cos(t * fly.speed * 0.85 + fly.phase * 1.6) * height * 0.013) *
+          wanderScale;
 
         const px = fly.x * width + wanderX;
         const py = fly.y * height + wanderY;
@@ -206,7 +212,18 @@ export function HubFirefliesCanvas({
         const coreR = fly.size;
 
         if (lite) {
-          ctx.fillStyle = fireflyColor(fly.warmth, Math.min(1, flicker * 0.82));
+          // Soft molten glow + bright core so the flies bloom over the night sky
+          const glowR = coreR * 2.6;
+          const glow = ctx.createRadialGradient(px, py, 0, px, py, glowR);
+          glow.addColorStop(0, fireflyColor(fly.warmth, flicker * 0.5));
+          glow.addColorStop(0.4, fireflyColor(fly.warmth, flicker * 0.16));
+          glow.addColorStop(1, fireflyColor(fly.warmth, 0));
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(px, py, glowR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = fireflyColor(fly.warmth, Math.min(1, flicker * 0.9));
           ctx.beginPath();
           ctx.arc(px, py, coreR, 0, Math.PI * 2);
           ctx.fill();

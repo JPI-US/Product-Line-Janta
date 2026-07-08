@@ -108,7 +108,7 @@ body.website-active {
   --web-ink: var(--warm-ink, #333c4e);
   --web-ink-soft: var(--warm-ink-soft, #5a6478);
   --web-cta: var(--warm-cta, #ffbf14);
-  --web-cta-soft: var(--warm-cta-soft, #e8b060);
+  --web-cta-wash: var(--warm-cta-wash);
   --web-shadow: var(--warm-shadow, 0 16px 48px rgba(58, 42, 28, 0.08));
   min-height: 100dvh;
   background: var(--web-page);
@@ -748,23 +748,25 @@ body.website-active {
   --web-below-scroll-px: 0px;
   --web-nav-surface: 0;
   --web-partners-band-h: clamp(7rem, 18vh, 10rem);
-  --web-sky-zenith: #f5f5f7;
-  --web-sky-mid: #f5f5f7;
-  --web-sky-horizon: #f5f5f7;
-  --web-sky-handoff: #f5f5f7;
-  --web-page: #f5f5f7;
-  --web-slate-ink: #243341;
-  --web-slate-ink: #243341;
+  --web-sky-zenith: var(--warm-page);
+  --web-sky-mid: var(--warm-page);
+  --web-sky-horizon: var(--warm-page);
+  --web-sky-handoff: var(--warm-page);
+  --web-page: var(--warm-page);
+  --web-cloud: var(--warm-cloud);
+  --web-night: var(--warm-night);
+  --web-slate-ink: var(--warm-ink-display);
   --web-experience-h: calc(100dvh - var(--app-nav-h));
   --web-below-scroll-range: 100vh;
   --web-ink: var(--ink);
   --web-ink-soft: var(--ink-soft);
-  --web-muted: #6e6e73;
+  --web-muted: var(--ink-soft);
   --web-surface: var(--surface);
-  --web-cta: #ffbf14;
-  --web-cta-hover: #d9a612;
+  --web-cta: var(--warm-cta);
+  --web-cta-hover: var(--warm-cta-hover);
+  --web-cta-wash: var(--warm-cta-wash);
   --web-accent: var(--accent-blue);
-  --web-accent-muted: #6b7fa8;
+  --web-accent-muted: #7fa3cf;
   --web-highlight: #ffbf14;
   --web-radius-photo: var(--radius-photo, 20px);
   --web-brand-blue: #3a84dc;
@@ -933,7 +935,8 @@ body.website-active {
 }
 
 .web-page--hub-hero .hub__sky-fireflies {
-  mix-blend-mode: normal;
+  /* Screen lets the molten-gold glow bloom over the deep night sky */
+  mix-blend-mode: screen;
 }
 
 .web-page--hub-hero .hub__sky-sun {
@@ -985,8 +988,10 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   cursor: grabbing;
 }
 
-/* Hairline homepage scroll progress — driven purely by --web-scroll-offset,
-   no extra scroll listeners. Sits just under the nav. */
+/* Hairline hero-story progress — tracks the intro choreography + page lift so
+   it completes exactly as the hero clears, then fades out. Driven purely by the
+   existing hero-phase vars (no extra scroll listeners). Sits under the nav.
+   Intro span ≈ 4 pages, lift ≈ 2 pages → intro weighted 2×, lift 1×. */
 .web-scroll-progress {
   position: fixed;
   top: var(--app-nav-h, 0px);
@@ -994,12 +999,17 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   right: 0;
   height: 2px;
   z-index: 40;
-  transform: scaleX(var(--web-scroll-offset, 0));
+  transform: scaleX(
+    calc((var(--web-intro-blend, 0) * 2 + var(--web-page-scroll, 0)) / 3)
+  );
   transform-origin: left center;
-  background: var(--web-cta, #c8892a);
-  opacity: 0.85;
+  background: #ffffff;
+  /* Hold at ~0.85 through the hero, then fade out over the final sliver of the
+     lift so a full white line doesn't linger under the nav. Reactive to the var,
+     so scrolling back up into the hero restores it. */
+  opacity: clamp(0, (1 - var(--web-page-scroll, 0)) * 12, 0.85);
   pointer-events: none;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 /* Shared keyboard focus ring — visible only for keyboard users, no layout shift */
@@ -1244,7 +1254,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-hero-layer .web-eyebrow {
-  color: #6e6e73;
+  color: var(--web-muted);
 }
 
 .web-hero-layer .web-display {
@@ -1259,7 +1269,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-hero-layer .web-lead {
-  color: #6e6e73;
+  color: var(--web-muted);
   white-space: pre-line;
 }
 
@@ -1496,6 +1506,43 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: max(100vh, 640px);
   overflow: hidden;
   background: var(--web-vision-sky);
+}
+
+/* Seam blends — soften the hard edges into the neighbouring panels.
+   Sit above the sky image/scrim (z2) but below the copy (z3). Short, eased
+   ramps so the photo (incl. the grass) stays visible and only the very edge
+   blends — avoids a wide empty white band between sections. */
+.web-vision-hero::before,
+.web-vision-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(36px, 6vh, 72px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Applications → Vision sky */
+.web-vision-hero::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    var(--web-surface) 0%,
+    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
+    transparent 100%
+  );
+}
+
+/* Vision sky → Value band */
+.web-vision-hero::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    var(--web-surface) 0%,
+    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
+    transparent 100%
+  );
 }
 
 .web-vision-hero__media {
@@ -2098,7 +2145,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   padding: 0;
   min-height: auto;
   align-items: stretch;
-  background: #0a1018;
+  background: var(--web-night);
 }
 
 .web-ps-roi {
@@ -2106,6 +2153,26 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   width: 100%;
   min-height: clamp(520px, 72vh, 760px);
   overflow: hidden;
+}
+
+/* Seam blend — ease the light Solutions/Media band into the dark ROI photo.
+   Above the image + scrim (z2), below the copy (z3). Eased ramp so the photo
+   stays visible and only the top strip whitens. */
+.web-ps-roi::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(40px, 7vh, 84px);
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    var(--web-cloud) 0%,
+    color-mix(in srgb, var(--web-cloud) 45%, transparent) 45%,
+    transparent 100%
+  );
 }
 
 .web-ps-roi__img {
@@ -2646,9 +2713,9 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    #f7faff 0%,
-    #ffffff 38%,
-    #f8fafc 100%
+    var(--web-cloud) 0%,
+    var(--web-surface) 38%,
+    var(--web-cloud) 100%
   );
 }
 
@@ -2685,10 +2752,10 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   overflow: visible;
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #f7faff 14%,
-    #ffffff 46%,
-    #f8fafc 100%
+    var(--web-surface) 0%,
+    var(--web-cloud) 14%,
+    var(--web-surface) 46%,
+    var(--web-cloud) 100%
   );
 }
 
@@ -2747,7 +2814,9 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-panel--value {
   min-height: auto;
   align-items: center;
-  padding-block: clamp(4.5rem, 11vh, 7rem);
+  /* Tighter top so the Value header sits close to the vision photo edge —
+     the two sections read as connected, not separated by dead white space. */
+  padding-block: clamp(2.5rem, 6vh, 4rem) clamp(4.5rem, 11vh, 7rem);
 }
 
 .web-value {
@@ -3042,6 +3111,41 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   padding: clamp(3.25rem, 7.5vh, 5rem) var(--web-rail-x);
   background: var(--web-brand-blue);
   overflow: hidden;
+}
+
+/* Seam blends — ease the brand-blue slab into the light bands above/below.
+   Above the texture (z0), below the inner copy (z1). Short, eased ramps. */
+.web-panel--software-showcase::before,
+.web-panel--software-showcase::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(40px, 7vh, 84px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Value band → software blue */
+.web-panel--software-showcase::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    var(--web-cloud) 0%,
+    color-mix(in srgb, var(--web-cloud) 45%, transparent) 45%,
+    transparent 100%
+  );
+}
+
+/* Software blue → Solutions/Media band */
+.web-panel--software-showcase::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    var(--web-surface) 0%,
+    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
+    transparent 100%
+  );
 }
 
 .web-software-showcase__texture {
@@ -3581,7 +3685,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-applications__title-accent {
-  background: linear-gradient(100deg, var(--web-accent, #5b8fc4), var(--web-cta, #ffbf14));
+  background: linear-gradient(100deg, var(--web-accent, #6ba0e3), var(--web-cta, #ffbf14));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -3590,9 +3694,9 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-applications__title-accent--live {
   background: linear-gradient(
     90deg,
-    #5b8fc4 0%,
-    #ffbf14 45%,
-    #5b8fc4 90%
+    var(--web-accent, #6ba0e3) 0%,
+    var(--web-cta, #ffbf14) 45%,
+    var(--web-accent, #6ba0e3) 90%
   );
   background-size: 220% 100%;
   -webkit-background-clip: text;
@@ -4468,15 +4572,34 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 /* —— Site footer —— */
 .web-footer {
-  --web-footer-ink: var(--web-ink, #1a2332);
+  --web-footer-ink: var(--web-slate-ink, #1a2332);
   --web-footer-muted: rgba(26, 35, 50, 0.48);
   color: var(--web-footer-ink);
   border-top: 1px solid rgba(26, 35, 50, 0.08);
 }
 
 .web-footer:not(.web-footer--soft-sky) {
-  --web-footer-bg: #f9f8f4;
+  --web-footer-bg: var(--warm-page);
   background: var(--web-footer-bg);
+}
+
+/* Seam blend — ease the dark ROI photo into the light footer. Sits below the
+   footer content (z1), above the radial wash (::before, z0). Eased ramp. */
+.web-footer--soft-sky::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(40px, 7vh, 84px);
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    var(--web-night) 0%,
+    color-mix(in srgb, var(--web-night) 45%, transparent) 45%,
+    transparent 100%
+  );
 }
 
 .web-footer__main {
@@ -4580,7 +4703,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 .web-footer__link:hover,
 .web-footer__link:focus-visible {
-  color: var(--web-accent, #5b8fc4);
+  color: var(--web-accent, #6ba0e3);
   background-size: 100% 1px;
   transform: translateX(3px);
 }

@@ -4,17 +4,17 @@
  */
 
 :root {
-  --minimal-bg: #f5f5f7;
-  --minimal-surface: #ffffff;
-  --minimal-ink: #1d1d1f;
-  --minimal-muted: #6e6e73;
+  --minimal-bg: var(--warm-page, #faf8f5);
+  --minimal-surface: var(--warm-surface, #ffffff);
+  --minimal-ink: var(--warm-ink-display, #1a2332);
+  --minimal-muted: var(--warm-ink-soft, #5a6478);
   --minimal-hairline: rgba(0, 0, 0, 0.06);
   --minimal-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* —— Nav —— */
 .app-nav {
-  background: rgba(245, 245, 247, 0.78);
+  background: rgba(250, 248, 245, 0.78);
   border-bottom-color: var(--minimal-hairline);
   backdrop-filter: saturate(180%) blur(20px);
 }

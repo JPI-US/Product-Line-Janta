@@ -21,7 +21,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   );
   --experience-h: calc(100vh - var(--app-nav-h));
   --below-scroll-range: calc(var(--experience-h) * 3.5 + 140vh);
-  --cta: #e1b378;
+  --cta: var(--warm-cta, #ffbf14);
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -293,7 +293,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   font-weight: 400;
   line-height: 1.55;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__dcard__stats-band {
@@ -374,7 +374,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
 .tower-3d__dcard__stats-unit {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -440,7 +440,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 /* drei scroll host — do not reparent; wheel is forwarded from the page shell */
@@ -523,7 +523,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__hero-title {
@@ -542,7 +542,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__viewport {
@@ -572,7 +572,8 @@ html.tower-3d-dragging .tower-3d-page__top {
   left: 0;
   width: 100% !important;
   height: 100% !important;
-  cursor: default;
+  /* Before rotation unlocks, a tap eases the story forward one panel */
+  cursor: pointer;
   touch-action: none;
   pointer-events: auto;
 }
@@ -755,7 +756,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 56ch;
   font-size: 0.98rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__utility-below-bullets {
@@ -784,7 +785,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #6b7fa8;
+  background: #7fa3cf;
 }
 
 .tower-3d__scroll-panel--page {
@@ -1097,7 +1098,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40ch;
   font-size: clamp(0.95rem, 1.75vw, 1.05rem);
   line-height: 1.6;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__specs-header,
@@ -1195,7 +1196,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: var(--web-muted, #6e6e73);
+  color: var(--web-muted, var(--warm-ink-soft));
   transition: color 0.28s ease;
 }
 
@@ -1428,7 +1429,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__tooltip-row {
@@ -1446,7 +1447,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__tooltip-row--trad {
   margin-top: 0.2rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__controls {
@@ -1485,7 +1486,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
   background: transparent;
   cursor: pointer;
   transition:
@@ -1684,7 +1685,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
   background: transparent;
   cursor: pointer;
   transition:
@@ -1796,7 +1797,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40rem;
   font-size: 0.98rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts__keys {
@@ -2129,7 +2130,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40ch;
   font-size: 0.9375rem;
   line-height: 1.5;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts {
@@ -2416,7 +2417,7 @@ html.tower-3d-utility-dragging .tower-3d__utility-drag-surface {
 .tower-3d__utility-prerender-hint {
   margin: 0;
   font-size: 0.9rem;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__utility-prerender-cmd {
@@ -2567,7 +2568,7 @@ html.tower-3d-utility-rotate-ready
 }
 
 .panel-deck__scroller:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 4px;
 }
 
@@ -2587,7 +2588,7 @@ html.tower-3d-utility-rotate-ready
 .panel-deck__card {
   --card-tint-a: #f4f5f8;
   --card-tint-b: #e8ebf0;
-  --card-accent: #6b7fa8;
+  --card-accent: #7fa3cf;
   --card-spine: #c8ced8;
   flex: 0 0 auto;
   display: flex;
@@ -2771,7 +2772,7 @@ html.tower-3d-utility-rotate-ready
 }
 
 .panel-deck__nav-btn:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 2px;
 }
 
@@ -2795,11 +2796,11 @@ html.tower-3d-utility-rotate-ready
 
 .panel-deck__dot--active {
   transform: scale(1.35);
-  background: #6b7fa8;
+  background: #7fa3cf;
 }
 
 .panel-deck__dot:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 2px;
 }
 
@@ -2821,7 +2822,7 @@ html.tower-3d-utility-rotate-ready
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .panel-deck__detail-title {
@@ -2836,7 +2837,7 @@ html.tower-3d-utility-rotate-ready
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 @media (max-width: 720px) {
@@ -2932,7 +2933,7 @@ html.tower-3d-utility-rotate-ready
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__below-title {
@@ -2952,7 +2953,7 @@ html.tower-3d-utility-rotate-ready
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d-page--designer .tower-3d__below-eyebrow::before {
@@ -3017,7 +3018,7 @@ html.tower-3d-utility-rotate-ready
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__product-title {
@@ -3034,7 +3035,7 @@ html.tower-3d-utility-rotate-ready
   max-width: 34ch;
   font-size: 0.94rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__stats {
@@ -3116,7 +3117,7 @@ html.tower-3d-utility-rotate-ready
 .tower-3d__stats-unit {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__cta {
@@ -3133,14 +3134,14 @@ html.tower-3d-utility-rotate-ready
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: linear-gradient(180deg, var(--cta), #c99552);
-  box-shadow: 0 8px 20px rgba(225, 179, 120, 0.35);
+  background: linear-gradient(180deg, var(--cta), var(--cta-hover, #d9a612));
+  box-shadow: 0 8px 20px rgba(255, 191, 20, 0.32);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tower-3d__cta:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 28px rgba(225, 179, 120, 0.45);
+  box-shadow: 0 12px 28px rgba(255, 191, 20, 0.42);
 }
 
 @media (max-width: 900px) {
