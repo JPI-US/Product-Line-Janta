@@ -1,19 +1,9 @@
+import { Link } from "react-router-dom";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { WebsiteRootsFilmSection } from "./WebsiteRootsFilmSection";
 import { ROOTS_COPY } from "./websiteRootsData";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
-
-type GalleryImage = (typeof ROOTS_COPY.gallery.images)[number];
-
-function galleryTileClass(item: GalleryImage, isLastInColumn: boolean) {
-  return [
-    "web-roots-gallery__tile",
-    `web-roots-gallery__tile--${item.fit}`,
-    isLastInColumn ? "web-roots-gallery__tile--fill" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
+import "./websiteRoots.css";
 
 export default function WebsiteRootsPage() {
   useDocumentMeta({
@@ -21,26 +11,25 @@ export default function WebsiteRootsPage() {
     description:
       "Born in Gambia, built for the world. How founder Mohammed Njie reimagined solar to bring reliable power to communities that need it most.",
   });
-  const { hero, beginnings, gallery, founder, gambia, film, cta } = ROOTS_COPY;
-  const imageById = new Map(gallery.images.map((item) => [item.id, item]));
+  const { hero, origin, stats, gallery, founder, firewood, film, impact, cta } =
+    ROOTS_COPY;
 
   return (
     <WebsiteMarketingShell>
-      <main className="web-roots web-roots--soft-sky" aria-labelledby="web-roots-title">
-        <header className="web-roots-hero">
-          <div className="web-roots-hero__media" aria-hidden>
-            <img
-              className="web-roots-hero__img"
-              src={hero.image}
-              alt=""
-              decoding="async"
-              loading="eager"
-            />
-            <div className="web-roots-hero__scrim" />
-          </div>
-          <div className="web-roots-hero__inner">
-            <p className="web-roots-hero__eyebrow">{hero.title}</p>
-            <h1 id="web-roots-title" className="web-roots-hero__tagline">
+      <main className="rts" aria-labelledby="rts-hero-title">
+        {/* Hero */}
+        <header className="rts-hero">
+          <img
+            className="rts-hero__img"
+            src={hero.image}
+            alt={hero.imageAlt}
+            decoding="async"
+            loading="eager"
+          />
+          <div className="rts-hero__scrim" aria-hidden />
+          <div className="rts-hero__inner">
+            <p className="rts-hero__eyebrow">{hero.eyebrow}</p>
+            <h1 id="rts-hero-title" className="rts-hero__title">
               {hero.tagline[0]}
               <br />
               {hero.tagline[1]}
@@ -48,119 +37,139 @@ export default function WebsiteRootsPage() {
           </div>
         </header>
 
-        <section className="web-roots-beginnings" aria-labelledby="web-roots-beginnings-title">
-          <div className="web-roots-beginnings__inner">
-            <div className="web-roots-beginnings__media">
-              <img
-                className="web-roots-beginnings__img"
-                src={beginnings.image}
-                alt={beginnings.imageAlt}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div className="web-roots-beginnings__copy">
-              <h2 id="web-roots-beginnings-title">{beginnings.title}</h2>
-              <p>{beginnings.body}</p>
-            </div>
+        {/* Origin */}
+        <section className="rts-origin">
+          <div className="rts-narrow">
+            <h2 className="rts-h2">{origin.title}</h2>
+            <p className="rts-lead">{origin.body}</p>
           </div>
-        </section>
-
-        <section className="web-roots-gallery" aria-label="Gambian culture and community">
-          <div className="web-roots-gallery__mosaic">
-              {gallery.columns.map((column, columnIndex) => (
-                <div
-                  key={columnIndex}
-                  className="web-roots-gallery__column"
-                  role="list"
-                >
-                  {column.map((imageId, imageIndex) => {
-                    const item = imageById.get(imageId);
-                    if (!item) return null;
-                    const isLast = imageIndex === column.length - 1;
-                    return (
-                      <div
-                        key={item.id}
-                        className={galleryTileClass(item, isLast)}
-                        role="listitem"
-                      >
-                        <img
-                          src={item.src}
-                          alt={item.alt}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
-          </div>
-        </section>
-
-        <section className="web-roots-story" aria-labelledby="web-roots-gambia-title">
-          <div className="web-roots-story__inner">
-            <article className="web-roots-story__block">
-              <h2 id="web-roots-gambia-title">{gambia.title}</h2>
-              <p>{gambia.body}</p>
-            </article>
-          </div>
-        </section>
-
-        <section className="web-roots-founder" aria-label="Founder message">
-          <div className="web-roots-founder__inner">
+          <div className="rts-wide">
             <img
-              className="web-roots-founder__portrait"
-              src={founder.image}
-              alt={founder.imageAlt}
+              className="rts-media"
+              src={origin.image}
+              alt={origin.imageAlt}
               loading="lazy"
               decoding="async"
             />
-            <figure className="web-roots-founder__quote">
-              <blockquote>&ldquo;{founder.quote}&rdquo;</blockquote>
-              <figcaption>
-                <cite>{founder.name}</cite>
-                <span>{founder.role}</span>
-              </figcaption>
-            </figure>
           </div>
         </section>
 
+        {/* Stats */}
+        <section className="rts-stats" aria-label="Janta by the numbers">
+          <div className="rts-stats__row">
+            {stats.map((s) => (
+              <div key={s.l} className="rts-stat">
+                <div className="rts-stat__n">{s.n}</div>
+                <div className="rts-stat__l">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Gallery */}
+        <section className="rts-gallery" aria-labelledby="rts-gallery-title">
+          <div className="rts-narrow">
+            <h2 id="rts-gallery-title" className="rts-h2">
+              {gallery.title}
+            </h2>
+            <p className="rts-lead">{gallery.body}</p>
+          </div>
+          <div className="rts-figs">
+            {gallery.items.map((it) => (
+              <figure key={it.cap} className="rts-fig">
+                <img src={it.src} alt={it.cap} loading="lazy" decoding="async" />
+                <figcaption>{it.cap}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        {/* Founder quote */}
+        <section className="rts-founder" aria-label="Founder message">
+          <img
+            className="rts-founder__portrait"
+            src={founder.image}
+            alt={founder.imageAlt}
+            loading="lazy"
+            decoding="async"
+          />
+          <blockquote className="rts-founder__quote">
+            &ldquo;{founder.quote}&rdquo;
+          </blockquote>
+          <p className="rts-founder__by">
+            <span>{founder.name}</span> — {founder.role}
+          </p>
+        </section>
+
+        {/* Firewood quote — full-bleed */}
+        <section className="rts-firewood" aria-label="Voices from Tintinto">
+          <img
+            className="rts-firewood__img"
+            src={firewood.poster}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="rts-firewood__scrim" aria-hidden />
+          <div className="rts-firewood__inner">
+            <p className="rts-firewood__quote">&ldquo;{firewood.quote}&rdquo;</p>
+            <p className="rts-firewood__by">— {firewood.attribution}</p>
+          </div>
+        </section>
+
+        {/* Film */}
         <WebsiteRootsFilmSection film={film} />
 
-        <div className="web-roots-closing">
-          <section className="web-roots-spotlight" aria-labelledby="web-roots-spotlight-title">
-            <div className="web-roots-spotlight__inner">
-              <div className="web-roots-spotlight__copy">
-                <h2 id="web-roots-spotlight-title">{gambia.spotlight.title}</h2>
-                <p>{gambia.spotlight.body}</p>
+        {/* Impact */}
+        <section
+          id="roots-impact"
+          className="rts-impact"
+          aria-labelledby="rts-impact-title"
+        >
+          <div className="rts-narrow">
+            <h2 id="rts-impact-title" className="rts-h2">
+              {impact.title}
+            </h2>
+            <p className="rts-lead">{impact.body}</p>
+          </div>
+          <div className="rts-wide">
+            <img
+              className="rts-media"
+              src={impact.image}
+              alt={impact.imageAlt}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className="rts-cols">
+            {impact.columns.map((c) => (
+              <div key={c.title} className="rts-col">
+                <div className="rts-col__kicker">{c.kicker}</div>
+                <h3 className="rts-col__title">{c.title}</h3>
+                <p className="rts-col__body">{c.body}</p>
               </div>
-              <img
-                className="web-roots-spotlight__img"
-                src={gambia.spotlight.image}
-                alt={gambia.spotlight.imageAlt}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </section>
+            ))}
+          </div>
+        </section>
 
-          <section className="web-roots-cta" aria-labelledby="web-roots-cta-title">
-            <div className="web-roots-cta__row">
-              <img
-                className="web-roots-cta__img"
-                src={cta.image}
-                alt={cta.imageAlt}
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="web-roots-cta__copy">
-                <h2 id="web-roots-cta-title">{cta.title}</h2>
-                <p className="web-roots-cta__body">{cta.body}</p>
-              </div>
+        {/* CTA */}
+        <section className="rts-cta" aria-labelledby="rts-cta-title">
+          <div className="rts-narrow">
+            <h2 id="rts-cta-title" className="rts-h2">
+              {cta.title}
+            </h2>
+            <p className="rts-lead">{cta.body}</p>
+            <div className="rts-cta__actions">
+              <Link className="rts-btn rts-btn--primary" to={cta.primary.href}>
+                {cta.primary.label}
+              </Link>
+              <a className="rts-btn rts-btn--ghost" href={cta.secondary.href}>
+                {cta.secondary.label}
+              </a>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
     </WebsiteMarketingShell>
   );
