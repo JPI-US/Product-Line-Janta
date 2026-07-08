@@ -65,8 +65,8 @@ export const SCENE = {
     azimuthStart: Math.PI * 0.5,
     azimuthEnd: Math.PI * 0.5,
     orbitRadius: 22,
-    /** Sun height — raised so the cast shadow is short and hugs the tower base */
-    elevation: 12,
+    /** Sun height — near-zenith so the cast shadow pools at the tower's foot */
+    elevation: 45,
     visualRadius: 1.15,
     glowRadius: 5.2,
     coreColor: "#fffffa",
