@@ -1,7 +1,8 @@
 import type { ProductId } from "../../data/productPages";
 import { SCENE } from "./sceneConfig";
-import { PRODUCT_TOWER_PERF } from "./productTowerPrep";
+import { DESIGNER_PRODUCT_PERF, UTILITY_PRODUCT_PERF } from "./productTowerPrep";
 import { TOWER_PREP_KEYS } from "./towerScenePrep";
+import type { MeshOptimizeOptions } from "./towerMeshOptimizer";
 import {
   DESIGNER_MODEL_URL,
   UTILITY_MODEL_URL,
@@ -11,25 +12,27 @@ export type ProductSceneConfig = {
   id: ProductId;
   modelUrl: string;
   prepKey: string;
+  /** Real-time shadow-map rig (directional light + mesh cast/receive) */
   castShadow: boolean;
+  /** Soft radial ground contact shadow under the tower base */
+  contactShadow: boolean;
   lightingVariant: "designer" | "utility";
   environmentIntensity: number;
-  meshOptimize?: (typeof SCENE.tower.prep)["meshOptimize"];
+  meshOptimize?: MeshOptimizeOptions;
   skipMeshOptimize?: boolean;
 };
-
 export const PRODUCT_SCENES: Record<ProductId, ProductSceneConfig> = {
   designer: {
     id: "designer",
     modelUrl: DESIGNER_MODEL_URL,
     prepKey: TOWER_PREP_KEYS.designer,
-    ...PRODUCT_TOWER_PERF,
+    ...DESIGNER_PRODUCT_PERF,
   },
   utility: {
     id: "utility",
     modelUrl: UTILITY_MODEL_URL,
     prepKey: TOWER_PREP_KEYS.utility,
-    ...PRODUCT_TOWER_PERF,
+    ...UTILITY_PRODUCT_PERF,
   },
 };
 

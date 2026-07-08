@@ -146,8 +146,13 @@ export function syncWebsiteStoredScrollFromDom() {
   if (max <= 0) return storedOffset;
 
   const px = root.scrollTop;
-  targetScrollPx = px;
-  virtualScrollPx = px;
+  // While the smooth loop is easing (rafId set), scroll events are triggered by
+  // our own writes — don't reset the target or we'd cancel the ease. Only resync
+  // the target when idle, so drags / remeasures are still respected.
+  if (!rafId) {
+    targetScrollPx = px;
+    virtualScrollPx = px;
+  }
   return storeOffset(px / max);
 }
 
@@ -178,6 +183,25 @@ export function setWebsiteDrivenScrollOffset(offset: number): number {
   storeOffset(normalized);
   dispatchScroll(root, true);
   return normalized;
+}
+
+/** Smoothly ease the scroll root to an absolute normalized offset (0–1) */
+export function easeWebsiteScrollTo(offset: number): void {
+  const root = getWebsiteScrollRoot();
+  if (!root) return;
+
+  const normalized = Math.min(1, Math.max(0, offset));
+
+  if (prefersReducedMotion()) {
+    setWebsiteDrivenScrollOffset(normalized);
+    return;
+  }
+
+  const limit = getScrollLimit(root);
+  const current = readScrollPx(root);
+  if (!rafId) virtualScrollPx = current;
+  targetScrollPx = normalized * limit;
+  scheduleTick();
 }
 
 /** Queue wheel / touch delta and return normalized offset */

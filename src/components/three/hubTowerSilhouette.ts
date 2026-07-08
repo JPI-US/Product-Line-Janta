@@ -11,15 +11,16 @@ export type HubTowerMaterialSet = ReturnType<typeof createHubTowerMaterials>;
 export function applyHubTowerMaterials(
   root: THREE.Object3D,
   materials: HubTowerMaterialSet,
-  options?: { castShadow?: boolean }
+  options?: { castShadow?: boolean; receiveShadow?: boolean }
 ): void {
   const castShadow = options?.castShadow ?? false;
+  const receiveShadow = options?.receiveShadow ?? false;
   root.traverse((obj) => {
     const mesh = obj as THREE.Mesh;
     if (!mesh.isMesh) return;
 
     mesh.castShadow = castShadow;
-    mesh.receiveShadow = false;
+    mesh.receiveShadow = receiveShadow;
     mesh.material = meshUsesPvPanelMaterial(mesh)
       ? materials.panel
       : materials.frame;

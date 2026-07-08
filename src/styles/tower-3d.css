@@ -21,11 +21,11 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   );
   --experience-h: calc(100vh - var(--app-nav-h));
   --below-scroll-range: calc(var(--experience-h) * 3.5 + 140vh);
-  --cta: #e1b378;
+  --cta: var(--warm-cta, #ffbf14);
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
 }
 
 /* Matches marketing `.web-panel--soft-sky` (Bringing You Value, etc.) */
@@ -34,9 +34,9 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    #f7faff 0%,
+    #fdfaf4 0%,
     #ffffff 38%,
-    #f8fafc 100%
+    #faf7f1 100%
   );
 }
 
@@ -49,12 +49,12 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   background:
     radial-gradient(
       ellipse 80% 55% at 12% 18%,
-      rgba(58, 132, 220, 0.1),
+      rgba(58, 132, 220, 0.08),
       transparent 58%
     ),
     radial-gradient(
       ellipse 70% 50% at 88% 72%,
-      rgba(255, 191, 20, 0.09),
+      rgba(255, 191, 20, 0.13),
       transparent 55%
     );
 }
@@ -66,13 +66,13 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
 
 .tower-3d-page--designer {
   --split-info: 0;
-  --designer-sky-hero-end: #f8fafc;
+  --designer-sky-hero-end: #faf7f1;
   --designer-radius-card: 28px;
   --designer-radius-media: var(--radius-photo, 20px);
   --designer-section-pad-y: clamp(5rem, 12vh, 7.5rem);
   --designer-band-light: #ffffff;
-  --designer-band-wash: #f5f5f7;
-  --designer-band-canvas: #f8fafc;
+  --designer-band-wash: #f6f2ec;
+  --designer-band-canvas: #faf7f1;
   --designer-band-deep: #1a211e;
   background: var(--designer-sky-hero-end);
 }
@@ -133,7 +133,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
 .tower-3d-page--designer .tower-3d__experience.tower-3d__soft-panel-bg {
   background: linear-gradient(
     180deg,
-    #f7faff 0%,
+    #fdfaf4 0%,
     #ffffff 38%,
     var(--designer-sky-hero-end) 100%
   );
@@ -293,7 +293,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
   font-weight: 400;
   line-height: 1.55;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__dcard__stats-band {
@@ -374,7 +374,7 @@ html.tower-3d-scrolling body::-webkit-scrollbar {
 .tower-3d__dcard__stats-unit {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -440,7 +440,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 /* drei scroll host — do not reparent; wheel is forwarded from the page shell */
@@ -523,7 +523,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__hero-title {
@@ -542,7 +542,7 @@ html.tower-3d-dragging .tower-3d-page__top {
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.01em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__viewport {
@@ -572,7 +572,8 @@ html.tower-3d-dragging .tower-3d-page__top {
   left: 0;
   width: 100% !important;
   height: 100% !important;
-  cursor: default;
+  /* Before rotation unlocks, a tap eases the story forward one panel */
+  cursor: pointer;
   touch-action: none;
   pointer-events: auto;
 }
@@ -630,7 +631,7 @@ html.tower-3d-dragging .tower-3d__drag-surface {
   overflow-x: auto;
   overflow-y: auto;
   pointer-events: auto;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
   transform: translate3d(
     calc((1 - var(--info-reveal, 0)) * 100%),
     0,
@@ -652,7 +653,7 @@ html.tower-3d-dragging .tower-3d__drag-surface {
   bottom: 0;
   z-index: 5;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
   pointer-events: none;
 }
 
@@ -755,7 +756,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 56ch;
   font-size: 0.98rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__utility-below-bullets {
@@ -784,7 +785,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #6b7fa8;
+  background: #7fa3cf;
 }
 
 .tower-3d__scroll-panel--page {
@@ -947,7 +948,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 .tower-3d-page--designer .tower-3d__h-gallery__card {
   border-radius: var(--radius-photo, 20px);
   box-shadow: none;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
 }
 
 .tower-3d__h-gallery__dots {
@@ -1097,7 +1098,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40ch;
   font-size: clamp(0.95rem, 1.75vw, 1.05rem);
   line-height: 1.6;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__specs-header,
@@ -1195,7 +1196,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: var(--web-muted, #6e6e73);
+  color: var(--web-muted, var(--warm-ink-soft));
   transition: color 0.28s ease;
 }
 
@@ -1415,7 +1416,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 8px 24px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 8px 24px rgba(58, 42, 28, 0.14);
   backdrop-filter: blur(10px);
   font-size: 0.72rem;
   line-height: 1.35;
@@ -1428,7 +1429,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__tooltip-row {
@@ -1446,7 +1447,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__tooltip-row--trad {
   margin-top: 0.2rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts-section--compare .tower-3d__power-charts__controls {
@@ -1470,7 +1471,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 2px 12px rgba(36, 51, 65, 0.06);
+  box-shadow: 0 2px 12px rgba(58, 42, 28, 0.08);
   backdrop-filter: blur(12px);
 }
 
@@ -1485,7 +1486,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
   background: transparent;
   cursor: pointer;
   transition:
@@ -1684,7 +1685,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
   background: transparent;
   cursor: pointer;
   transition:
@@ -1796,7 +1797,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40rem;
   font-size: 0.98rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts__keys {
@@ -1945,7 +1946,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   margin-top: 0;
   padding: clamp(2.5rem, 6vh, 3.5rem) clamp(1.25rem, 4vw, 2.75rem);
   box-sizing: border-box;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -2129,7 +2130,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   max-width: 40ch;
   font-size: 0.9375rem;
   line-height: 1.5;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__power-charts {
@@ -2296,7 +2297,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   position: relative;
   min-height: var(--experience-h);
   width: 100%;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
   pointer-events: none;
   content-visibility: auto;
   contain-intrinsic-size: auto var(--experience-h);
@@ -2385,7 +2386,7 @@ html.tower-3d-utility-dragging .tower-3d__utility-drag-surface {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
 }
 
 .tower-3d__utility-prerender-img {
@@ -2416,7 +2417,7 @@ html.tower-3d-utility-dragging .tower-3d__utility-drag-surface {
 .tower-3d__utility-prerender-hint {
   margin: 0;
   font-size: 0.9rem;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__utility-prerender-cmd {
@@ -2525,7 +2526,7 @@ html.tower-3d-utility-rotate-ready
   overflow-x: auto;
   overflow-y: auto;
   pointer-events: auto;
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
 }
 
 .tower-3d__below-copy {
@@ -2567,7 +2568,7 @@ html.tower-3d-utility-rotate-ready
 }
 
 .panel-deck__scroller:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 4px;
 }
 
@@ -2587,7 +2588,7 @@ html.tower-3d-utility-rotate-ready
 .panel-deck__card {
   --card-tint-a: #f4f5f8;
   --card-tint-b: #e8ebf0;
-  --card-accent: #6b7fa8;
+  --card-accent: #7fa3cf;
   --card-spine: #c8ced8;
   flex: 0 0 auto;
   display: flex;
@@ -2761,7 +2762,7 @@ html.tower-3d-utility-rotate-ready
 }
 
 .panel-deck__nav-btn:hover:not(:disabled) {
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
   transform: scale(1.04);
 }
 
@@ -2771,7 +2772,7 @@ html.tower-3d-utility-rotate-ready
 }
 
 .panel-deck__nav-btn:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 2px;
 }
 
@@ -2795,11 +2796,11 @@ html.tower-3d-utility-rotate-ready
 
 .panel-deck__dot--active {
   transform: scale(1.35);
-  background: #6b7fa8;
+  background: #7fa3cf;
 }
 
 .panel-deck__dot:focus-visible {
-  outline: 2px solid #6b7fa8;
+  outline: 2px solid #7fa3cf;
   outline-offset: 2px;
 }
 
@@ -2821,7 +2822,7 @@ html.tower-3d-utility-rotate-ready
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .panel-deck__detail-title {
@@ -2836,7 +2837,7 @@ html.tower-3d-utility-rotate-ready
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 @media (max-width: 720px) {
@@ -2932,7 +2933,7 @@ html.tower-3d-utility-rotate-ready
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__below-title {
@@ -2952,7 +2953,7 @@ html.tower-3d-utility-rotate-ready
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d-page--designer .tower-3d__below-eyebrow::before {
@@ -3017,7 +3018,7 @@ html.tower-3d-utility-rotate-ready
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__product-title {
@@ -3034,7 +3035,7 @@ html.tower-3d-utility-rotate-ready
   max-width: 34ch;
   font-size: 0.94rem;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__stats {
@@ -3116,7 +3117,7 @@ html.tower-3d-utility-rotate-ready
 .tower-3d__stats-unit {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--warm-ink-soft);
 }
 
 .tower-3d__cta {
@@ -3133,14 +3134,14 @@ html.tower-3d-utility-rotate-ready
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: linear-gradient(180deg, var(--cta), #c99552);
-  box-shadow: 0 8px 20px rgba(225, 179, 120, 0.35);
+  background: linear-gradient(180deg, var(--cta), var(--cta-hover, #d9a612));
+  box-shadow: 0 8px 20px rgba(255, 191, 20, 0.32);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tower-3d__cta:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 28px rgba(225, 179, 120, 0.45);
+  box-shadow: 0 12px 28px rgba(255, 191, 20, 0.42);
 }
 
 @media (max-width: 900px) {
@@ -3373,7 +3374,7 @@ html.tower-3d-utility-rotate-ready
 .tower-3d__designer-cta__btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.26);
-  background: #f5f5f7;
+  background: var(--warm-page, #faf8f5);
 }
 
 .tower-3d__designer-cta__btn:focus-visible {

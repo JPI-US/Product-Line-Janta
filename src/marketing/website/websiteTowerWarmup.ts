@@ -3,7 +3,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three-stdlib";
 import {
-  DESIGNER_GLTF_URL,
   DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
 } from "../../components/three/towerModelUrls";
@@ -20,7 +19,6 @@ let warmupPromise: Promise<void> | null = null;
 const DESIGNER_LOAD_CHAIN = [
   DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
-  DESIGNER_GLTF_URL,
 ] as const;
 
 function loadDesignerGltf(url: string, useMeshopt: boolean): Promise<GLTF> {
@@ -73,7 +71,7 @@ export function warmupHeroTowerScene(): Promise<void> {
         // try next URL in chain
       }
     }
-    console.error("[hero-warmup] designer tower failed — ready, web, and gltf");
+    console.error("[hero-warmup] designer tower failed — ready and web");
   })();
 
   return warmupPromise;

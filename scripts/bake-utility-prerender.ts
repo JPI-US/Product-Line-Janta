@@ -34,7 +34,7 @@ const projectRoot = path.resolve(
 const MODEL_CANDIDATES = [
   path.join(projectRoot, "public/models/tr-08-001/TR-08-001-ready.glb"),
   path.join(projectRoot, "public/models/tr-08-001/TR-08-001-web.glb"),
-  path.join(projectRoot, "public/models/tr-08-001/TR-08-001.gltf"),
+  path.join(projectRoot, "model-sources/tr-08-001/TR-08-001.gltf"),
 ];
 
 const outDir = path.join(
@@ -49,7 +49,7 @@ function resolveModelPath(): string {
     if (fs.existsSync(candidate)) return candidate;
   }
   throw new Error(
-    "No utility model found. Run npm run optimize:models or keep TR-08-001.gltf in public/models."
+    "No utility model found. Run npm run optimize:models or keep TR-08-001.gltf in model-sources/tr-08-001."
   );
 }
 

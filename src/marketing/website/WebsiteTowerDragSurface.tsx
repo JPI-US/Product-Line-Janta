@@ -4,11 +4,15 @@ import {
   syncWebsiteDragFromRenderedYaw,
   websiteTowerOrbit,
 } from "./websiteTowerOrbit";
-import { getWebsiteDrivenScrollOffset } from "./websiteScrollDriver";
+import {
+  easeWebsiteScrollTo,
+  getWebsiteDrivenScrollOffset,
+} from "./websiteScrollDriver";
 import { getWebsiteHeroTrackingYaw } from "./websiteHeroScroll";
 import {
   getWebsiteOrbitBlend,
   WEBSITE_PAGE_LIFT_START,
+  WEBSITE_SCROLL_PAGES,
 } from "./websiteScrollConfig";
 import { getWebsiteScrollRoot } from "./websiteScrollRoot";
 
@@ -16,6 +20,12 @@ const DRAG_YAW_SENS = 0.0058;
 const DRAG_PITCH_SENS = 0.0048;
 const HERO_OFFSET_EPS = 0.004;
 const HUB_CANVAS_INVALIDATE = "hub-tower-invalidate";
+
+/** Click-vs-drag guard — a clean tap is short and barely moves */
+const CLICK_MAX_MS = 250;
+const CLICK_MAX_MOVE_PX = 6;
+/** One viewport-tall intro page — advances one beat of the choreography */
+const CLICK_SCROLL_STEP = 1 / WEBSITE_SCROLL_PAGES;
 
 function requestHubCanvasInvalidate() {
   window.dispatchEvent(new Event(HUB_CANVAS_INVALIDATE));
@@ -33,6 +43,9 @@ export function WebsiteTowerDragSurface() {
   const surfaceRef = useRef<HTMLDivElement>(null);
   const lastPointerX = useRef(0);
   const lastPointerY = useRef(0);
+  const downX = useRef(0);
+  const downY = useRef(0);
+  const downTime = useRef(0);
 
   useEffect(() => {
     const surface = surfaceRef.current;
@@ -52,8 +65,16 @@ export function WebsiteTowerDragSurface() {
       setDraggingUi(false);
     };
 
+    const advanceScrollStory = () => {
+      const offset = getWebsiteDrivenScrollOffset();
+      easeWebsiteScrollTo(Math.min(1, offset + CLICK_SCROLL_STEP));
+    };
+
     const onPointerDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
+      downX.current = event.clientX;
+      downY.current = event.clientY;
+      downTime.current = performance.now();
       syncCanOrbit();
       if (!websiteTowerOrbit.canOrbit) return;
 
@@ -89,14 +110,27 @@ export function WebsiteTowerDragSurface() {
     };
 
     const onPointerUp = (event: PointerEvent) => {
-      if (!websiteTowerOrbit.dragging) return;
-      if (surface.hasPointerCapture(event.pointerId)) {
-        surface.releasePointerCapture(event.pointerId);
+      const elapsed = performance.now() - downTime.current;
+      const moved = Math.hypot(
+        event.clientX - downX.current,
+        event.clientY - downY.current,
+      );
+      const isClick = elapsed <= CLICK_MAX_MS && moved <= CLICK_MAX_MOVE_PX;
+
+      if (websiteTowerOrbit.dragging) {
+        if (surface.hasPointerCapture(event.pointerId)) {
+          surface.releasePointerCapture(event.pointerId);
+        }
+        stopDrag();
+        requestHubCanvasInvalidate();
+        event.preventDefault();
+        event.stopPropagation();
       }
-      stopDrag();
-      requestHubCanvasInvalidate();
-      event.preventDefault();
-      event.stopPropagation();
+
+      // A clean tap (not a drag) advances the choreography one beat
+      if (isClick && websiteTowerOrbit.canOrbit) {
+        advanceScrollStory();
+      }
     };
 
     syncCanOrbit();

@@ -40,6 +40,10 @@ export const WEBSITE_LIGHT_SLATE_RIM = "#2f4a5c";
 export const WEBSITE_LIGHT_BLUE_KEY = "#4a90d4";
 export const WEBSITE_LIGHT_BLUE_FILL = "#2d5f8f";
 export const WEBSITE_LIGHT_BLUE_RIM = "#5a9fd0";
+/** Warm golden-dawn light — bridges cool night into blue day for a sunrise feel */
+export const WEBSITE_LIGHT_DAWN_KEY = "#ffb27a";
+export const WEBSITE_LIGHT_DAWN_RIM = "#f0a878";
+export const WEBSITE_LIGHT_DAWN_FILL = "#c98a6a";
 /** Subtle warm bounce fill */
 export const WEBSITE_LIGHT_WARM_GLOW = "#ffe9b8";
 /** Visible yellow accent — punchy but blue key stays dominant */
@@ -169,6 +173,12 @@ function lerpHex(a: string, b: string, t: number): string {
   const g = Math.round(ag + (bg - ag) * t);
   const bl = Math.round(ab + (bb - ab) * t);
   return `#${((r << 16) | (g << 8) | bl).toString(16).padStart(6, "0")}`;
+}
+
+/** Night → warm dawn → day, so hero lights warm up at sunrise before turning blue */
+function lerpDawn(night: string, dawn: string, day: string, t: number): string {
+  if (t < 0.5) return lerpHex(night, dawn, t / 0.5);
+  return lerpHex(dawn, day, (t - 0.5) / 0.5);
 }
 
 function lerpSky(a: WebsiteSkyState, b: WebsiteSkyState, t: number): WebsiteSkyState {
@@ -314,9 +324,9 @@ export function getWebsiteSkyState(scrollOffset: number): WebsiteSkyState {
   return {
     ...state,
     ...skyColors,
-    keyColor: lerpHex(WEBSITE_LIGHT_SLATE, WEBSITE_LIGHT_BLUE_KEY, t),
-    rimColor: lerpHex(WEBSITE_LIGHT_SLATE_RIM, WEBSITE_LIGHT_BLUE_RIM, t),
-    fillColor: lerpHex(WEBSITE_LIGHT_SLATE_FILL, WEBSITE_LIGHT_BLUE_FILL, t),
+    keyColor: lerpDawn(WEBSITE_LIGHT_SLATE, WEBSITE_LIGHT_DAWN_KEY, WEBSITE_LIGHT_BLUE_KEY, t),
+    rimColor: lerpDawn(WEBSITE_LIGHT_SLATE_RIM, WEBSITE_LIGHT_DAWN_RIM, WEBSITE_LIGHT_BLUE_RIM, t),
+    fillColor: lerpDawn(WEBSITE_LIGHT_SLATE_FILL, WEBSITE_LIGHT_DAWN_FILL, WEBSITE_LIGHT_BLUE_FILL, t),
     accentColor: WEBSITE_LIGHT_WARM_GLOW,
     yellowColor: WEBSITE_LIGHT_YELLOW,
     sunGlowOpacity: state.sunGlowOpacity * sunT,

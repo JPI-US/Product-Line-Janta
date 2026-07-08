@@ -1,7 +1,13 @@
 import { WebsiteContactForm } from "./WebsiteContactForm";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
+import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 export default function WebsiteContactPage() {
+  useDocumentMeta({
+    title: "Contact",
+    description:
+      "Get in touch with Janta Power about three-dimensional solar for your project, campus, or community.",
+  });
   return (
     <WebsiteMarketingShell>
       <main className="web-simple-page web-simple-page--contact" aria-labelledby="web-contact-title">

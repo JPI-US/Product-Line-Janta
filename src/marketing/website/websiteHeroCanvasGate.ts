@@ -11,8 +11,8 @@ const BELOW_PAUSE = 0.12;
 /** Resume before the hero is fully back — pre-warms GPU + sky on the way up */
 const BELOW_RESUME = 0.06;
 
-/** Pause WebGL once the hero has cleared the viewport */
-const PAGE_LIFT_PAUSE = 0.52;
+/** Pause WebGL only once the hero has almost fully slid off — avoids a mid-slide cutoff */
+const PAGE_LIFT_PAUSE = 0.98;
 
 let active = true;
 let belowPaused = false;

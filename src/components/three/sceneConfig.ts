@@ -72,8 +72,8 @@ export const SCENE = {
     rotationY: -Math.PI * 0.5,
   },
   /**
-   * Product scroll pages use `utility` (compact rig, no shadows).
-   * `designer` is kept for hub montage / legacy full-quality paths.
+   * Product scroll pages use `utility` (compact rig, no shadows) by default.
+   * Designer product hero enables the full shadow rig via DESIGNER_PRODUCT_PERF.
    */
   lighting: {
     designer: {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { getChooserSkyPeriodForDate } from "../data/hubChooserSky";
 import type { SkyPeriod } from "../data/hubChooserSky";
 import {
@@ -26,6 +26,13 @@ import {
 import { markWebsiteHeroSkyPainted } from "../marketing/website/websiteHeroSkyBoot";
 import { subscribeWebsiteHeroScroll } from "../marketing/website/websiteHeroScrollBus";
 import { websiteTowerOrbit } from "../marketing/website/websiteTowerOrbit";
+
+/** Night-only gold fireflies — mounted just for the marketing hero */
+const HubFirefliesCanvas = lazy(() =>
+  import("./HubFirefliesCanvas").then((m) => ({
+    default: m.HubFirefliesCanvas,
+  })),
+);
 
 const CLOCK_SYNC_MS = 60_000;
 /** Hub product pages — ambient motion only */
@@ -505,6 +512,11 @@ export function HubSkyBackground({
         <div className="hub__sky-flow" aria-hidden />
         <div className="hub__sky-aurora" aria-hidden />
         <div className="hub__sky-stars" aria-hidden />
+        {marketingHero ? (
+          <Suspense fallback={null}>
+            <HubFirefliesCanvas lite skyPeriod="night" opacity={1} />
+          </Suspense>
+        ) : null}
         <div className="hub__sky-clouds hub__sky-clouds--a" aria-hidden />
         <div className="hub__sky-clouds hub__sky-clouds--b" aria-hidden />
         <div className="hub__sky-haze" aria-hidden />

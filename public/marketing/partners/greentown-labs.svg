@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 40" fill="none" role="img" aria-label="Greentown Labs">
-  <circle cx="16" cy="20" r="12" fill="#00a651"/>
-  <path d="M16 12v16M10 20h12" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
-  <text x="36" y="18" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#00a651" letter-spacing="0.06em">GREENTOWN</text>
-  <text x="36" y="32" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#3d4a5c" letter-spacing="0.12em">LABS</text>
-</svg>

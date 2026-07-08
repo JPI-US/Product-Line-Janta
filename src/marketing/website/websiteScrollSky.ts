@@ -37,10 +37,20 @@ const WEBSITE_HERO_SKY_NIGHT: ChooserSkyStops = {
   horizon: WEBSITE_SKY_NIGHT.horizon,
 };
 
-/** Single smooth night → day gradient along scroll (blend is pre-eased upstream) */
+/** Warm golden dawn — bridges the cool night into the blue day so the arc feels sunrise-like */
+const WEBSITE_HERO_SKY_DAWN: ChooserSkyStops = {
+  zenith: "#2b3a66",
+  mid: "#8a6f84",
+  horizon: "#ffcfa0",
+};
+
+/** Night → warm dawn → day gradient along scroll (blend is pre-eased upstream) */
 export function getWebsiteHeroSkyStops(cycleBlend: number): ChooserSkyStops {
   const t = Math.max(0, Math.min(1, cycleBlend));
-  return lerpStops(WEBSITE_HERO_SKY_NIGHT, WEBSITE_SKY_DAY, t);
+  if (t < 0.5) {
+    return lerpStops(WEBSITE_HERO_SKY_NIGHT, WEBSITE_HERO_SKY_DAWN, t / 0.5);
+  }
+  return lerpStops(WEBSITE_HERO_SKY_DAWN, WEBSITE_SKY_DAY, (t - 0.5) / 0.5);
 }
 
 /** @deprecated Use getWebsiteHeroSkyStops */

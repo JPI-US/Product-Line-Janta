@@ -2,6 +2,7 @@ import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { WebsiteRootsFilmSection } from "./WebsiteRootsFilmSection";
 import { ROOTS_COPY } from "./websiteRootsData";
+import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 type GalleryImage = (typeof ROOTS_COPY.gallery.images)[number];
 
@@ -16,6 +17,11 @@ function galleryTileClass(item: GalleryImage, isLastInColumn: boolean) {
 }
 
 export default function WebsiteRootsPage() {
+  useDocumentMeta({
+    title: "Our Roots",
+    description:
+      "Born in Gambia, built for the world. How founder Mohammed Njie reimagined solar to bring reliable power to communities that need it most.",
+  });
   const { hero, beginnings, gallery, founder, gambia, film, cta } = ROOTS_COPY;
   const imageById = new Map(gallery.images.map((item) => [item.id, item]));
 

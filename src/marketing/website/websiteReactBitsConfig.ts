@@ -48,7 +48,7 @@ export const WEBSITE_REACT_BITS = {
   /** Cursor-reactive glow borders — mix-blend-mode is costly on Safari/Chrome */
   pictureCardBorderGlow: {
     enabled: false,
-    colors: ["#64A2D8", "#ffbf14", "#5b8fc4"],
+    colors: ["#4e91d3", "#ffbf14", "#6ba0e3"],
     glowColor: "42 80 72",
     backgroundColor: "transparent",
     borderRadius: 20,
@@ -58,7 +58,7 @@ export const WEBSITE_REACT_BITS = {
   /** CSS gradient sweep on applications title — lighter than framer-motion GradientText */
   applicationsGradientText: {
     enabled: false,
-    colors: ["#5b8fc4", "#ffbf14", "#5b8fc4"],
+    colors: ["#6ba0e3", "#ffbf14", "#6ba0e3"],
     animationSpeed: 12,
     direction: "horizontal" as const,
   },

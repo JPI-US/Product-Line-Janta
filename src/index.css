@@ -2,16 +2,36 @@
 
 :root {
   --app-nav-h: 53px;
-  --ink: #333c4e;
-  --ink-soft: #5a6478;
-  --surface: #ffffff;
-  --page-bg: #f0f0f0;
-  --accent-blue: #5b8fc4;
-  --accent-blue-muted: #7aa8d4;
-  --cta: #e1b378;
-  --cta-hover: #c99552;
-  --border: rgba(51, 60, 78, 0.1);
-  --shadow: 0 12px 40px rgba(51, 60, 78, 0.06);
+
+  /* Warm brand tokens — single source of truth shared by marketing + product pages */
+  --warm-page: #faf8f5;
+  --warm-surface: #ffffff;
+  /* Barely-warm cloud white for sky bands / soft-sky panels */
+  --warm-cloud: #f8f9fb;
+  /* Deep night ink — ROI photo backdrop + its footer seam */
+  --warm-night: #0a1018;
+  /* Ink scale — display / body / muted, one slate family */
+  --warm-ink-display: #1a2332;
+  --warm-ink: #333c4e;
+  --warm-ink-soft: #5a6478;
+  --warm-cta: #ffbf14;
+  --warm-cta-hover: #d9a612;
+  --warm-cta-wash: rgba(255, 191, 20, 0.12);
+  --warm-shadow: 0 16px 48px rgba(58, 42, 28, 0.08);
+  --warm-border: rgba(58, 46, 34, 0.1);
+
+  --ink: var(--warm-ink);
+  --ink-soft: var(--warm-ink-soft);
+  --ink-display: var(--warm-ink-display);
+  --surface: var(--warm-surface);
+  --page-bg: var(--warm-page);
+  /* Two-blue system: brand + a lighter brand tint (accent) and one muted tint */
+  --accent-blue: #6ba0e3;
+  --accent-blue-muted: #7fa3cf;
+  --cta: var(--warm-cta);
+  --cta-hover: var(--warm-cta-hover);
+  --border: var(--warm-border);
+  --shadow: var(--warm-shadow);
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-pill: 999px;
@@ -50,7 +70,7 @@ body {
   min-height: var(--app-nav-h);
   box-sizing: border-box;
   padding: 0.5rem clamp(0.75rem, 3vw, 1.5rem);
-  background: rgba(240, 240, 240, 0.94);
+  background: rgba(250, 248, 245, 0.94);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
 }
@@ -1321,15 +1341,15 @@ body {
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: linear-gradient(180deg, var(--cta), #c99552);
-  box-shadow: 0 10px 24px rgba(225, 179, 120, 0.45),
+  background: linear-gradient(180deg, var(--cta), var(--cta-hover));
+  box-shadow: 0 10px 24px rgba(255, 191, 20, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
   transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tower-panel__cta:hover {
-  background: linear-gradient(180deg, var(--cta-hover), #bd8a48);
-  box-shadow: 0 14px 30px rgba(225, 179, 120, 0.55),
+  background: linear-gradient(180deg, var(--cta-hover), #b8890b);
+  box-shadow: 0 14px 30px rgba(255, 191, 20, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 

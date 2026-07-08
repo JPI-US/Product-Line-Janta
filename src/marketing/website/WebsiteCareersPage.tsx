@@ -1,8 +1,14 @@
 import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { CAREERS_COPY } from "./websiteCareersData";
+import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 export default function WebsiteCareersPage() {
+  useDocumentMeta({
+    title: "Careers",
+    description:
+      "Join Janta Power and help bring dense, dependable three-dimensional solar to the communities that need it most.",
+  });
   const { hero, positions, values, mission } = CAREERS_COPY;
 
   return (

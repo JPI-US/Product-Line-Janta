@@ -6,8 +6,14 @@ import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { WebsitePageScroll } from "./WebsitePageScroll";
 import { WebsitePageScrollCssSync } from "./WebsitePageScrollCssSync";
 import { WebsitePageWarmup } from "./WebsitePageWarmup";
+import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 export default function WebsitePage() {
+  useDocumentMeta({
+    title: "Three-Dimensional Solar",
+    description:
+      "Janta Power builds three-dimensional solar towers that generate more energy from less land — reliable, dense, affordable clean power.",
+  });
   return (
     <HubPreviewProvider>
       <WebsiteHubHeroProvider>
@@ -15,6 +21,8 @@ export default function WebsitePage() {
           <WebsitePageWarmup />
           <WebsitePageScrollCssSync />
           <WebsitePageScroll />
+
+          <div className="web-scroll-progress" aria-hidden />
 
           <div className="web__experience">
             <WebsiteHeroProductLine />
