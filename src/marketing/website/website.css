@@ -3,14 +3,7 @@
 html.web-scrolling,
 html.web-scrolling body {
   overflow: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   background: var(--hub-zenith, #151f28);
-}
-
-html.web-scrolling::-webkit-scrollbar,
-html.web-scrolling body::-webkit-scrollbar {
-  display: none;
 }
 
 html.web-scrolling.web-scroll-compositing .web__experience {
@@ -766,11 +759,11 @@ body.website-active {
   --web-cta-hover: var(--warm-cta-hover);
   --web-cta-wash: var(--warm-cta-wash);
   --web-accent: var(--accent-blue);
-  --web-accent-muted: #7fa3cf;
+  --web-accent-muted: #3a84dc;
   --web-highlight: #ffbf14;
   --web-radius-photo: var(--radius-photo, 20px);
   --web-brand-blue: #3a84dc;
-  --web-vision-sky: #4e91d3;
+  --web-vision-sky: #3a84dc;
   --web-border: var(--border);
   --web-shadow: var(--shadow);
   position: relative;
@@ -988,10 +981,9 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   cursor: grabbing;
 }
 
-/* Hairline hero-story progress — tracks the intro choreography + page lift so
-   it completes exactly as the hero clears, then fades out. Driven purely by the
-   existing hero-phase vars (no extra scroll listeners). Sits under the nav.
-   Intro span ≈ 4 pages, lift ≈ 2 pages → intro weighted 2×, lift 1×. */
+/* Hairline hero-story progress — fills with the tower orbit choreography and
+   reaches 100% when the full rotation completes (before page lift). Fades out
+   as the hero slides away. Driven by --web-intro-blend + --web-page-scroll. */
 .web-scroll-progress {
   position: fixed;
   top: var(--app-nav-h, 0px);
@@ -999,14 +991,9 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   right: 0;
   height: 2px;
   z-index: 40;
-  transform: scaleX(
-    calc((var(--web-intro-blend, 0) * 2 + var(--web-page-scroll, 0)) / 3)
-  );
+  transform: scaleX(var(--web-intro-blend, 0));
   transform-origin: left center;
   background: #ffffff;
-  /* Hold at ~0.85 through the hero, then fade out over the final sliver of the
-     lift so a full white line doesn't linger under the nav. Reactive to the var,
-     so scrolling back up into the hero restores it. */
   opacity: clamp(0, (1 - var(--web-page-scroll, 0)) * 12, 0.85);
   pointer-events: none;
   will-change: transform, opacity;
@@ -1506,43 +1493,6 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: max(100vh, 640px);
   overflow: hidden;
   background: var(--web-vision-sky);
-}
-
-/* Seam blends — soften the hard edges into the neighbouring panels.
-   Sit above the sky image/scrim (z2) but below the copy (z3). Short, eased
-   ramps so the photo (incl. the grass) stays visible and only the very edge
-   blends — avoids a wide empty white band between sections. */
-.web-vision-hero::before,
-.web-vision-hero::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: clamp(36px, 6vh, 72px);
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Applications → Vision sky */
-.web-vision-hero::before {
-  top: 0;
-  background: linear-gradient(
-    180deg,
-    var(--web-surface) 0%,
-    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
-    transparent 100%
-  );
-}
-
-/* Vision sky → Value band */
-.web-vision-hero::after {
-  bottom: 0;
-  background: linear-gradient(
-    0deg,
-    var(--web-surface) 0%,
-    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
-    transparent 100%
-  );
 }
 
 .web-vision-hero__media {
@@ -2155,26 +2105,6 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   overflow: hidden;
 }
 
-/* Seam blend — ease the light Solutions/Media band into the dark ROI photo.
-   Above the image + scrim (z2), below the copy (z3). Eased ramp so the photo
-   stays visible and only the top strip whitens. */
-.web-ps-roi::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: clamp(40px, 7vh, 84px);
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    var(--web-cloud) 0%,
-    color-mix(in srgb, var(--web-cloud) 45%, transparent) 45%,
-    transparent 100%
-  );
-}
-
 .web-ps-roi__img {
   position: absolute;
   inset: 0;
@@ -2651,12 +2581,10 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-btn--gold {
   background: var(--web-cta);
   color: var(--web-slate-ink);
-  box-shadow: 0 8px 28px rgba(255, 191, 20, 0.35);
 }
 
 .web-btn--gold:hover {
   background: var(--web-cta-hover);
-  box-shadow: 0 12px 36px rgba(217, 166, 18, 0.35);
 }
 
 .web-btn--ghost {
@@ -3111,41 +3039,6 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   padding: clamp(3.25rem, 7.5vh, 5rem) var(--web-rail-x);
   background: var(--web-brand-blue);
   overflow: hidden;
-}
-
-/* Seam blends — ease the brand-blue slab into the light bands above/below.
-   Above the texture (z0), below the inner copy (z1). Short, eased ramps. */
-.web-panel--software-showcase::before,
-.web-panel--software-showcase::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: clamp(40px, 7vh, 84px);
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Value band → software blue */
-.web-panel--software-showcase::before {
-  top: 0;
-  background: linear-gradient(
-    180deg,
-    var(--web-cloud) 0%,
-    color-mix(in srgb, var(--web-cloud) 45%, transparent) 45%,
-    transparent 100%
-  );
-}
-
-/* Software blue → Solutions/Media band */
-.web-panel--software-showcase::after {
-  bottom: 0;
-  background: linear-gradient(
-    0deg,
-    var(--web-surface) 0%,
-    color-mix(in srgb, var(--web-surface) 45%, transparent) 45%,
-    transparent 100%
-  );
 }
 
 .web-software-showcase__texture {
@@ -4581,25 +4474,6 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-footer:not(.web-footer--soft-sky) {
   --web-footer-bg: var(--warm-page);
   background: var(--web-footer-bg);
-}
-
-/* Seam blend — ease the dark ROI photo into the light footer. Sits below the
-   footer content (z1), above the radial wash (::before, z0). Eased ramp. */
-.web-footer--soft-sky::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: clamp(40px, 7vh, 84px);
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    var(--web-night) 0%,
-    color-mix(in srgb, var(--web-night) 45%, transparent) 45%,
-    transparent 100%
-  );
 }
 
 .web-footer__main {

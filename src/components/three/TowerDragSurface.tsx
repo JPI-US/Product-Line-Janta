@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
+import type { ProductId } from "../../data/productPages";
 import { clampTowerDragYaw, towerDragState } from "./towerDragState";
 import { towerSharedRotation } from "./towerSharedRotation";
 import { getTowerScrollRoot } from "./towerScrollRoot";
+import { isProductHeroLayout } from "../../lib/productHeroScroll";
+import { getDesignerClickScrollTarget } from "./infoReveal";
 import { SCENE } from "./sceneConfig";
 
 const DRAG_SENSITIVITY = 0.0055;
@@ -10,14 +13,10 @@ const DRAG_SENSITIVITY = 0.0055;
 const CLICK_MAX_MS = 250;
 const CLICK_MAX_MOVE_PX = 6;
 
-/** A tap glides the page all the way to the fully-open split info state.
-   Duration scales with distance so a click from the hero is one long, smooth
-   glide rather than an abrupt jump. */
 const CLICK_EASE_MS_PER_VIEWPORT = 340;
 const CLICK_EASE_MIN_MS = 700;
 const CLICK_EASE_MAX_MS = 1800;
-/** Stop a hair before the split completes so rotation unlocks cleanly */
-const CLICK_TARGET_OFFSET = SCENE.scroll.introEnd;
+const CLICK_TARGET_EPS = 0.018;
 
 function prefersReducedMotion() {
   return (
@@ -30,11 +29,28 @@ function easeInOutQuad(t: number) {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
+function getNormalizedScrollOffset(scrollRoot: HTMLElement): number {
+  const limit = scrollRoot.scrollHeight - scrollRoot.clientHeight;
+  if (limit <= 0) return 0;
+  return scrollRoot.scrollTop / limit;
+}
+
+function getUtilityClickTarget(current: number): number | null {
+  const target = SCENE.scroll.introEnd;
+  if (current >= target - CLICK_TARGET_EPS) return null;
+  return target;
+}
+
+type TowerDragSurfaceProps = {
+  productId: ProductId;
+};
+
 /**
  * Lives on the page shell (not inside drei's transformed scroll DOM) so drag
  * works in the split layout and during the hero animation.
  */
-export function TowerDragSurface() {
+export function TowerDragSurface({ productId }: TowerDragSurfaceProps) {
+  const productHero = isProductHeroLayout(productId);
   const surfaceRef = useRef<HTMLDivElement>(null);
   const lastPointerX = useRef(0);
   const downX = useRef(0);
@@ -47,18 +63,16 @@ export function TowerDragSurface() {
     if (!surface) return;
     const experience = surface.closest<HTMLElement>(".tower-3d__experience");
 
-    const easeScrollForward = () => {
+    const easeScrollTo = (targetNorm: number) => {
       const scrollRoot = getTowerScrollRoot();
       if (!scrollRoot) return;
       const limit = scrollRoot.scrollHeight - scrollRoot.clientHeight;
       if (limit <= 0) return;
 
       const start = scrollRoot.scrollTop;
-      // Glide to where the split info panel is fully open, then stop
-      const target = Math.min(limit, CLICK_TARGET_OFFSET * limit);
+      const target = Math.min(limit, targetNorm * limit);
       const distance = target - start;
-      // Already at/past the info reveal — leave dragging to rotate the tower
-      if (distance < 1) return;
+      if (Math.abs(distance) < 1) return;
 
       if (easeRaf.current) cancelAnimationFrame(easeRaf.current);
 
@@ -67,10 +81,10 @@ export function TowerDragSurface() {
         return;
       }
 
-      const viewports = distance / Math.max(1, scrollRoot.clientHeight);
+      const viewports = Math.abs(distance) / Math.max(1, scrollRoot.clientHeight);
       const duration = Math.min(
         CLICK_EASE_MAX_MS,
-        Math.max(CLICK_EASE_MIN_MS, viewports * CLICK_EASE_MS_PER_VIEWPORT),
+        Math.max(CLICK_EASE_MIN_MS, viewports * CLICK_EASE_MS_PER_VIEWPORT)
       );
 
       const startTime = performance.now();
@@ -84,6 +98,17 @@ export function TowerDragSurface() {
         }
       };
       easeRaf.current = requestAnimationFrame(stepFrame);
+    };
+
+    const easeScrollForward = () => {
+      const scrollRoot = getTowerScrollRoot();
+      if (!scrollRoot) return;
+      const current = getNormalizedScrollOffset(scrollRoot);
+      const target = productHero
+        ? getDesignerClickScrollTarget(current)
+        : getUtilityClickTarget(current);
+      if (target === null) return;
+      easeScrollTo(target);
     };
 
     const setDraggingUi = (active: boolean) => {
@@ -141,9 +166,6 @@ export function TowerDragSurface() {
       event.preventDefault();
     };
 
-    // Tap-to-advance lives on the experience shell so it fires in every scroll
-    // state (hero, mid-intro, split) — the drag surface itself is
-    // pointer-events:none until rotation unlocks, so it can't catch the click.
     const onTapDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
       downX.current = event.clientX;
@@ -160,10 +182,10 @@ export function TowerDragSurface() {
       const elapsed = performance.now() - downTime.current;
       const moved = Math.hypot(
         event.clientX - downX.current,
-        event.clientY - downY.current,
+        event.clientY - downY.current
       );
       if (elapsed > CLICK_MAX_MS || moved > CLICK_MAX_MOVE_PX) return;
-      // Only towers/canvas advance the story — never nav, split copy, etc.
+
       const target = event.target as HTMLElement | null;
       if (
         !target ||
@@ -172,6 +194,9 @@ export function TowerDragSurface() {
       ) {
         return;
       }
+
+      if (!productHero && towerDragState.canRotate) return;
+
       easeScrollForward();
     };
 
@@ -201,7 +226,7 @@ export function TowerDragSurface() {
       if (easeRaf.current) cancelAnimationFrame(easeRaf.current);
       setDraggingUi(false);
     };
-  }, []);
+  }, [productHero]);
 
   return (
     <div

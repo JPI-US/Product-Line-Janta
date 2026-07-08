@@ -35,7 +35,7 @@ export const PRODUCT_PAGES: Record<ProductId, ProductPageConfig> = {
     hubLabel: "LFM Tower",
     hubDescription:
       "Flagship 5.6 kW platform built for scalable deployment and reliable yield.",
-    hubChips: ["5.6 kW", "Dual-axis tracking", "Field-ready"],
+    hubChips: ["5.6 kW", "Azimuthal tracking", "Field-ready"],
     tower: utilityTower,
     belowVariant: "specs",
   },

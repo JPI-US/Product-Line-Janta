@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
-import {
-  designerGallerySlides,
-  getGallerySlideLabel,
-} from "../data/productGallery";
+import { getProductGallerySlides } from "../data/productGallery";
 import {
   advanceDesignerGallerySlide,
   setDesignerGallerySlide,
@@ -67,7 +64,12 @@ export function syncDesignerGalleryLayout(page?: HTMLElement | null) {
   if (el) syncGalleryLayout(el);
 }
 
-export function ProductHorizontalGallery() {
+export function ProductHorizontalGallery({
+  productId = "designer",
+}: {
+  productId?: "designer" | "utility";
+}) {
+  const slides = getProductGallerySlides(productId);
   const scheduleLayoutRef = useRef<() => void>(() => {});
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -88,7 +90,7 @@ export function ProductHorizontalGallery() {
     runLayout();
 
     const links: HTMLLinkElement[] = [];
-    for (const slide of designerGallerySlides) {
+    for (const slide of slides) {
       const link = document.createElement("link");
       link.rel = "preload";
       link.as = "image";
@@ -122,7 +124,7 @@ export function ProductHorizontalGallery() {
       clearGalleryPinBand(page);
       for (const link of links) link.remove();
     };
-  }, []);
+  }, [slides]);
 
   useEffect(() => {
     const page = document.querySelector<HTMLElement>(".tower-3d-page");
@@ -134,14 +136,14 @@ export function ProductHorizontalGallery() {
         getComputedStyle(page).getPropertyValue("--gallery-progress")
       );
       const p = Number.isFinite(progress) ? progress : 0;
-      const last = designerGallerySlides.length - 1;
+      const last = slides.length - 1;
       setActiveSlide(last > 0 ? Math.round(p * last) : 0);
       raf = requestAnimationFrame(syncDots);
     };
 
     raf = requestAnimationFrame(syncDots);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [slides]);
 
   const goToSlide = useCallback((index: number) => {
     const scrollRoot = getTowerScrollRoot();
@@ -177,7 +179,7 @@ export function ProductHorizontalGallery() {
     [goNext, goPrev]
   );
 
-  const lastSlide = designerGallerySlides.length - 1;
+  const lastSlide = slides.length - 1;
 
   return (
     <div className="tower-3d__h-gallery-wrap tower-3d__designer-band tower-3d__designer-band--light">
@@ -188,8 +190,10 @@ export function ProductHorizontalGallery() {
       >
         <header className="tower-3d__h-gallery__header">
           <div className="tower-3d__below-copy">
-            <p className="tower-3d__below-eyebrow">Gallery</p>
             <h2 className="tower-3d__below-title">In the field</h2>
+            <p className="tower-3d__below-lede">
+              Real Janta towers deployed and generating across working sites.
+            </p>
           </div>
         </header>
 
@@ -211,7 +215,7 @@ export function ProductHorizontalGallery() {
         >
           <div className="tower-3d__h-gallery__stage-inner">
             <div className="tower-3d__h-gallery__track">
-              {designerGallerySlides.map((slide, index) => (
+              {slides.map((slide, index) => (
                 <article key={slide.id} className="tower-3d__h-gallery__card">
                   <img
                     src={slide.imageUrl}
@@ -228,9 +232,6 @@ export function ProductHorizontalGallery() {
                         : undefined
                     }
                   />
-                  <p className="tower-3d__h-gallery__card-label">
-                    {getGallerySlideLabel(index, slide.caption)}
-                  </p>
                 </article>
               ))}
             </div>
@@ -269,7 +270,7 @@ export function ProductHorizontalGallery() {
           role="tablist"
           aria-label="Gallery position"
         >
-          {designerGallerySlides.map((slide, index) => (
+          {slides.map((slide, index) => (
             <button
               key={slide.id}
               type="button"
@@ -280,7 +281,7 @@ export function ProductHorizontalGallery() {
               }
               role="tab"
               aria-selected={index === activeSlide}
-              aria-label={`Slide ${index + 1} of ${designerGallerySlides.length}`}
+              aria-label={`Slide ${index + 1} of ${slides.length}`}
               onClick={() => goToSlide(index)}
             />
           ))}

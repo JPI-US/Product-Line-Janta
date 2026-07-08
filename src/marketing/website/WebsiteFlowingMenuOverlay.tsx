@@ -6,7 +6,6 @@ import { NAV_COPY, SOLUTIONS_COPY } from "./websiteData";
 const MENU_ITEMS = [
   { link: "/website", text: NAV_COPY.home, image: "/marketing/janta-logo-mark.png" },
   { link: NAV_COPY.rootsHref, text: NAV_COPY.roots, image: "/marketing/roi-hero.png" },
-  { link: NAV_COPY.careersHref, text: NAV_COPY.careers, image: "/marketing/dsr-tower.png" },
   ...SOLUTIONS_COPY.cards.map((card) => ({
     link: card.href,
     text: `${card.acronym} ${card.title}`,

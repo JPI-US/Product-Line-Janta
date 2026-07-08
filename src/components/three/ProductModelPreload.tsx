@@ -12,8 +12,7 @@ import {
   isTowerScenePrepared,
   scheduleTowerScenePrepare,
 } from "./towerScenePrep";
-import { PRODUCT_SCENES } from "./productScene";
-import { SCENE } from "./sceneConfig";
+import { PRODUCT_SCENES, getProductTowerLayout } from "./productScene";
 
 const productLoadManager = new THREE.LoadingManager();
 
@@ -32,6 +31,7 @@ const PRODUCT_LOAD_FALLBACKS: Record<
 };
 
 function loadProductGltf(
+  productId: ProductId,
   prepKey: string,
   url: string,
   skipMeshOptimize: boolean,
@@ -47,9 +47,10 @@ function loadProductGltf(
     loader.load(
       url,
       (gltf) => {
+        const layout = getProductTowerLayout(productId);
         void scheduleTowerScenePrepare(gltf.scene, prepKey, {
-          scale: SCENE.tower.scale,
-          baseClearance: SCENE.tower.baseClearance,
+          scale: layout.scale,
+          baseClearance: layout.baseClearance,
           skipMeshOptimize,
         });
         resolve();
@@ -85,6 +86,7 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
           const url = loadChain[i];
           try {
             await loadProductGltf(
+              productId,
               config.prepKey,
               url,
               url === fallbacks.ready,

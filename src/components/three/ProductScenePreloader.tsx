@@ -1,12 +1,11 @@
 import { useGLTF } from "@react-three/drei";
 import { useEffect } from "react";
 import type { ProductId } from "../../data/productPages";
-import { SCENE } from "./sceneConfig";
 import {
   isTowerScenePrepared,
   prepareTowerSceneFromGltf,
 } from "./towerScenePrep";
-import { PRODUCT_SCENES } from "./productScene";
+import { getProductTowerLayout, PRODUCT_SCENES } from "./productScene";
 
 export function ProductScenePreloader({ productId }: { productId: ProductId }) {
   const config = PRODUCT_SCENES[productId];
@@ -14,12 +13,13 @@ export function ProductScenePreloader({ productId }: { productId: ProductId }) {
 
   useEffect(() => {
     if (!scene || isTowerScenePrepared(config.prepKey)) return;
+    const layout = getProductTowerLayout(productId);
     prepareTowerSceneFromGltf(scene, config.prepKey, {
-      scale: SCENE.tower.scale,
-      baseClearance: SCENE.tower.baseClearance,
+      scale: layout.scale,
+      baseClearance: layout.baseClearance,
       skipMeshOptimize: config.skipMeshOptimize,
     });
-  }, [scene, config.prepKey, config.skipMeshOptimize]);
+  }, [scene, config.prepKey, config.skipMeshOptimize, productId]);
 
   return null;
 }

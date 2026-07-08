@@ -1,5 +1,5 @@
 import type { ProductId } from "../../data/productPages";
-import { SCENE } from "./sceneConfig";
+import { DESIGNER_TOWER_LAYOUT, SCENE } from "./sceneConfig";
 import { DESIGNER_PRODUCT_PERF, UTILITY_PRODUCT_PERF } from "./productTowerPrep";
 import { TOWER_PREP_KEYS } from "./towerScenePrep";
 import type { MeshOptimizeOptions } from "./towerMeshOptimizer";
@@ -42,3 +42,22 @@ export function getProductIntroScroll(_productId: ProductId) {
 }
 
 export const PRODUCT_INTRO_SCROLL = SCENE.scroll;
+
+export function getProductTowerLayout(productId: ProductId) {
+  if (productId === "designer" || productId === "utility") {
+    return {
+      scale: DESIGNER_TOWER_LAYOUT.scale,
+      offsetY: DESIGNER_TOWER_LAYOUT.offsetY,
+      offsetYEnd: DESIGNER_TOWER_LAYOUT.offsetYEnd,
+      offsetX: SCENE.tower.offsetX,
+      baseClearance: SCENE.tower.baseClearance,
+    };
+  }
+  return {
+    scale: SCENE.tower.scale,
+    offsetY: SCENE.tower.offsetY,
+    offsetYEnd: SCENE.tower.offsetYEnd,
+    offsetX: SCENE.tower.offsetX,
+    baseClearance: SCENE.tower.baseClearance,
+  };
+}

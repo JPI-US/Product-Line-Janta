@@ -11,7 +11,7 @@ export default function UtilityTowerPage() {
       "The LFM flagship 5.6 kW three-dimensional solar platform, built for scalable deployment and reliable yield.",
   });
   return (
-    <WebsiteMarketingShell>
+    <WebsiteMarketingShell showFooter={false}>
       <TowerPageWarmup productId="utility" />
       <ProductTowerPage productId="utility" />
     </WebsiteMarketingShell>

@@ -1,4 +1,3 @@
-import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { CAREERS_COPY } from "./websiteCareersData";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
@@ -78,7 +77,6 @@ export default function WebsiteCareersPage() {
           <p className="web-careers-mission__text">{mission}</p>
         </section>
       </main>
-      <WebsiteFooter />
     </WebsiteMarketingShell>
   );
 }

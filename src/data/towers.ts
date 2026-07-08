@@ -23,11 +23,11 @@ export const towers: TowerProduct[] = [
     tabLabel: "DSR Tower",
     title: "DSR Tower",
     description:
-      "Solar that looks like it belongs on your building. 5.4 kW of clean power, dual-axis tracking, and side panels you design yourself.",
+      "Solar that looks like it belongs on your building. 5.4 kW of clean power, azimuthal tracking, and side panels you design yourself.",
     bullets: [
       "5.4 kW output sized for commercial visibility and yield",
       "Custom side panel designs for on-site branding",
-      "First-of-its-kind dual-axis tracking technology",
+      "First-of-its-kind azimuthal tracking solar tower",
     ],
     output: {
       dailyKwh: "28–36",
@@ -46,7 +46,7 @@ export const towers: TowerProduct[] = [
     bullets: [
       "5.6 kW output sized for scalable, cost-effective deployment",
       "Flagship platform built for volume production and field reliability",
-      "Dual-axis tracking tuned for consistent, site-ready performance",
+      "Azimuthal tracking tuned for consistent, site-ready performance",
     ],
     output: {
       dailyKwh: "30–38",

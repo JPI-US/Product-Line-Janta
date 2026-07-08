@@ -1,4 +1,5 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { SavingsSummaryStep } from "./components/SavingsSummaryStep";
 import type { SavingsProjectType as ProjectType } from "./lib/roiSpreadsheet";
 import "./SavingsPage.css";
@@ -7,31 +8,26 @@ const projectOptions: {
   id: ProjectType;
   label: string;
   icon: ReactNode;
-  hoverImageSrc: string;
 }[] = [
   {
     id: "residential",
     label: "Residential",
     icon: <IconResidential />,
-    hoverImageSrc: "/project-types/residential.svg",
   },
   {
     id: "commercial",
     label: "Commercial",
     icon: <IconCommercial />,
-    hoverImageSrc: "/project-types/commercial.svg",
   },
   {
     id: "industrial",
     label: "Industrial",
     icon: <IconIndustrial />,
-    hoverImageSrc: "/project-types/industrial.svg",
   },
   {
     id: "utility",
     label: "Utility",
     icon: <IconUtility />,
-    hoverImageSrc: "/project-types/utility.svg",
   },
 ];
 
@@ -95,11 +91,22 @@ function progressForStep(step: number) {
 }
 
 export function SavingsPage() {
+  const routerLocation = useLocation();
   const [step, setStep] = useState(1);
   const [projectType, setProjectType] = useState<ProjectType | null>(null);
   const [location, setLocation] = useState("");
   const [kwh, setKwh] = useState("");
   const [bill, setBill] = useState("");
+
+  // Navigating to /quiz (including tapping the nav "See Your Savings" button
+  // while already here) starts the quiz over from the beginning.
+  useEffect(() => {
+    setStep(1);
+    setProjectType(null);
+    setLocation("");
+    setKwh("");
+    setBill("");
+  }, [routerLocation.key]);
 
   const progress = useMemo(() => {
     if (step >= 5) return 100;
@@ -128,180 +135,176 @@ export function SavingsPage() {
 
   const heading =
     step === 1
-      ? "PROJECT TYPE"
+      ? "Project type"
       : step === 2
-        ? "SITE LOCATION"
+        ? "Site location"
         : step === 3
-          ? "ENERGY USAGE"
+          ? "Energy usage"
           : step === 4
-            ? "ELECTRICITY COSTS"
-            : "SUMMARY";
+            ? "Electricity costs"
+            : "Summary";
 
   return (
-    <main className="savings">
-      <div className="savings__shell">
-        <div className="savings-card">
-          <div
-            className="savings-card__progress"
-            role="progressbar"
-            aria-valuenow={Math.round(progress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Form progress"
-          >
-            <div className="savings-card__progress-fill" style={{ width: `${progress}%` }} />
-          </div>
+    <main className="savings" aria-label="Solar savings estimate">
+      <div
+        className="savings__progress"
+        role="progressbar"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Form progress"
+      >
+        <div className="savings__progress-fill" style={{ width: `${progress}%` }} />
+      </div>
 
-          <div
-            className={
-              step === 5
-                ? "savings-card__body savings-card__body--summary"
-                : step >= 2 && step <= 4
-                  ? "savings-card__body savings-card__body--field"
-                  : "savings-card__body"
-            }
-          >
-            {step <= 4 && (
-              <>
-                <h1 className="savings-card__title">{heading}</h1>
+      <div className="savings__inner">
+        <div
+          className={
+            step === 5
+              ? "savings__step savings__step--summary"
+              : step >= 2 && step <= 4
+                ? "savings__step savings__step--field"
+                : "savings__step"
+          }
+        >
+          {step <= 4 && (
+            <>
+              <header className="savings__header">
+                <h1 className="savings__title">{heading}</h1>
+                {step === 1 && (
+                  <p className="savings__hint">
+                    Pick what you're powering — we'll tailor the estimate to it.
+                  </p>
+                )}
                 {step === 2 && (
-                  <p className="savings-card__hint">
+                  <p className="savings__hint">
                     Location is required to calculate energy output and savings.
                   </p>
                 )}
                 {step === 3 && (
-                  <p className="savings-card__hint">
-                    Please provide your estimated average monthly energy usage (kWh)
+                  <p className="savings__hint">
+                    Enter your estimated average monthly energy usage in kWh.
                   </p>
                 )}
                 {step === 4 && (
-                  <p className="savings-card__hint">
-                    Please provide an estimate of your average monthly bill.
+                  <p className="savings__hint">
+                    Enter your estimated average monthly electric bill.
                   </p>
                 )}
+              </header>
 
-                {step === 1 && (
-                  <div className="savings-grid" role="group" aria-label="Project type">
-                    {projectOptions.map((opt) => {
-                      const selected = projectType === opt.id;
-                      return (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          className={`savings-tile${selected ? " savings-tile--selected" : ""}`}
-                          onClick={() =>
-                            setProjectType((current) => (current === opt.id ? null : opt.id))
-                          }
-                          aria-pressed={selected}
-                        >
-                          <span className="savings-tile__media" aria-hidden>
-                            <span
-                              className="savings-tile__media-bg"
-                              style={{ backgroundImage: `url("${opt.hoverImageSrc}")` }}
-                            />
-                            <span className="savings-tile__media-scrim" />
+              {step === 1 && (
+                <div className="savings-grid" role="group" aria-label="Project type">
+                  {projectOptions.map((opt) => {
+                    const selected = projectType === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`savings-tile${selected ? " savings-tile--selected" : ""}`}
+                        onClick={() => setProjectType(opt.id)}
+                        aria-pressed={selected}
+                      >
+                        {selected ? (
+                          <span className="savings-tile__check" aria-hidden>
+                            ✓
                           </span>
-                          {selected && (
-                            <span className="savings-tile__check" aria-hidden>
-                              ✓
-                            </span>
-                          )}
-                          <span className="savings-tile__front">
-                            <span className="savings-tile__icon">{opt.icon}</span>
-                            <span className="savings-tile__label">{opt.label}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {step === 2 && (
-                  <label className="savings-field">
-                    <span className="visually-hidden">Site address</span>
-                    <input
-                      className="savings-input"
-                      type="text"
-                      autoComplete="street-address"
-                      placeholder="Street & city, state, or ZIP"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                    />
-                  </label>
-                )}
-
-                {step === 3 && (
-                  <label className="savings-field">
-                    <span className="visually-hidden">Monthly energy usage in kWh</span>
-                    <div className="savings-input-wrap">
-                      <input
-                        className="savings-input savings-input--with-suffix"
-                        inputMode="decimal"
-                        placeholder="Energy Usage"
-                        value={kwh}
-                        onChange={(e) => setKwh(e.target.value.replace(/[^\d.]/g, ""))}
-                      />
-                      <span className="savings-input-suffix">kWh</span>
-                    </div>
-                  </label>
-                )}
-
-                {step === 4 && (
-                  <label className="savings-field">
-                    <span className="visually-hidden">Average monthly bill in dollars</span>
-                    <input
-                      className="savings-input"
-                      inputMode="decimal"
-                      placeholder="$350"
-                      value={bill}
-                      onChange={(e) => setBill(e.target.value.replace(/[^\d.]/g, ""))}
-                    />
-                  </label>
-                )}
-              </>
-            )}
-
-            {step === 5 && (
-              <SavingsSummaryStep
-                projectLabel={projectOptions.find((o) => o.id === projectType)?.label ?? "n/a"}
-                projectType={projectType}
-                location={location}
-                kwh={kwh}
-                bill={bill}
-                onBack={handleBack}
-                onStartOver={() => setStep(1)}
-              />
-            )}
-          </div>
-
-          {step <= 4 && (
-            <div
-              className={`savings-card__footer${step > 1 ? " savings-card__footer--nav" : ""}`}
-            >
-              {step > 1 && (
-                <button type="button" className="savings-back" onClick={handleBack}>
-                  <span className="savings-back__arrow" aria-hidden>
-                    ←
-                  </span>
-                  <span>Previous Page</span>
-                </button>
+                        ) : null}
+                        <span className="savings-tile__icon">{opt.icon}</span>
+                        <span className="savings-tile__label">{opt.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               )}
-              <button
-                type="button"
-                className="savings-next"
-                onClick={handleNext}
-                disabled={!canAdvance}
-                title={canAdvance ? undefined : "Complete this step to continue"}
-              >
-                <span>Next Page</span>
-                <span className="savings-next__arrow" aria-hidden>
-                  {" "}
-                  →
-                </span>
-              </button>
-            </div>
+
+              {step === 2 && (
+                <label className="savings-field">
+                  <span className="visually-hidden">Site address</span>
+                  <input
+                    className="savings-input"
+                    type="text"
+                    autoComplete="street-address"
+                    placeholder="Street & city, state, or ZIP"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                </label>
+              )}
+
+              {step === 3 && (
+                <label className="savings-field">
+                  <span className="visually-hidden">Monthly energy usage in kWh</span>
+                  <div className="savings-input-wrap">
+                    <input
+                      className="savings-input savings-input--with-suffix"
+                      inputMode="decimal"
+                      placeholder="Energy usage"
+                      value={kwh}
+                      onChange={(e) => setKwh(e.target.value.replace(/[^\d.]/g, ""))}
+                    />
+                    <span className="savings-input-suffix">kWh</span>
+                  </div>
+                </label>
+              )}
+
+              {step === 4 && (
+                <label className="savings-field">
+                  <span className="visually-hidden">Average monthly bill in dollars</span>
+                  <input
+                    className="savings-input"
+                    inputMode="decimal"
+                    placeholder="$350"
+                    value={bill}
+                    onChange={(e) => setBill(e.target.value.replace(/[^\d.]/g, ""))}
+                  />
+                </label>
+              )}
+            </>
+          )}
+
+          {step === 5 && (
+            <SavingsSummaryStep
+              projectLabel={projectOptions.find((o) => o.id === projectType)?.label ?? "n/a"}
+              projectType={projectType}
+              location={location}
+              kwh={kwh}
+              bill={bill}
+              onBack={handleBack}
+              onStartOver={() => {
+                setStep(1);
+                setProjectType(null);
+              }}
+            />
           )}
         </div>
+
+        {step <= 4 && (
+          <div
+            className={`savings__actions${step > 1 ? " savings__actions--nav" : ""}`}
+          >
+            {step > 1 && (
+              <button type="button" className="savings-back" onClick={handleBack}>
+                <span className="savings-back__arrow" aria-hidden>
+                  ←
+                </span>
+                <span>Back</span>
+              </button>
+            )}
+            <button
+              type="button"
+              className="savings-next"
+              onClick={handleNext}
+              disabled={!canAdvance}
+              title={canAdvance ? undefined : "Complete this step to continue"}
+            >
+              <span>{step === 4 ? "See results" : "Continue"}</span>
+              <span className="savings-next__arrow" aria-hidden>
+                →
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
