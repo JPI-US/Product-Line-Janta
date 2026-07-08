@@ -1,6 +1,9 @@
 import { Scroll, ScrollControls } from "@react-three/drei";
 import { Suspense } from "react";
-import { TOWER_CANVAS_GL } from "../../components/three/sceneConfig";
+import {
+  TOWER_CANVAS_DPR,
+  TOWER_CANVAS_GL,
+} from "../../components/three/sceneConfig";
 import { WebsiteHubTowerBridge } from "./WebsiteHubTowerBridge";
 import { WebsiteScrollBridge } from "./WebsiteScrollBridge";
 import { WebsiteScrollSync } from "./WebsiteScrollSync";
@@ -13,12 +16,11 @@ import {
 const HUB_CANVAS_GL = {
   ...TOWER_CANVAS_GL,
   alpha: true,
-  antialias: false,
   failIfMajorPerformanceCaveat: false,
 } as const;
 
-/** Hero canvas — cap DPR for smoother scroll on HiDPI displays */
-const WEBSITE_CANVAS_DPR: [number, number] = [1, 1];
+/** Hero canvas — shares the janta-vision crisp DPR cap (1.75 desktop) */
+const WEBSITE_CANVAS_DPR: [number, number] = TOWER_CANVAS_DPR;
 
 function IntroSpacer() {
   return (

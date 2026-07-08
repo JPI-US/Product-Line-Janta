@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { useGLTF } from "../../three/useGLTF";
 import { invalidate, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -140,8 +140,6 @@ export function HubTowerScene({
   const groupRef = useRef<THREE.Group>(null);
   const cloneRef = useRef<THREE.Object3D | null>(null);
   const [groundY, setGroundY] = useState<number | null>(null);
-  const shadowInitRef = useRef(false);
-  const lastShadowUpdateMs = useRef(0);
   const contactShadowBlendRef = useRef(0.6);
   const shadowFocusScratch = useRef(new THREE.Vector3());
   const materialsRef = useRef(createHubTowerMaterials());
@@ -192,9 +190,10 @@ export function HubTowerScene({
       cloneRef.current = null;
     }
     const clone = prepared.root.clone(true);
+    // janta-vision look: compact contact shadow only — no shadow-map rig.
     applyHubTowerMaterials(clone, materialsRef.current, {
-      castShadow: groundShadow,
-      receiveShadow: groundShadow,
+      castShadow: false,
+      receiveShadow: false,
     });
     cloneRef.current = clone;
     group.add(clone);
@@ -444,12 +443,10 @@ export function HubTowerScene({
     if (sunRef.current) {
       const ls = lightScratch.current;
       sunRef.current.color.lerp(ls.sun, scrollDrive ? 0.03 : 0.06);
-      if (groundShadow && !shadowInitRef.current) {
-        sunRef.current.shadow.autoUpdate = false;
-        shadowInitRef.current = true;
-      }
       if (scrollLightBlend != null) {
-        const targetIntensity = THREE.MathUtils.lerp(0.22, 1.05, scrollLightBlend);
+        // Daylight peak lifted (1.05 → 1.3) — janta-vision clarity without
+        // the shadow-map rig carrying the depth.
+        const targetIntensity = THREE.MathUtils.lerp(0.22, 1.3, scrollLightBlend);
         sunIntensityRef.current = THREE.MathUtils.lerp(
           sunIntensityRef.current,
           targetIntensity,
@@ -458,7 +455,7 @@ export function HubTowerScene({
         sunRef.current.intensity = sunIntensityRef.current;
         sunRef.current.position.copy(sunDirRef.current).multiplyScalar(16);
       } else if (tracking) {
-        sunRef.current.intensity = 1.05;
+        sunRef.current.intensity = 1.3;
         sunRef.current.position
           .copy(sunDirRef.current)
           .multiplyScalar(16);
@@ -481,26 +478,13 @@ export function HubTowerScene({
         if (sunLightTargetRef.current) {
           sunLightTargetRef.current.position.copy(focus);
         }
-        const shadowCam = sunRef.current.shadow.camera;
-        shadowCam.position.copy(sunRef.current.position);
-        shadowCam.lookAt(focus);
-        shadowCam.updateProjectionMatrix();
-        const now = performance.now();
-        const shadowInterval =
-          scrollLightBlend != null && scrollLightBlend >= 0.98 && !orbitDragging
-            ? 320
-            : 100;
-        if (now - lastShadowUpdateMs.current >= shadowInterval) {
-          sunRef.current.shadow.needsUpdate = true;
-          lastShadowUpdateMs.current = now;
-        }
       }
     }
     if (fillRef.current) {
       const ls = lightScratch.current;
       fillRef.current.color.lerp(ls.zenith, scrollDrive ? 0.03 : 0.06);
       if (scrollLightBlend != null) {
-        const targetFill = THREE.MathUtils.lerp(0.14, 0.28, scrollLightBlend);
+        const targetFill = THREE.MathUtils.lerp(0.14, 0.36, scrollLightBlend);
         fillIntensityRef.current = THREE.MathUtils.lerp(
           fillIntensityRef.current,
           targetFill,
@@ -513,7 +497,7 @@ export function HubTowerScene({
           -sunDirRef.current.z * 9
         );
       } else if (tracking) {
-        fillRef.current.intensity = 0.28;
+        fillRef.current.intensity = 0.36;
         fillRef.current.position.set(
           -sunDirRef.current.x * 9,
           5,
@@ -595,24 +579,15 @@ export function HubTowerScene({
       <directionalLight
         ref={sunRef}
         position={sun.clone().multiplyScalar(16)}
-        intensity={1.05}
+        intensity={1.3}
         color="#fff1d6"
-        castShadow={groundShadow}
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-far={30}
-        shadow-camera-left={-8}
-        shadow-camera-right={8}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-8}
-        shadow-bias={-0.00015}
-        shadow-normalBias={0.02}
       >
         <object3D attach="target" ref={sunLightTargetRef} />
       </directionalLight>
       <directionalLight
         ref={fillRef}
         position={[-sun.x * 9, 5, -sun.z * 9]}
-        intensity={0.28}
+        intensity={0.36}
         color="#b8c8e0"
       />
       {groundShadow && groundY != null ? (

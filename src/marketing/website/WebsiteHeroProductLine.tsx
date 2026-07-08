@@ -1,5 +1,6 @@
-import { Component, ReactNode, useEffect, useRef } from "react";
+import { Component, ReactNode, useEffect, useRef, useState } from "react";
 import { HubSkyBackground } from "../../components/HubSkyBackground";
+import { WebsiteHeroBoot } from "./WebsiteHeroBoot";
 import { useHubPreview } from "../../context/HubPreviewContext";
 import { WebsiteExperience } from "./WebsiteExperience";
 import { WebsiteHeroLayer } from "./WebsiteHeroLayer";
@@ -35,6 +36,7 @@ export function WebsiteHeroProductLine() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroCanvasActive = useWebsiteHeroCanvasActive();
   const webglSupported = useWebGLSupported();
+  const [booting, setBooting] = useState(true);
   const { coords } = useWebsiteHubHero();
   const { previewDate } = useHubPreview();
 
@@ -44,15 +46,12 @@ export function WebsiteHeroProductLine() {
     return mountWebsiteHeroCanvasGate(el);
   }, []);
 
+  const classNames = ["web-hero-product-line"];
+  if (!heroCanvasActive) classNames.push("web-hero-product-line--canvas-paused");
+  if (booting && webglSupported) classNames.push("web-hero-product-line--booting");
+
   return (
-    <div
-      ref={heroRef}
-      className={
-        heroCanvasActive
-          ? "web-hero-product-line"
-          : "web-hero-product-line web-hero-product-line--canvas-paused"
-      }
-    >
+    <div ref={heroRef} className={classNames.join(" ")}>
       <HubSkyBackground
         weather={WEBSITE_HERO_WEATHER}
         coords={coords}
@@ -73,6 +72,9 @@ export function WebsiteHeroProductLine() {
         ) : null}
         {webglSupported && heroCanvasActive ? <WebsiteTowerDragSurface /> : null}
         <WebsiteHeroLayer />
+        {webglSupported ? (
+          <WebsiteHeroBoot onDone={() => setBooting(false)} />
+        ) : null}
       </div>
       <WebsitePartnersSection className="web-partners--hero-band" />
     </div>

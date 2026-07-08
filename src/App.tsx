@@ -33,6 +33,12 @@ const UtilityTowerPage = lazy(() => import("./pages/UtilityTowerPage"));
 const UtilityPrerenderBakePage = lazy(
   () => import("./pages/UtilityPrerenderBakePage")
 );
+const TowerOrbitPage = lazy(() => import("./pages/TowerOrbitPage"));
+// Dev-only GLB workbench — statically false in prod, so Rollup drops the chunk
+const DevModelViewerPage = import.meta.env.DEV
+  ? lazy(() => import("./pages/DevModelViewerPage"))
+  : null;
+
 
 const MARKETING_PATHS = new Set([
   "/website",
@@ -130,6 +136,12 @@ function AppRoutes() {
               path="/utility-prerender-bake"
               element={<UtilityPrerenderBakePage />}
             />
+            <Route path="/orbit/:productId" element={<TowerOrbitPage />} />
+            <Route path="/orbit" element={<TowerOrbitPage />} />
+            {DevModelViewerPage ? (
+              <Route path="/dev/model-viewer" element={<DevModelViewerPage />} />
+            ) : null}
+
             <Route path="*" element={<Navigate to="/website" replace />} />
           </Routes>
         </Suspense>

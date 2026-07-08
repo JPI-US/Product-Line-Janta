@@ -1,5 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
+import * as THREE from "three";
+
 import type { ProductId } from "../data/productPages";
 import { getProductPage } from "../data/productPages";
 import { DesignerHeroOverlays } from "./DesignerHeroOverlays";
@@ -22,6 +24,7 @@ import { TowerPageScrollCssSync } from "./three/TowerPageScrollCssSync";
 import { TowerRotationBackground } from "./three/TowerRotationBackground";
 import { WebGLCanvasBoundary } from "./WebGLCanvasBoundary";
 import { supportsWebGL } from "../lib/webglSupport";
+import { AmbientAudioToggle } from "./AmbientAudioToggle";
 
 type ProductTowerPageProps = {
   productId: ProductId;
@@ -41,7 +44,7 @@ function ProductScrollCanvas({
     <Canvas
       className="tower-3d__canvas"
       frameloop="demand"
-      shadows={castShadow}
+      shadows={castShadow ? { type: THREE.VSMShadowMap } : false}
       camera={{
         position: [start.x, start.y, start.z],
         fov: fovStart,
@@ -57,7 +60,13 @@ function ProductScrollCanvas({
         if (softPanelBg) gl.setClearColor(0x000000, 0);
       }}
     >
-      {!softPanelBg ? <color attach="background" args={[PAGE_BG]} /> : null}
+
+      {!softPanelBg ? (
+        <>
+          <color attach="background" args={[PAGE_BG]} />
+          <fog attach="fog" args={[PAGE_BG, 40, 110]} />
+        </>
+      ) : null}
       <Suspense
         fallback={
           <mesh>
@@ -92,6 +101,7 @@ export function ProductTowerPage({ productId }: ProductTowerPageProps) {
         }
       >
         <TowerPageScroll />
+        <AmbientAudioToggle className="tower-3d__audio-toggle" />
 
         <div
           className={`tower-3d__experience${

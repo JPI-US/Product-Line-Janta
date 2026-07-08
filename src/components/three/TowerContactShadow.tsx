@@ -7,8 +7,8 @@ import { getHubTowerContactShadowTexture } from "./hubTowerContactShadow";
 export const TOWER_CONTACT_SHADOW = {
   scale: 9,
   /** Visible at night without reading as a hole; deeper in daylight */
-  opacityMin: 0.38,
-  opacityMax: 0.52,
+  opacityMin: 0.22,
+  opacityMax: 0.55,
   /** Matches janta-vision sampleLighting shadowOpacity ramp */
   opacityBlendStart: 0.15,
   opacityBlendEnd: 0.7,

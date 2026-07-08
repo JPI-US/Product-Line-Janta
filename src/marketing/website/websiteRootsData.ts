@@ -100,7 +100,7 @@ export const ROOTS_COPY = {
   founder: {
     name: "Mohammed Njie",
     role: "Founder",
-    image: "/marketing/roots/mohamed-og.png",
+    image: "/marketing/roots/mohamed-og.jpg",
     imageAlt: "Mohammed Njie, founder of Janta Energy",
     quote:
       "There's a lot of things children wouldn't necessarily be able to learn, just because they don't have electricity. When it gets dark: that's it, everybody has to go home. Reliable, sustainable, clean energy could change that.",

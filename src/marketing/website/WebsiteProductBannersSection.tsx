@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { CSSProperties } from "react";
+import { Picture } from "../../components/Picture";
 import { SOLUTIONS_COPY } from "./websiteData";
 import {
   solutionCardLabel,
@@ -39,12 +40,10 @@ function ProductBanner({ card }: { card: ProductBannerCard }) {
           <span className="web-nav__cta web-product-banners__cta">{card.hoverCta}</span>
         </div>
         <div className="web-product-banners__media" style={mediaStyle} aria-hidden>
-          <img
+          <Picture
             className="web-product-banners__img"
             src={card.image}
             alt={card.imageAlt}
-            loading="lazy"
-            decoding="async"
           />
         </div>
       </Link>

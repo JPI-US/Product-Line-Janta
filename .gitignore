@@ -40,5 +40,12 @@ dist-ssr
 # TypeScript
 *.tsbuildinfo
 
+# Playwright artifacts
+test-results/
+playwright-report/
+
 # Local archives / exports
 *.zip
+
+# Original uncompressed GLB sources — backups auto-created by scripts/compress-models.mjs
+models-src/

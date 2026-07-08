@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import { getProductPage } from "../data/productPages";
+import { DesignerConfigurator } from "./DesignerConfigurator";
 
 /** DSR hero — centered title, then scroll crossfade to frosted intro + performance cards */
 export function DesignerHeroOverlays() {
@@ -64,6 +66,13 @@ export function DesignerHeroOverlays() {
                 </div>
               ))}
             </div>
+            <Link
+              to="/orbit/designer"
+              className="tower-3d__cta tower-3d__cta--ghost tower-3d__dcard__cta"
+            >
+              View in 360°
+            </Link>
+            <DesignerConfigurator />
           </article>
         ) : null}
       </div>

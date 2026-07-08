@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import type { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { MeshoptDecoder } from "three-stdlib";
+import { GLTFLoader } from "three-stdlib";
+import type { GLTF } from "three-stdlib";
+import { configureGltfLoaders } from "../../three/loaders";
 import {
   DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
@@ -21,16 +21,9 @@ const DESIGNER_LOAD_CHAIN = [
   DESIGNER_WEB_MODEL_URL,
 ] as const;
 
-function loadDesignerGltf(url: string, useMeshopt: boolean): Promise<GLTF> {
+function loadDesignerGltf(url: string): Promise<GLTF> {
   return new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-    if (useMeshopt) {
-      loader.setMeshoptDecoder(
-        typeof MeshoptDecoder === "function"
-          ? (MeshoptDecoder as () => Parameters<GLTFLoader["setMeshoptDecoder"]>[0])()
-          : MeshoptDecoder,
-      );
-    }
+    const loader = configureGltfLoaders(new GLTFLoader());
     loader.load(url, resolve, undefined, reject);
   });
 }
@@ -50,7 +43,7 @@ export function warmupHeroTowerScene(): Promise<void> {
     for (let i = 0; i < DESIGNER_LOAD_CHAIN.length; i++) {
       const url = DESIGNER_LOAD_CHAIN[i];
       try {
-        const gltf = await loadDesignerGltf(url, i < 2);
+        const gltf = await loadDesignerGltf(url);
         if (isTowerScenePrepared(TOWER_PREP_KEYS.designer)) return;
 
         const merged = isMergedTower(gltf.scene);

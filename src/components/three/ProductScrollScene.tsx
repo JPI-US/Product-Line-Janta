@@ -1,6 +1,6 @@
 import { Scroll, ScrollControls, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import * as THREE from "three";
 import type { ProductId } from "../../data/productPages";
 import { CameraRig } from "./CameraRig";
@@ -67,7 +67,11 @@ export function ProductScrollScene({ productId }: { productId: ProductId }) {
       <TowerCanvasInvalidateBridge slot={productId} />
       <ScrollStatsBridge />
       <ScrollInvalidate alwaysActive />
-      <ProductScenePreloader productId={productId} />
+      {/* Own boundary — its useGLTF suspension must not block the lod2
+          stand-in rendered by ProductTowerModel below. */}
+      <Suspense fallback={null}>
+        <ProductScenePreloader productId={productId} />
+      </Suspense>
       <TowerSceneEnvironment
         environmentIntensity={sceneConfig.environmentIntensity}
         environmentResolution={128}
@@ -79,6 +83,7 @@ export function ProductScrollScene({ productId }: { productId: ProductId }) {
       {sceneConfig.contactShadow ? (
         <ProductTowerContactShadow productId={productId} />
       ) : null}
+
 
       <Scroll html style={{ width: "100%", pointerEvents: "none" }}>
         <div className="tower-3d__scroll-track">

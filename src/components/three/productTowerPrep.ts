@@ -6,16 +6,16 @@ export const PRODUCT_TOWER_PREP = {
   },
 } as const;
 
-/** DSR designer hero — full shadow maps + soft contact shadow */
+/** DSR designer hero — compact contact shadow only (janta-vision look, no shadow-map rig) */
 export const DESIGNER_PRODUCT_PERF = {
-  castShadow: true,
+  castShadow: false,
   contactShadow: true,
   lightingVariant: "designer" as const,
   skipMeshOptimize: true,
   environmentIntensity: 0.42,
   meshOptimize: {
     ...PRODUCT_TOWER_PREP.meshOptimize,
-    structureCastShadow: true,
+    structureCastShadow: false,
   },
 } as const;
 

@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { useGLTF } from "../../three/useGLTF";
 import { useEffect } from "react";
 import type { ProductId } from "../../data/productPages";
 import { SCENE } from "./sceneConfig";

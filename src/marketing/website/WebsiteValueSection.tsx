@@ -1,3 +1,4 @@
+import { Picture } from "../../components/Picture";
 import { WebsitePictureCardGlow } from "./WebsitePictureCardGlow";
 import { VALUE_COPY } from "./websiteData";
 
@@ -21,12 +22,10 @@ export function WebsiteValueSection() {
           <figure className="web-value__figure">
             <WebsitePictureCardGlow className="web-rb-border-glow--value">
               <div className="web-value__img-shell">
-                <img
+                <Picture
                   className="web-value__img"
                   src={VALUE_COPY.image}
                   alt={VALUE_COPY.imageAlt}
-                  loading="lazy"
-                  decoding="async"
                   style={{ objectPosition: VALUE_COPY.imagePosition }}
                 />
                 <div className="web-value__img-tone" aria-hidden />

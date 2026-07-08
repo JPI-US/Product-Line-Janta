@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { useGLTF } from "../../three/useGLTF";
 import { useEffect, useMemo, useState } from "react";
 import { UTILITY_MODEL_URL } from "./towerModelUrls";
 import {

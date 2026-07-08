@@ -10,17 +10,28 @@ export const TOWER_CANVAS_GL = {
   powerPreference: "default" as WebGLPowerPreference,
   failIfMajorPerformanceCaveat: false,
   toneMapping: THREE.ACESFilmicToneMapping,
-  toneMappingExposure: 1.18,
+  toneMappingExposure: 1.0,
+
 } as const;
 
-/** Product routes — same tone map, less fill rate than the hub / legacy dual-canvas page */
+/** Product routes — same tone map + antialiasing as the hub canvas */
 export const PRODUCT_CANVAS_GL = {
   ...TOWER_CANVAS_GL,
-  antialias: false,
 } as const;
 
-/** Cap pixel ratio — same layout, less GPU fill on HiDPI displays */
-export const TOWER_CANVAS_DPR: [number, number] = [1, 1];
+const IS_COARSE_POINTER =
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(pointer: coarse)").matches;
+
+/**
+ * Pixel-ratio cap — janta-vision renders at 1.75 for the crisp tower look.
+ * Dropping the shadow-map rigs freed the GPU budget this consumes; coarse
+ * pointers (mobile GPUs) keep a lower cap.
+ */
+export const TOWER_CANVAS_DPR: [number, number] = IS_COARSE_POINTER
+  ? [1, 1.35]
+  : [1, 1.75];
 
 /** World-space center of tower (panel seam / middle) */
 const TOWER_FOCUS = { x: -1.6, y: 1.15, z: 0 } as const;
@@ -59,39 +70,39 @@ export const SCENE = {
     intensity: 3.95,
     ambient: "#ebeae8",
     fill: "#fff8f0",
-    rim: "#dde4f0",
+    /** Cool sky rim — janta-vision's #b6d4ff separates the structure metal */
+    rim: "#c6d9f5",
     hemisphereSky: "#ebe9e6",
     hemisphereGround: "#454a48",
     point: "#fffaf6",
   },
-  /** Neutral HDRI — avoids blue sky tint on PV panels; rotated to match sun (+X) */
+  /** Sunset HDRI — warm directional bounce that reads as "product photo" */
   environment: {
-    preset: "warehouse" as const,
+    preset: "sunset" as const,
     resolution: 256,
-    intensity: 0.42,
+    intensity: 0.75,
     rotationY: -Math.PI * 0.5,
   },
+
   /**
-   * Product scroll pages use `utility` (compact rig, no shadows) by default.
-   * Designer product hero enables the full shadow rig via DESIGNER_PRODUCT_PERF.
+   * Both product scroll pages render without shadow maps — the compact
+   * TowerContactShadow at the base is the only shadow (janta-vision look).
    */
   lighting: {
     designer: {
-      castShadow: true,
-      shadowMapSize: 512,
       shadowIntensity: 0.38,
-      ambientIntensity: 0.22,
-      hemisphereIntensity: 0.44,
+      /** Lifted ambient/rim compensate for the removed shadow-map depth */
+      ambientIntensity: 0.3,
+      hemisphereIntensity: 0.48,
       keyIntensity: 3.95,
       fillIntensity: 0.88,
-      rimIntensity: 1.05,
+      rimIntensity: 1.15,
       pointIntensity: 0.68,
       sunDetail: "full" as const,
     },
     utility: {
-      castShadow: false,
-      ambientIntensity: 0.3,
-      hemisphereIntensity: 0.56,
+      ambientIntensity: 0.36,
+      hemisphereIntensity: 0.62,
       /** Merged fill/rim character for a single bounce pass */
       hemisphereSky: "#f2f0ec",
       hemisphereGround: "#3d4341",

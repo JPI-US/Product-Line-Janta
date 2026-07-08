@@ -23,6 +23,11 @@ export const TOWER_PREP_KEYS = {
   utility: "utility-ready-glb-v1",
 } as const;
 
+/** Cache key for the low-res `-lod2` stand-in prepared before the full GLB. */
+export function getLodPrepKey(prepKey: string): string {
+  return `${prepKey}--lod2`;
+}
+
 /** Bbox fit only — mesh merge is baked offline into *-ready.glb */
 export function getDesignerTowerPrepConfig(): TowerPrepConfig {
   return {

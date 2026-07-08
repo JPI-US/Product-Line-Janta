@@ -1,6 +1,6 @@
-import { useRef, useLayoutEffect } from "react";
-import { useFrame } from "@react-three/fiber";
-import { useGLTF, useScroll } from "@react-three/drei";
+import { useRef, useLayoutEffect, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useScroll } from "@react-three/drei";
 import * as THREE from "three";
 import type { ProductId } from "../../data/productPages";
 import { SCENE } from "./sceneConfig";
@@ -15,7 +15,7 @@ import {
   getTowerYawTowardSun,
   getTowerVisualYawOffset,
 } from "./sceneScroll";
-import { getCachedTowerScene } from "./towerScenePrep";
+import { getCachedTowerScene, getLodPrepKey } from "./towerScenePrep";
 import { PRODUCT_SCENES } from "./productScene";
 import { useTowerScenePrepared } from "./useTowerScenePrepared";
 import {
@@ -37,6 +37,9 @@ import {
 } from "./towerSharedRotation";
 import { isProductHero3dActive } from "./productScrollPerf";
 import { SCROLL_OFFSET_EPS } from "./utilityCanvasPerf";
+import { TowerHoverHighlight } from "./TowerHoverHighlight";
+import { subscribeTowerConfig, towerConfig } from "./towerConfigState";
+import { meshUsesPvPanelMaterial, TOWER_PANEL_COLOR } from "./towerMaterials";
 
 const reducedMotion = () =>
   typeof window !== "undefined" &&
@@ -50,10 +53,16 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
   const lastScrollOffset = useRef(-1);
   const scroll = useScroll();
   const sceneConfig = PRODUCT_SCENES[productId];
-  useGLTF(sceneConfig.modelUrl);
 
   const ready = useTowerScenePrepared(sceneConfig.prepKey);
-  const prepared = ready ? getCachedTowerScene(sceneConfig.prepKey) : null;
+  const lodReady = useTowerScenePrepared(getLodPrepKey(sceneConfig.prepKey));
+  // Progressive swap: render the -lod2 stand-in the moment it's prepared,
+  // then re-clone the full-res scene when it lands (same effect below).
+  const prepared = ready
+    ? getCachedTowerScene(sceneConfig.prepKey)
+    : lodReady
+      ? getCachedTowerScene(getLodPrepKey(sceneConfig.prepKey))
+      : null;
 
   useLayoutEffect(() => {
     if (!prepared || !groupRef.current) return;
@@ -75,6 +84,52 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     cloneRef.current = clone;
     group.add(clone);
   }, [prepared, sceneConfig.castShadow]);
+
+  // Stage 12 configurator (designer only): finish tint + height scale.
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    if (productId !== "designer") return;
+    const apply = () => {
+      const group = groupRef.current;
+      const clone = cloneRef.current;
+      if (!group || !clone) return;
+      group.scale.y = towerConfig.height;
+      // Blend the finish hue into the dark PV glass instead of replacing it —
+      // full-strength theme colors read as paint, not glass.
+      const tint = new THREE.Color(TOWER_PANEL_COLOR);
+      if (towerConfig.finishColor) {
+        // Metal + env reflection amplify the hue heavily; keep the mix low.
+        tint.lerp(new THREE.Color(towerConfig.finishColor), 0.12);
+      }
+      clone.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (!mesh.isMesh || !meshUsesPvPanelMaterial(mesh)) return;
+        const mats = Array.isArray(mesh.material)
+          ? mesh.material
+          : [mesh.material];
+        for (const mat of mats) {
+          const std = mat as THREE.MeshStandardMaterial;
+          if (!std.userData.configClone) {
+            // Clone before tinting — the prep cache material is shared with
+            // the hub hero and future page mounts.
+            const owned = std.clone();
+            owned.userData.configClone = true;
+            if (Array.isArray(mesh.material)) {
+              mesh.material = mesh.material.map((m) => (m === std ? owned : m));
+            } else {
+              mesh.material = owned;
+            }
+            owned.color.copy(tint);
+          } else {
+            std.color.copy(tint);
+          }
+        }
+      });
+      invalidate();
+    };
+    apply();
+    return subscribeTowerConfig(apply);
+  }, [productId, prepared, invalidate]);
 
   useFrame(() => {
     if (!prepared || !groupRef.current) return;
@@ -168,5 +223,10 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
 
   if (!prepared) return null;
 
-  return <group ref={groupRef} />;
+  return (
+    <>
+      <group ref={groupRef} />
+      <TowerHoverHighlight targetRef={cloneRef} />
+    </>
+  );
 }

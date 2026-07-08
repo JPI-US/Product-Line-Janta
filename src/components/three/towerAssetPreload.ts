@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { useGLTF } from "../../three/useGLTF";
 import type { ProductId } from "../../data/productPages";
 import { PRODUCT_SCENES } from "./productScene";
 import {

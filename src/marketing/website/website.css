@@ -970,6 +970,54 @@ body.website-active {
   overflow: hidden;
   background: transparent;
   transform: translateZ(0);
+  opacity: 1;
+  transition: opacity 0.65s ease;
+}
+
+/* Canvas hidden while the hero boot overlay streams the tower in */
+.web-hero-product-line--booting .web-hero-product-line__stage .web__viewport--hub {
+  opacity: 0;
+}
+
+/* ── Hero boot overlay — thin white progress bar over the night sky ── */
+.web-hero-boot {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  padding-bottom: clamp(2.25rem, 6vh, 4rem);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.65s ease;
+}
+
+.web-hero-boot--leaving {
+  opacity: 0;
+}
+
+.web-hero-boot__bar-track {
+  width: min(220px, 40vw);
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.web-hero-boot__bar {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #ffffff;
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-hero-product-line--booting .web-hero-product-line__stage .web__viewport--hub {
+    opacity: 1;
+    transition: none;
+  }
 }
 
 .web-hero-product-line__stage .web__drag-surface {
@@ -5038,14 +5086,15 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-roots-founder__portrait {
   display: block;
   width: 100%;
-  max-width: 22rem;
+  max-width: 26rem;
   margin: 0 auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
   box-shadow: 0 16px 40px rgba(58, 42, 28, 0.12);
 }
+
 
 .web-roots-founder__quote {
   margin: 0;
