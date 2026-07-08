@@ -96,7 +96,8 @@ function getHubTowerPerfTimings(mode: HubTowerPerfMode) {
       materialRefreshMs: 4000,
       trackingInvalidateMs: 1000 / 5,
       frameInvalidateMs: 0,
-      skyEnvMap: { width: 64, height: 32, updateIntervalMs: 8000 },
+      // 128×64 — the old 64×32 map made env reflections read as pixel blocks
+      skyEnvMap: { width: 128, height: 64, updateIntervalMs: 8000 },
     };
   }
   return {
@@ -208,6 +209,11 @@ export function HubTowerScene({
     const fitted = new THREE.Box3().setFromObject(group);
     setGroundY(fitted.min.y - 0.015);
     meshPaintFrames.current = 0;
+    // Force a fresh env + material pass on the next frames — stale env from a
+    // prior mount or the 8s marketing throttle was causing a delayed glint "chip".
+    envRef.current = null;
+    lastEnvUpdateRef.current = 0;
+    lastMatUpdateRef.current = 0;
     if (marketingPerf) {
       markWebsiteHeroTowerMeshMounted();
     }
@@ -364,12 +370,17 @@ export function HubTowerScene({
     }
 
     const scrollAnimating = scrollDrive?.isAnimating() ?? false;
+    const meshJustMounted = meshPaintFrames.current < 4;
     const shouldRefreshEnv =
       envRef.current == null ||
+      meshJustMounted ||
       (scrollDrive
-        ? !scrollAnimating &&
-          scrollBlendDelta <= 0.0005 &&
-          nowMs - lastEnvUpdateRef.current >= ENV_REFRESH_MS
+        ? marketingPerf
+          ? scrollBlendDelta > 0.002 ||
+            nowMs - lastEnvUpdateRef.current >= ENV_REFRESH_MS
+          : !scrollAnimating &&
+            scrollBlendDelta <= 0.0005 &&
+            nowMs - lastEnvUpdateRef.current >= ENV_REFRESH_MS
         : nowMs - lastEnvUpdateRef.current >= ENV_REFRESH_MS);
 
     if (shouldRefreshEnv) {
@@ -401,12 +412,14 @@ export function HubTowerScene({
     const env = envRef.current;
     if (!env) return;
     const shouldRefreshMaterials =
-      !scrollAnimating && nowMs - lastMatUpdateRef.current >= MATERIAL_REFRESH_MS;
+      meshJustMounted ||
+      (!scrollAnimating &&
+        nowMs - lastMatUpdateRef.current >= MATERIAL_REFRESH_MS);
     if (shouldRefreshMaterials) {
       syncHubTowerMaterials(
         materialsRef.current,
         env,
-        scrollDrive ? 0.02 : undefined
+        meshJustMounted ? 1 : scrollDrive ? 0.02 : undefined
       );
       lastMatUpdateRef.current = nowMs;
     }

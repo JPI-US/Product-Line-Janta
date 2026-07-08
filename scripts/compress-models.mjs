@@ -64,9 +64,11 @@ const TUNING_OVERRIDES = {
   // Dense CAD structure (bolt shells, rails) — strict simplify plateaus at
   // ~1.8 MB, so use the topology-ignoring pass. Runtime recomputes normals.
   "TR-08-001-ready.glb": { sloppyRatio: 0.35, sloppyError: 0.01 },
-  // Hero model — strict simplify only; sloppy destroys the perforated
-  // honeycomb backing sheet that reads clearly at hero scale.
-  "5.6k_10x4_panels-ready.glb": { ratio: 0.6, error: 0.005 },
+  // Hero model — NO simplification and exact-duplicate weld only. Any strict
+  // simplify (even ratio 0.85) or tolerance weld collapses a thin panel facet
+  // into a visible light "chip" on the hero tower; quantize+meshopt alone
+  // still lands well under the size budget.
+  "5.6k_10x4_panels-ready.glb": { ratio: 1.0, error: 0.0001, weldTolerance: 0 },
 };
 const TUNING_DEFAULT = { ratio: 0.75, error: 0.001 };
 
@@ -158,7 +160,11 @@ function sloppySimplify(targetRatio, targetError) {
 
 /** Shared cleanup + simplification, applied before compression. */
 function baseTransforms(tuning) {
-  const steps = [dedup(), weld({ tolerance: 0.0001 })];
+  // weldTolerance 0 = exact-duplicate weld only (safe for thin CAD facets)
+  const steps = [
+    dedup(),
+    weld({ tolerance: tuning.weldTolerance ?? 0.0001 }),
+  ];
   if (tuning.sloppyRatio != null) {
     steps.push(sloppySimplify(tuning.sloppyRatio, tuning.sloppyError ?? 0.01));
     // Strict pass at ratio 1.0 compacts vertex streams after index rewrite.

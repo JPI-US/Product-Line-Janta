@@ -16,12 +16,15 @@ export function getHubTowerContactShadowTexture(): THREE.CanvasTexture {
   const cx = size * 0.5;
   const cy = size * 0.52;
   const radius = size * 0.48;
-  // Warm charcoal falloff — reads as a soft product-render shadow, not a cold stain
+  // Two-lobe falloff like drei ContactShadows in janta-vision: a genuinely
+  // dark core hugging the base, easing into a soft penumbra. Warm charcoal
+  // so it reads as a product-render shadow, not a cold stain.
   const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-  gradient.addColorStop(0, "rgba(42, 32, 24, 0.6)");
-  gradient.addColorStop(0.28, "rgba(44, 33, 24, 0.27)");
-  gradient.addColorStop(0.52, "rgba(46, 35, 26, 0.1)");
-  gradient.addColorStop(0.78, "rgba(48, 37, 28, 0.03)");
+  gradient.addColorStop(0, "rgba(34, 26, 22, 0.85)");
+  gradient.addColorStop(0.2, "rgba(36, 28, 23, 0.72)");
+  gradient.addColorStop(0.38, "rgba(40, 31, 24, 0.42)");
+  gradient.addColorStop(0.55, "rgba(44, 33, 25, 0.22)");
+  gradient.addColorStop(0.78, "rgba(48, 37, 28, 0.07)");
   gradient.addColorStop(1, "rgba(48, 37, 28, 0)");
 
   ctx.fillStyle = gradient;

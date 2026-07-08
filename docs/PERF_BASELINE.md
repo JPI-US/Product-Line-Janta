@@ -7,13 +7,15 @@ loading UX, interactivity, visual quality, post-FX, progressive LOD, tooling).
 
 | Asset | Before | After | LOD1 | LOD2 |
 |---|---|---|---|---|
-| `5.6k_10x4_panels-ready.glb` (DSR) | 5.3 MB | 670 KB | 109 KB | 50 KB |
+| `5.6k_10x4_panels-ready.glb` (DSR) | 5.3 MB | 930 KB | 109 KB | 50 KB |
 | `TR-08-001-ready.glb` (LFM) | 6.0 MB | 818 KB | 493 KB | 270 KB |
 
 Rebuild with `npm run compress:models` (runs automatically in `prebuild`).
 Tuning lives in `scripts/compress-models.mjs` (`TUNING_OVERRIDES`): the DSR
-hero keeps strict simplification to preserve the honeycomb; the LFM model and
-all LOD tiers use meshopt "sloppy" simplification.
+hero gets NO simplification and exact-duplicate welds only — any strict
+simplify or tolerance weld collapses a thin panel facet into a visible light
+"chip" on the hero tower. The LFM model and all LOD tiers use meshopt
+"sloppy" simplification.
 
 ## Progressive loading
 
