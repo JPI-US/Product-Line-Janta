@@ -6,7 +6,7 @@ export function WebsiteValueSection() {
   return (
     <section
       id="web-value"
-      className="web-panel web-panel--value web-panel--soft-sky"
+      className="web-panel web-panel--value"
       aria-labelledby="web-value-title"
     >
       <div className="web-panel__content web-value">

@@ -32,6 +32,7 @@ export function ScrollStatsBridge() {
         page.style.removeProperty("--below-scroll");
         page.style.removeProperty("--gallery-progress");
         page.style.removeProperty("--hero-fade");
+        page.style.removeProperty("--hero-hint-fade");
         clearGalleryPinBand(page);
       }
       setTowerScrollRoot(null);

@@ -1,5 +1,6 @@
 const JANTAGM_IMG =
   "https://images.squarespace-cdn.com/content/v1/5e8618a2cd1f6c5ba81a3384";
+import rootsHighlightAsset from "../../assets/roots-highlight.mp4.asset.json";
 
 function img(path: string, width = 1600) {
   return `${JANTAGM_IMG}/${path}?format=${width}w`;
@@ -10,7 +11,7 @@ export const ROOTS_COPY = {
     title: "Janta",
     tagline: ["Born in Gambia,", "built for the world."],
     image: "/marketing/roots/roots-hero.png",
-    imageAlt: "Mountain lake landscape at golden hour",
+    imageAlt: "Tropical beach with palm trees and ocean waves",
   },
   beginnings: {
     title: "Where Janta began",
@@ -106,7 +107,10 @@ export const ROOTS_COPY = {
       "There's a lot of things children wouldn't necessarily be able to learn, just because they don't have electricity. When it gets dark: that's it, everybody has to go home. Reliable, sustainable, clean energy could change that.",
   },
   film: {
-    src: "/marketing/roots/roots-highlight.mp4",
+    /** Lovable-hosted reel — same path works on publish; proxied in local dev */
+    src: rootsHighlightAsset.url,
+    /** Optional local copy from `npm run build:roots-video` */
+    fallbackSrc: "/marketing/roots/roots-highlight.mp4",
     poster: "/marketing/roots/roots-highlight-poster.jpg",
   },
   cta: {

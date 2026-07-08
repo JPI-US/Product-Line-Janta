@@ -95,13 +95,16 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
 
     const splitBaseYaw = getSplitViewBaseYaw(blend, SCENE.tower.offsetX);
     const infoReveal = getInfoRevealProgress(scrollOffset);
-    const introComplete = isIntroAnimationComplete(scrollOffset);
-    const splitReady = infoReveal >= 0.98;
+    const cameraShiftComplete = isIntroAnimationComplete(scrollOffset);
+    const isDesigner = productId === "designer";
+    // Designer: idle rotation starts as soon as the camera intro shift finishes.
+    // Utility: wait until the split-view / card-compose has fully opened.
+    const rotateReady = isDesigner ? cameraShiftComplete : infoReveal >= 0.98;
     const idleCenter = SCENE.tower.idleYawCenter;
     const wasDragging = wasDraggingRef.current;
     wasDraggingRef.current = state.dragging;
 
-    if (!introComplete) {
+    if (!cameraShiftComplete) {
       if (shared.idleEpochMs !== null) resetSharedIdle();
       groupRef.current.rotation.y = getTowerYawTowardSun(
         blend,
@@ -111,7 +114,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
       return;
     }
 
-    if (splitReady && state.dragging && !wasDragging) {
+    if (rotateReady && state.dragging && !wasDragging) {
       shared.yaw = clampTowerDragYaw(
         groupRef.current.rotation.y - splitBaseYaw
       );
@@ -120,7 +123,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
         tickIdleYawOffset(shared, TOWER_YAW_HALF_RANGE),
         TOWER_YAW_HALF_RANGE
       );
-    } else if (splitReady && wasDragging && !state.dragging) {
+    } else if (rotateReady && wasDragging && !state.dragging) {
       startIdleClock(
         shared,
         groupRef.current.rotation.y - splitBaseYaw,
@@ -138,7 +141,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
       ? idleCenter
       : getTowerVisualYawOffset(scrollOffset, isAnyTowerDragging());
 
-    if (!splitReady) {
+    if (!rotateReady) {
       groupRef.current.rotation.y = getTowerYawTowardSun(
         blend,
         SCENE.tower.offsetX,

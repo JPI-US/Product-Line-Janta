@@ -1,6 +1,7 @@
 import {
   canRotateTower,
   getBelowScrollVisualProgress,
+  getDesignerHeroFadeProgress,
   getGalleryScrollProgress,
   getHeroFadeProgress,
   getInfoRevealProgress,
@@ -44,7 +45,10 @@ export function applyScrollStats(
   const pageScroll = getPageScrollProgress(offset);
   const belowScroll = getBelowScrollVisualProgress(offset);
   const galleryProgress = getGalleryScrollProgress(offset);
-  const heroFade = getHeroFadeProgress(offset);
+  const isDesigner = page.classList.contains("tower-3d-page--designer");
+  const heroFade = isDesigner
+    ? getDesignerHeroFadeProgress(offset)
+    : getHeroFadeProgress(offset);
 
   if (Math.abs(offset - prev.towerScroll) > VAR_EPSILON) {
     page.style.setProperty("--tower-scroll", String(offset));

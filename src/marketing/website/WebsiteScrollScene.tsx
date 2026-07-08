@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { TOWER_CANVAS_GL } from "../../components/three/sceneConfig";
 import { WebsiteHubTowerBridge } from "./WebsiteHubTowerBridge";
 import { WebsiteScrollBridge } from "./WebsiteScrollBridge";
-import { WebsiteScrollInvalidate } from "./WebsiteScrollInvalidate";
 import { WebsiteScrollSync } from "./WebsiteScrollSync";
 import {
   WEBSITE_HOLD_PAGE_COUNT,
@@ -15,6 +14,7 @@ const HUB_CANVAS_GL = {
   ...TOWER_CANVAS_GL,
   alpha: true,
   antialias: false,
+  failIfMajorPerformanceCaveat: false,
 } as const;
 
 /** Hero canvas — cap DPR for smoother scroll on HiDPI displays */
@@ -52,7 +52,6 @@ export function WebsiteScrollScene() {
     <ScrollControls pages={WEBSITE_SCROLL_PAGES} damping={0.17} distance={1} eps={0.0005}>
       <WebsiteScrollBridge />
       <WebsiteScrollSync />
-      <WebsiteScrollInvalidate />
       <Suspense fallback={null}>
         <WebsiteHubTowerBridge />
       </Suspense>

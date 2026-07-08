@@ -15,7 +15,7 @@ export const productGalleryPhoto = {
 };
 
 export function getGallerySlideLabel(index: number, caption: string): string {
-  return `${String(index + 1).padStart(3, "0")}: ${caption.toUpperCase()}`;
+  return `${String(index + 1).padStart(3, "0")} — ${caption}`;
 }
 
 /** Designer — horizontal scrub gallery beneath side panel finishes */

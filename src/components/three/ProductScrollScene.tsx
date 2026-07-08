@@ -33,7 +33,7 @@ export function ProductScrollScene({ productId }: { productId: ProductId }) {
         environmentResolution={128}
       />
       <ProductSceneLighting productId={productId} />
-      <CameraRig />
+      <CameraRig variant={productId} />
       <ProductTowerModel productId={productId} />
       <TowerGpuWarmup ready={modelReady} />
 

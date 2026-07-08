@@ -59,7 +59,19 @@ export { getGalleryScrollProgress };
 /** 0→1 — hero title fades out early during the tower/camera animation */
 export function getHeroFadeProgress(scrollOffset: number): number {
   const fadeStart = 0.01;
-  const fadeEnd = ANIMATION_SCROLL_END * 0.42;
+  const fadeEnd = ANIMATION_SCROLL_END * 0.20;
+  if (scrollOffset <= fadeStart) return 0;
+  if (scrollOffset >= fadeEnd) return 1;
+  const t = (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
+  return THREE.MathUtils.smoothstep(t, 0, 1);
+}
+
+/** DSR — title/eyebrow fade once the camera intro is underway, before cards appear */
+export function getDesignerHeroFadeProgress(scrollOffset: number): number {
+  const infoRevealStart = ANIMATION_SCROLL_END;
+  const introEnd = SCENE.scroll.introEnd;
+  const fadeStart = infoRevealStart * 0.24;
+  const fadeEnd = infoRevealStart + (introEnd - infoRevealStart) * 0.04;
   if (scrollOffset <= fadeStart) return 0;
   if (scrollOffset >= fadeEnd) return 1;
   const t = (scrollOffset - fadeStart) / (fadeEnd - fadeStart);

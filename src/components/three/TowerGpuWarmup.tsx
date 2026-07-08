@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { markWebsiteHeroGpuReady } from "../../marketing/website/websiteHeroGpuReady";
 
 type TowerGpuWarmupProps = {
@@ -10,26 +10,35 @@ type TowerGpuWarmupProps = {
 /** Compile shaders before first scroll frame (same visuals, less hitch). */
 export function TowerGpuWarmup({ ready = true }: TowerGpuWarmupProps) {
   const { gl, scene, camera, invalidate } = useThree();
-  const warmed = useRef(false);
 
   useEffect(() => {
-    if (!ready || warmed.current) return;
-    warmed.current = true;
+    if (!ready) return;
 
     let cancelled = false;
     let raf = 0;
 
     const run = () => {
       if (cancelled) return;
-      void gl.compileAsync(scene, camera).then(() => {
-        if (!cancelled) {
-          markWebsiteHeroGpuReady();
-          invalidate();
-          requestAnimationFrame(() => {
-            if (!cancelled) invalidate();
-          });
-        }
-      });
+      const finish = () => {
+        if (cancelled) return;
+        markWebsiteHeroGpuReady();
+        invalidate();
+        requestAnimationFrame(() => {
+          if (!cancelled) invalidate();
+        });
+      };
+
+      const compile = gl.compileAsync(scene, camera);
+      const timeout = window.setTimeout(finish, 2500);
+      void compile
+        .then(() => {
+          window.clearTimeout(timeout);
+          finish();
+        })
+        .catch(() => {
+          window.clearTimeout(timeout);
+          finish();
+        });
     };
 
     raf = requestAnimationFrame(run);

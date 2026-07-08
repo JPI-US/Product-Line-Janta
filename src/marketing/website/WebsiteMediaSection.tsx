@@ -5,7 +5,7 @@ export function WebsiteMediaSection() {
   return (
     <section
       id="web-media"
-      className="web-panel web-panel--media web-panel--soft-sky"
+      className="web-panel web-panel--media"
       aria-labelledby="web-media-title"
     >
       <div className="web-panel__content web-media">

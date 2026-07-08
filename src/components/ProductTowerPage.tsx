@@ -20,6 +20,8 @@ import { TowerIdlePageDriver } from "./three/TowerIdlePageDriver";
 import { TowerPageScroll } from "./three/TowerPageScroll";
 import { TowerPageScrollCssSync } from "./three/TowerPageScrollCssSync";
 import { TowerRotationBackground } from "./three/TowerRotationBackground";
+import { WebGLCanvasBoundary } from "./WebGLCanvasBoundary";
+import { supportsWebGL } from "../lib/webglSupport";
 
 type ProductTowerPageProps = {
   productId: ProductId;
@@ -74,6 +76,7 @@ function ProductScrollCanvas({
 export function ProductTowerPage({ productId }: ProductTowerPageProps) {
   const page = getProductPage(productId);
   const scene = PRODUCT_SCENES[productId];
+  const webgl = supportsWebGL();
 
   return (
     <>
@@ -98,13 +101,19 @@ export function ProductTowerPage({ productId }: ProductTowerPageProps) {
           {productId === "designer" ? (
             <>
               <DesignerHeroOverlays />
-              <TowerDragSurface />
-              <div className="tower-3d__viewport">
-                <ProductScrollCanvas
-                  productId={productId}
-                  castShadow={scene.castShadow}
-                />
-              </div>
+              {webgl ? (
+                <>
+                  <TowerDragSurface />
+                  <div className="tower-3d__viewport">
+                    <WebGLCanvasBoundary label="product-tower">
+                      <ProductScrollCanvas
+                        productId={productId}
+                        castShadow={scene.castShadow}
+                      />
+                    </WebGLCanvasBoundary>
+                  </div>
+                </>
+              ) : null}
             </>
           ) : (
             <>
@@ -117,14 +126,19 @@ export function ProductTowerPage({ productId }: ProductTowerPageProps) {
                 <p className="tower-3d__hero-hint">Scroll to learn more.</p>
               </header>
 
-              <TowerDragSurface />
-
-              <div className="tower-3d__viewport">
-                <ProductScrollCanvas
-                  productId={productId}
-                  castShadow={scene.castShadow}
-                />
-              </div>
+              {webgl ? (
+                <>
+                  <TowerDragSurface />
+                  <div className="tower-3d__viewport">
+                    <WebGLCanvasBoundary label="product-tower">
+                      <ProductScrollCanvas
+                        productId={productId}
+                        castShadow={scene.castShadow}
+                      />
+                    </WebGLCanvasBoundary>
+                  </div>
+                </>
+              ) : null}
 
               <aside
                 className="tower-3d__split-pane"
@@ -137,9 +151,7 @@ export function ProductTowerPage({ productId }: ProductTowerPageProps) {
         </div>
 
         <section
-          className={`tower-3d__page-below${
-            productId === "designer" ? " tower-3d__soft-panel-bg" : ""
-          }`}
+          className="tower-3d__page-below"
           aria-label={`More about ${page.tower.title}`}
         >
           {page.belowVariant === "panels" ? (

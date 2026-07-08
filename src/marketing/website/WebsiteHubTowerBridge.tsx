@@ -1,7 +1,5 @@
 import { HubTowerScene } from "../../components/three/HubTowerScene";
 import { TowerGpuWarmup } from "../../components/three/TowerGpuWarmup";
-import { useTowerScenePrepared } from "../../components/three/useTowerScenePrepared";
-import { TOWER_PREP_KEYS } from "../../components/three/towerScenePrep";
 import type { HubTowerScrollDriver } from "../../components/three/hubTowerConfig";
 import { useHubPreview } from "../../context/HubPreviewContext";
 import { useWebsiteHubHero } from "./WebsiteHubHeroContext";
@@ -15,8 +13,12 @@ import { websiteTowerOrbit } from "./websiteTowerOrbit";
 import { getWebsiteHeroSkyPeriod } from "./websiteHeroScroll";
 import { getWebsiteHeroSkyStops } from "./websiteScrollSky";
 import { getWebsiteScrollOffset } from "./websiteScrollOffset";
+import {
+  isWebsiteHeroTowerMeshMounted,
+  subscribeWebsiteHeroTowerMeshMounted,
+} from "./websiteHeroTowerMounted";
 import { useScroll } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useSyncExternalStore } from "react";
 
 function useWebsiteHubScrollDriver(): HubTowerScrollDriver {
   const scroll = useScroll();
@@ -73,11 +75,15 @@ export function WebsiteHubTowerBridge() {
   const scrollDriver = useWebsiteHubScrollDriver();
   const { coords } = useWebsiteHubHero();
   const { previewDate, sky: previewSky } = useHubPreview();
-  const towerReady = useTowerScenePrepared(TOWER_PREP_KEYS.designer);
+  const meshMounted = useSyncExternalStore(
+    subscribeWebsiteHeroTowerMeshMounted,
+    isWebsiteHeroTowerMeshMounted,
+    () => false,
+  );
 
   return (
     <>
-      <TowerGpuWarmup ready={towerReady} />
+      <TowerGpuWarmup ready={meshMounted} />
       <HubTowerScene
       coords={coords}
       previewDate={previewDate}

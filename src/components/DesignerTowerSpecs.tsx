@@ -100,7 +100,7 @@ export function DesignerTowerSpecs() {
   return (
     <section
       ref={sectionRef}
-      className="tower-3d__specs-section"
+      className="tower-3d__specs-section tower-3d__designer-band tower-3d__designer-band--wash"
       aria-label="Tower specifications"
     >
       <header className="tower-3d__specs-header">
@@ -117,21 +117,27 @@ export function DesignerTowerSpecs() {
         {designerTowerSpecs.map((spec, index) => (
           <li
             key={spec.id}
-            className="tower-3d__specs-card"
+            className="tower-3d__specs-card web-value__row"
             data-spec-id={spec.id}
             style={{ "--spec-i": index } as CSSProperties}
           >
             <span className="tower-3d__specs-card__icon" aria-hidden>
               <SpecIcon id={spec.id} />
             </span>
-            <p className="tower-3d__specs-card__value">
-              <span className="tower-3d__specs-card__number">{spec.value}</span>
-              {spec.unit ? (
-                <span className="tower-3d__specs-card__unit">{spec.unit}</span>
-              ) : null}
-            </p>
-            <h3 className="tower-3d__specs-card__title">{spec.title}</h3>
-            <p className="tower-3d__specs-card__detail">{spec.detail}</p>
+            <div className="web-value__row-copy">
+              <h3 className="tower-3d__specs-card__title web-value__row-title">
+                {spec.title}
+              </h3>
+              <p className="tower-3d__specs-card__value">
+                <span className="tower-3d__specs-card__number">{spec.value}</span>
+                {spec.unit ? (
+                  <span className="tower-3d__specs-card__unit">{spec.unit}</span>
+                ) : null}
+              </p>
+              <p className="tower-3d__specs-card__detail web-value__row-detail">
+                {spec.detail}
+              </p>
+            </div>
           </li>
         ))}
       </ul>

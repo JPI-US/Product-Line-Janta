@@ -1,5 +1,8 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import { WebsiteBenefitsSection } from "./WebsiteLandingSections";
+import {
+  WebsiteBenefitsSection,
+  WebsiteSolutionsSection,
+} from "./WebsiteLandingSections";
 import { WebsiteDeferredSection } from "./WebsiteDeferredSection";
 
 const WebsiteApplicationsSection = lazy(() =>
@@ -51,26 +54,35 @@ export function WebsiteContent() {
           <WebsiteApplicationsSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection>
+      <WebsiteDeferredSection minHeight="min(100vh, 720px)">
         <LazySection>
           <WebsiteVisionSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection>
-        <LazySection>
-          <WebsiteValueSection />
-        </LazySection>
-      </WebsiteDeferredSection>
+      <div className="web-landing-sky-band">
+        <WebsiteDeferredSection>
+          <LazySection>
+            <WebsiteValueSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+      </div>
       <WebsiteDeferredSection minHeight="min(80vh, 720px)">
         <LazySection>
           <WebsiteSoftwareShowcaseSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection>
-        <LazySection>
-          <WebsiteMediaSection />
-        </LazySection>
-      </WebsiteDeferredSection>
+      <div className="web-landing-sky-band web-landing-sky-band--solutions-media">
+        <WebsiteDeferredSection minHeight="min(52vh, 480px)">
+          <LazySection>
+            <WebsiteSolutionsSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+        <WebsiteDeferredSection>
+          <LazySection>
+            <WebsiteMediaSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+      </div>
       <WebsiteDeferredSection>
         <LazySection>
           <WebsiteRoiSection />

@@ -47,6 +47,7 @@ import { useTowerScenePrepared } from "./useTowerScenePrepared";
 import { clampWebsiteCameraPitch, websiteTowerOrbit } from "../../marketing/website/websiteTowerOrbit";
 import { applyWebsiteHeroCameraPitch } from "../../marketing/website/websiteHeroCamera";
 import { lerpTowerYaw } from "../../marketing/website/websiteHeroScroll";
+import { markWebsiteHeroTowerMeshMounted } from "../../marketing/website/websiteHeroTowerMounted";
 import { WEBSITE_HERO_NIGHT_CLEAR } from "../../marketing/website/websiteHeroNightSky";
 
 export type HubTowerModelVariant = "designer" | "utility";
@@ -98,7 +99,7 @@ function getHubTowerPerfTimings(mode: HubTowerPerfMode) {
       envRefreshMs: 8000,
       materialRefreshMs: 4000,
       trackingInvalidateMs: 1000 / 5,
-      frameInvalidateMs: Number.POSITIVE_INFINITY,
+      frameInvalidateMs: 0,
       skyEnvMap: { width: 64, height: 32, updateIntervalMs: 8000 },
     };
   }
@@ -180,6 +181,7 @@ export function HubTowerScene({
   const lastTrackingInvalidateMs = useRef(0);
   const sunIntensityRef = useRef(0.22);
   const fillIntensityRef = useRef(0.14);
+  const meshPaintFrames = useRef(0);
   useEffect(() => {
     if (!scene || isTowerScenePrepared(prepKey)) return;
     prepareTowerSceneFromGltf(scene, prepKey, modelConfig.prepConfig);
@@ -207,6 +209,12 @@ export function HubTowerScene({
     const fitted = new THREE.Box3().setFromObject(group);
     setGroundY(fitted.min.y - 0.015);
     setShadowFootprint(measureHubTowerContactShadowFootprint(group));
+    meshPaintFrames.current = 0;
+    if (marketingPerf) {
+      markWebsiteHeroTowerMeshMounted();
+    }
+    invalidate();
+    requestAnimationFrame(() => invalidate());
   }, [prepared]);
 
   useEffect(() => {
@@ -519,6 +527,7 @@ export function HubTowerScene({
 
     const shouldRedraw = scrollDrive
       ? shouldRefreshEnv ||
+        meshPaintFrames.current < 4 ||
         (!scrollSettled &&
           (needsTrackingFrame ||
             yawDelta > 0.0015 ||
@@ -529,7 +538,8 @@ export function HubTowerScene({
         scrollAnimating ||
         scrollBlendDelta > 0.002 ||
         shouldRefreshEnv ||
-        shouldRefreshMaterials;
+        shouldRefreshMaterials ||
+        meshPaintFrames.current < 4;
 
     if (
       shouldRedraw &&
@@ -541,6 +551,9 @@ export function HubTowerScene({
         lastTrackingInvalidateMs.current = nowInvalidate;
       }
       lastFrameInvalidateMs.current = nowInvalidate;
+      if (cloneRef.current) {
+        meshPaintFrames.current += 1;
+      }
       invalidate();
     }
   });

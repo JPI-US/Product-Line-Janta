@@ -1,6 +1,12 @@
-Side panel vectors (installed from Downloads exports):
+Utility tower prerender frames (48 WebPs + manifest.json).
 
-  side-panel-1.svg … side-panel-8.svg
+Generate locally (uses Chromium + real GPU — do not use bake:utility-prerender:headless on Windows):
+  npm install
+  npx playwright install chromium
+  npm run bake:utility-prerender
 
-To replace a design, overwrite the matching file here (copy via Explorer, not chat).
-PNG fallbacks (side-panel-N.png) are only used if an SVG fails to load.
+Requires TR-08-001-ready.glb (or fallback) under public/models/tr-08-001/.
+
+After baking, hard-refresh http://localhost:5173/3d
+
+Revert to live utility WebGL: set USE_UTILITY_PRERENDER = false in src/components/three/towerCanvasMode.ts

@@ -12,9 +12,12 @@ export const DESIGNER_READY_MODEL_URL =
 export const UTILITY_GLTF_URL = "/models/tr-08-001/TR-08-001.gltf";
 export const UTILITY_READY_MODEL_URL =
   "/models/tr-08-001/TR-08-001-ready.glb";
-export const UTILITY_WEB_MODEL_URL =
-  "/models/tr-08-001/TR-08-001-web.glb";
+import utilityWebAsset from "../../assets/tr-08-001-web.glb.asset.json";
+export const UTILITY_WEB_MODEL_URL = utilityWebAsset.url;
 
-/** Primary URLs — merged *-ready.glb (run npm run optimize:models) */
-export const DESIGNER_MODEL_URL = DESIGNER_READY_MODEL_URL;
-export const UTILITY_MODEL_URL = UTILITY_READY_MODEL_URL;
+/**
+ * Primary URLs — use checked-in .gltf sources so local dev and fresh clones
+ * work without running optimize:models. Preloaders still try *-ready.glb first.
+ */
+export const DESIGNER_MODEL_URL = DESIGNER_GLTF_URL;
+export const UTILITY_MODEL_URL = UTILITY_GLTF_URL;

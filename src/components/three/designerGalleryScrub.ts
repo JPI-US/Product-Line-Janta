@@ -68,6 +68,51 @@ function pushGalleryStyles(page: HTMLElement, scrollRoot: HTMLElement) {
   applyScrollStats(getImmediateScrollOffset(scrollRoot), page, state);
 }
 
+/** Jump to a gallery slide by index (0-based). Used by click / dot controls. */
+export function setDesignerGallerySlide(
+  targetIndex: number,
+  scrollRoot: HTMLElement
+): boolean {
+  const page = document.querySelector<HTMLElement>(".tower-3d-page");
+  if (!page?.dataset.galleryReady) return false;
+
+  const slideCount = designerGallerySlides.length;
+  if (slideCount < 2) return false;
+
+  const index = Math.min(slideCount - 1, Math.max(0, Math.round(targetIndex)));
+  const nextProgress = index / (slideCount - 1);
+  const below = parseFloat(page.style.getPropertyValue("--below-scroll") || "0");
+
+  if (phase === "idle") {
+    frozenBelow = Number.isFinite(below) ? below : 0;
+  } else if (phase === "done" && !frozenBelow) {
+    frozenBelow = completedAtBelow || (Number.isFinite(below) ? below : 0);
+  }
+
+  progress = nextProgress;
+
+  if (progress >= 1) {
+    phase = "done";
+    completedAtBelow = frozenBelow;
+    page.removeAttribute("data-gallery-scrubbing");
+  } else {
+    phase = "scrub";
+    page.setAttribute("data-gallery-scrubbing", "1");
+  }
+
+  pushGalleryStyles(page, scrollRoot);
+  return true;
+}
+
+export function advanceDesignerGallerySlide(
+  delta: number,
+  scrollRoot: HTMLElement
+): boolean {
+  const slideCount = designerGallerySlides.length;
+  const currentIndex = Math.round(getDesignerGalleryProgress() * (slideCount - 1));
+  return setDesignerGallerySlide(currentIndex + delta, scrollRoot);
+}
+
 /**
  * When the gallery header is pinned, wheel scrubs cards horizontally.
  * Vertical scroll resumes after the last card or when scrolling up away from the gallery.

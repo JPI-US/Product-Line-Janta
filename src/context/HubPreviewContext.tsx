@@ -96,3 +96,18 @@ export function useHubPreview(): HubPreviewContextValue {
   }
   return ctx;
 }
+
+const OPTIONAL_HUB_PREVIEW: HubPreviewContextValue = {
+  ...HUB_PREVIEW_DEFAULT,
+  setWeather: () => {},
+  setSky: () => {},
+  setTime: () => {},
+  reset: () => {},
+  previewDate: null,
+  isActive: false,
+};
+
+/** Safe outside HubPreviewProvider — returns inert defaults */
+export function useOptionalHubPreview(): HubPreviewContextValue {
+  return useContext(HubPreviewContext) ?? OPTIONAL_HUB_PREVIEW;
+}

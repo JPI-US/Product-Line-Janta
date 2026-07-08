@@ -7,6 +7,7 @@ import { getWebsiteScrollVarState } from "./websiteScrollCssState";
 import { resetWebsiteScrollDriver } from "./websiteScrollDriver";
 import { resetWebsiteTowerOrbit } from "./websiteTowerOrbit";
 import { resetWebsiteScrollCompositing } from "./websiteScrollCompositor";
+import { resetWebsiteHeroTowerMeshMounted } from "./websiteHeroTowerMounted";
 import { setWebsiteScrollRoot } from "./websiteScrollRoot";
 
 /** Registers drei scroll root — same pattern as product tower pages */
@@ -17,9 +18,12 @@ export function WebsiteScrollBridge() {
     scroll.el.classList.add("web__scroll-root");
     resetWebsiteScrollDriver();
     resetWebsiteTowerOrbit();
+    resetWebsiteHeroTowerMeshMounted();
     document.documentElement.classList.add("web-scrolling");
     document.body.classList.add("web-scrolling");
     setWebsiteScrollRoot(scroll.el);
+
+    window.dispatchEvent(new Event("hub-tower-invalidate"));
 
     const page = document.querySelector<HTMLElement>(".web-page");
     if (page) {
@@ -42,7 +46,7 @@ export function WebsiteScrollBridge() {
       setWebsiteScrollRoot(null);
       resetWebsiteScrollDriver();
       resetWebsiteTowerOrbit();
-
+      resetWebsiteHeroTowerMeshMounted();
       page?.style.removeProperty("--web-scroll-offset");
       page?.style.removeProperty("--web-intro-blend");
       page?.style.removeProperty("--web-sky-blend");

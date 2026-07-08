@@ -97,7 +97,7 @@ export function WebsiteSolutionsSection() {
   return (
     <section
       id="web-product-line"
-      className="web-panel web-panel--solutions web-panel--soft-sky"
+      className="web-panel web-panel--solutions"
       aria-labelledby="web-solutions-title"
     >
       <div className="web-panel__content">

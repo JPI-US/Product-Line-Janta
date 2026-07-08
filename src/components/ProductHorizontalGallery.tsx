@@ -1,8 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import {
   designerGallerySlides,
   getGallerySlideLabel,
 } from "../data/productGallery";
+import {
+  advanceDesignerGallerySlide,
+  setDesignerGallerySlide,
+} from "./three/designerGalleryScrub";
+import { getTowerScrollRoot } from "./three/towerScrollRoot";
 import {
   clearGalleryPinBand,
   markGalleryReady,
@@ -64,6 +69,7 @@ export function syncDesignerGalleryLayout(page?: HTMLElement | null) {
 
 export function ProductHorizontalGallery() {
   const scheduleLayoutRef = useRef<() => void>(() => {});
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     const page = document.querySelector<HTMLElement>(".tower-3d-page");
@@ -118,8 +124,63 @@ export function ProductHorizontalGallery() {
     };
   }, []);
 
+  useEffect(() => {
+    const page = document.querySelector<HTMLElement>(".tower-3d-page");
+    if (!page) return;
+
+    let raf = 0;
+    const syncDots = () => {
+      const progress = parseFloat(
+        getComputedStyle(page).getPropertyValue("--gallery-progress")
+      );
+      const p = Number.isFinite(progress) ? progress : 0;
+      const last = designerGallerySlides.length - 1;
+      setActiveSlide(last > 0 ? Math.round(p * last) : 0);
+      raf = requestAnimationFrame(syncDots);
+    };
+
+    raf = requestAnimationFrame(syncDots);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const goToSlide = useCallback((index: number) => {
+    const scrollRoot = getTowerScrollRoot();
+    if (!scrollRoot) return;
+    setDesignerGallerySlide(index, scrollRoot);
+  }, []);
+
+  const goNext = useCallback(() => {
+    const scrollRoot = getTowerScrollRoot();
+    if (!scrollRoot) return;
+    advanceDesignerGallerySlide(1, scrollRoot);
+  }, []);
+
+  const goPrev = useCallback(() => {
+    const scrollRoot = getTowerScrollRoot();
+    if (!scrollRoot) return;
+    advanceDesignerGallerySlide(-1, scrollRoot);
+  }, []);
+
+  const handleStageClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      const target = event.target as HTMLElement;
+      if (target.closest("button")) return;
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      if (x < rect.width * 0.35) {
+        goPrev();
+      } else {
+        goNext();
+      }
+    },
+    [goNext, goPrev]
+  );
+
+  const lastSlide = designerGallerySlides.length - 1;
+
   return (
-    <div className="tower-3d__h-gallery-wrap">
+    <div className="tower-3d__h-gallery-wrap tower-3d__designer-band tower-3d__designer-band--light">
       <section
         className="tower-3d__h-gallery"
         aria-label="Product gallery"
@@ -132,7 +193,22 @@ export function ProductHorizontalGallery() {
           </div>
         </header>
 
-        <div className="tower-3d__h-gallery__stage">
+        <div
+          className="tower-3d__h-gallery__stage"
+          onClick={handleStageClick}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowRight") {
+              event.preventDefault();
+              goNext();
+            } else if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              goPrev();
+            }
+          }}
+          role="group"
+          aria-label="Gallery images. Click the right side for next, left for previous."
+          tabIndex={0}
+        >
           <div className="tower-3d__h-gallery__stage-inner">
             <div className="tower-3d__h-gallery__track">
               {designerGallerySlides.map((slide, index) => (
@@ -144,6 +220,7 @@ export function ProductHorizontalGallery() {
                     decoding="async"
                     fetchPriority={index === 0 ? "high" : "auto"}
                     sizes="88vw"
+                    draggable={false}
                     onLoad={() => scheduleLayoutRef.current()}
                     style={
                       slide.imageObjectPosition
@@ -158,8 +235,56 @@ export function ProductHorizontalGallery() {
               ))}
             </div>
           </div>
+
+          <div className="tower-3d__h-gallery__nav" aria-hidden>
+            <button
+              type="button"
+              className="tower-3d__h-gallery__nav-btn tower-3d__h-gallery__nav-btn--prev"
+              onClick={(event) => {
+                event.stopPropagation();
+                goPrev();
+              }}
+              disabled={activeSlide <= 0}
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="tower-3d__h-gallery__nav-btn tower-3d__h-gallery__nav-btn--next"
+              onClick={(event) => {
+                event.stopPropagation();
+                goNext();
+              }}
+              disabled={activeSlide >= lastSlide}
+              aria-label="Next image"
+            >
+              ›
+            </button>
+          </div>
         </div>
 
+        <div
+          className="tower-3d__h-gallery__dots"
+          role="tablist"
+          aria-label="Gallery position"
+        >
+          {designerGallerySlides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              className={
+                index === activeSlide
+                  ? "tower-3d__h-gallery__dot tower-3d__h-gallery__dot--active"
+                  : "tower-3d__h-gallery__dot"
+              }
+              role="tab"
+              aria-selected={index === activeSlide}
+              aria-label={`Slide ${index + 1} of ${designerGallerySlides.length}`}
+              onClick={() => goToSlide(index)}
+            />
+          ))}
+        </div>
       </section>
     </div>
   );

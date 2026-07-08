@@ -16,6 +16,8 @@ import { websiteTowerOrbit } from "./websiteTowerOrbit";
 /** Page-level scroll → CSS vars (immediate wheel position). */
 export function WebsitePageScrollCssSync() {
   const scrollRaf = useRef(0);
+  const tailRaf = useRef(0);
+  const scrollingUntil = useRef(0);
 
   useEffect(() => {
     const page = document.querySelector<HTMLElement>(".web-page");
@@ -37,7 +39,19 @@ export function WebsitePageScrollCssSync() {
       }
     };
 
+    const runTail = () => {
+      if (performance.now() >= scrollingUntil.current) {
+        tailRaf.current = 0;
+        return;
+      }
+      const el = page.querySelector<HTMLElement>(".web__scroll-root");
+      if (el) syncOffset(el);
+      tailRaf.current = requestAnimationFrame(runTail);
+    };
+
     const scheduleSync = (el: HTMLElement) => {
+      scrollingUntil.current = performance.now() + 120;
+      if (!tailRaf.current) tailRaf.current = requestAnimationFrame(runTail);
       if (scrollRaf.current) return;
       scrollRaf.current = requestAnimationFrame(() => {
         scrollRaf.current = 0;
@@ -86,6 +100,7 @@ export function WebsitePageScrollCssSync() {
       window.removeEventListener("resize", onResize);
       page.removeEventListener("load", onResize, true);
       if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
+      if (tailRaf.current) cancelAnimationFrame(tailRaf.current);
       resetWebsiteScrollCompositing();
     };
   }, []);

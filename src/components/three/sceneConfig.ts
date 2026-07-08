@@ -7,7 +7,8 @@ export const PAGE_BG = "#f5f5f7";
 export const TOWER_CANVAS_GL = {
   antialias: true,
   alpha: false,
-  powerPreference: "high-performance" as WebGLPowerPreference,
+  powerPreference: "default" as WebGLPowerPreference,
+  failIfMajorPerformanceCaveat: false,
   toneMapping: THREE.ACESFilmicToneMapping,
   toneMappingExposure: 1.18,
 } as const;
@@ -117,10 +118,10 @@ export const SCENE = {
   rotationScroll: { start: 0, end: 1 },
   scroll: {
     /** Intro spacers + room to slide the product view away and read the section below */
-    pages: 9,
+    pages: 11,
     /** Normalized offset where split / rotate ends; page flow begins after this */
-    introEnd: 5 / 9,
-    animationScrollEndRatio: 0.75,
+    introEnd: 7 / 11,
+    animationScrollEndRatio: 0.40,
   },
 } as const;
 

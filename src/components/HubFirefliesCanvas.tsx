@@ -1,10 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getChooserSkyPeriodForDate,
   type SkyPeriod,
 } from "../data/hubChooserSky";
-import { useHubPreview } from "../context/HubPreviewContext";
-import { useHubLiveClock } from "../hooks/useHubSolarState";
+import { useOptionalHubPreview } from "../context/HubPreviewContext";
 import {
   getWebsiteHeroCanvasActive,
   subscribeWebsiteHeroCanvasActive,
@@ -92,6 +91,18 @@ function resolveSkyPeriod(
   return getChooserSkyPeriodForDate(previewDate ?? liveTime);
 }
 
+function useLiveTime(previewDate: Date | null): Date {
+  const [liveNow, setLiveNow] = useState(() => new Date());
+
+  useEffect(() => {
+    if (previewDate) return;
+    const id = window.setInterval(() => setLiveNow(new Date()), 1000);
+    return () => window.clearInterval(id);
+  }, [previewDate?.getTime()]);
+
+  return previewDate ?? liveNow;
+}
+
 type HubFirefliesCanvasProps = {
   /** Scroll-choreographed sky period (marketing hero) */
   skyPeriod?: SkyPeriod | null;
@@ -99,16 +110,19 @@ type HubFirefliesCanvasProps = {
   opacity?: number;
   /** Fewer particles + lower tick rate for marketing hero */
   lite?: boolean;
+  /** Run outside marketing hero canvas gate (section overlays, etc.) */
+  ungated?: boolean;
 };
 
 export function HubFirefliesCanvas({
   skyPeriod = null,
   opacity,
   lite = false,
+  ungated = false,
 }: HubFirefliesCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { sky: previewSky, previewDate } = useHubPreview();
-  const liveTime = useHubLiveClock();
+  const { sky: previewSky, previewDate } = useOptionalHubPreview();
+  const liveTime = useLiveTime(previewDate);
   const period = resolveSkyPeriod(skyPeriod, previewSky, previewDate, liveTime);
   const isNight = period === "night";
   const showFireflies =
@@ -125,7 +139,7 @@ export function HubFirefliesCanvas({
     ).matches;
     const maxCount = lite ? LITE_MAX_COUNT : MAX_COUNT;
     const frameMs = lite ? LITE_FRAME_MS : FRAME_MS;
-    const heroGated = lite;
+    const heroGated = lite && !ungated;
 
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
@@ -320,7 +334,7 @@ export function HubFirefliesCanvas({
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [showFireflies, skyPeriod, lite]);
+  }, [showFireflies, skyPeriod, lite, ungated]);
 
   if (!showFireflies) return null;
 

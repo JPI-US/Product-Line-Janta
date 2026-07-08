@@ -1,44 +1,32 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-dist-ssr/
-*.local
-
-# TypeScript
-tsconfig.tsbuildinfo
-
-# Environment / secrets (configure in Lovable or local .env)
-.env
-.env.*
-!.env.example
-
-# IDE / editor (local only — do not sync to GitHub/Lovable)
-.cursor/
-.cursor-video-frames/
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
 # Logs
+logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# Test / tooling artifacts
-test-results/
-playwright-report/
-playwright/.cache/
-coverage/
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
+*.local
 
-# Temp / cache
-tmp/
-.cache/
-.vite/
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

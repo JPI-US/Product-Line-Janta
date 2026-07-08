@@ -15,6 +15,7 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-pill: 999px;
+  --radius-photo: var(--radius-lg);
   --font: "DM Sans", system-ui, -apple-system, sans-serif;
 }
 
@@ -1127,7 +1128,7 @@ body {
 
 .product-line__card {
   background: var(--surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-photo, 20px);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   overflow: hidden;

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "optimize:models": "node scripts/optimize-models.mjs",
     "bake:utility": "npx tsx scripts/bake-utility-ready.ts",

@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
+import { supportsWebGL } from "../../lib/webglSupport";
 import { isReactBitEnabled, type WebsiteReactBitKey } from "./websiteReactBitsConfig";
+
+/** True once we've confirmed the browser can create a WebGL context. */
+export function useWebGLSupported(): boolean {
+  const [supported, setSupported] = useState(() => supportsWebGL());
+
+  useEffect(() => {
+    setSupported(supportsWebGL());
+  }, []);
+
+  return supported;
+}
 
 /** Respects prefers-reduced-motion — React Bits effects should bail when true. */
 export function useWebsiteReducedMotion(): boolean {
@@ -21,5 +33,6 @@ export function useWebsiteReducedMotion(): boolean {
 
 export function useReactBitActive(key: WebsiteReactBitKey): boolean {
   const reduced = useWebsiteReducedMotion();
-  return isReactBitEnabled(key) && !reduced;
+  const webglSupported = useWebGLSupported();
+  return isReactBitEnabled(key) && !reduced && webglSupported;
 }

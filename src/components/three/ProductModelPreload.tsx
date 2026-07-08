@@ -4,8 +4,10 @@ import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
 import type { ProductId } from "../../data/productPages";
 import {
   DESIGNER_GLTF_URL,
+  DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
   UTILITY_GLTF_URL,
+  UTILITY_READY_MODEL_URL,
   UTILITY_WEB_MODEL_URL,
 } from "./towerModelUrls";
 import {
@@ -19,10 +21,18 @@ const productLoadManager = new THREE.LoadingManager();
 
 const PRODUCT_LOAD_FALLBACKS: Record<
   ProductId,
-  { web: string; gltf: string }
+  { ready: string; web: string; gltf: string }
 > = {
-  designer: { web: DESIGNER_WEB_MODEL_URL, gltf: DESIGNER_GLTF_URL },
-  utility: { web: UTILITY_WEB_MODEL_URL, gltf: UTILITY_GLTF_URL },
+  designer: {
+    ready: DESIGNER_READY_MODEL_URL,
+    web: DESIGNER_WEB_MODEL_URL,
+    gltf: DESIGNER_GLTF_URL,
+  },
+  utility: {
+    ready: UTILITY_READY_MODEL_URL,
+    web: UTILITY_WEB_MODEL_URL,
+    gltf: UTILITY_GLTF_URL,
+  },
 };
 
 function loadProductGltf(
@@ -64,36 +74,34 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
 
     let cancelled = false;
     const fallbacks = PRODUCT_LOAD_FALLBACKS[productId];
+    const loadChain = [
+      config.modelUrl,
+      fallbacks.ready,
+      fallbacks.web,
+      fallbacks.gltf,
+    ].filter((url, index, list) => list.indexOf(url) === index);
 
     const startLoad = () => {
       if (cancelled || startedRef.current) return;
       startedRef.current = true;
       void (async () => {
-        try {
-          await loadProductGltf(config.prepKey, config.modelUrl, true, true);
-        } catch {
+        for (let i = 0; i < loadChain.length; i++) {
           if (cancelled || isTowerScenePrepared(config.prepKey)) return;
+          const url = loadChain[i];
+          const useMeshopt = url !== fallbacks.gltf;
           try {
             await loadProductGltf(
               config.prepKey,
-              fallbacks.web,
-              false,
-              false
+              url,
+              url === fallbacks.ready,
+              useMeshopt,
             );
+            return;
           } catch {
-            if (cancelled || isTowerScenePrepared(config.prepKey)) return;
-            try {
-              await loadProductGltf(
-                config.prepKey,
-                fallbacks.gltf,
-                false,
-                false
-              );
-            } catch (e) {
-              console.error(`[product-preload] ${productId} failed`, e);
-            }
+            // try next URL in chain
           }
         }
+        console.error(`[product-preload] ${productId} failed`, loadChain);
       })();
     };
 

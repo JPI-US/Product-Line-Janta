@@ -15,6 +15,7 @@ export function ProductSceneLighting({ productId }: { productId: ProductId }) {
     <SunLighting
       variant={lightingVariant}
       towerX={SCENE.tower.offsetX}
+      showSunSphere={productId !== "designer"}
       isActive={() => isProductHero3dActive(scroll.offset)}
       getBlend={() => getScrollBlend(scroll.offset)}
       getPanelYawOffset={() =>

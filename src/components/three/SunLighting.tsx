@@ -34,6 +34,8 @@ export type SunLightingProps = {
   sunVisualRadius?: number;
   sunGlowRadius?: number;
   showSunHalo?: boolean;
+  /** Hide the visible sun sphere (glow + halo + core) while keeping the lights. */
+  showSunSphere?: boolean;
 };
 
 /**
@@ -54,6 +56,7 @@ export function SunLighting({
   sunVisualRadius,
   sunGlowRadius,
   showSunHalo = true,
+  showSunSphere = true,
 }: SunLightingProps) {
   const profile = SCENE.lighting[variant];
   const designerProfile = SCENE.lighting.designer;
@@ -175,7 +178,7 @@ export function SunLighting({
     <>
       <ambientLight intensity={profile.ambientIntensity} color={ambient} />
 
-      <group ref={sunGroupRef}>
+      {showSunSphere && <group ref={sunGroupRef}>
         <mesh ref={glowRef} scale={glowR}>
           <sphereGeometry
             args={[1, sunDetail === "full" ? 24 : 20, sunDetail === "full" ? 24 : 20]}
@@ -204,7 +207,7 @@ export function SunLighting({
           <sphereGeometry args={[1, 16, 16]} />
           <meshBasicMaterial color={coreColor} toneMapped={false} />
         </mesh>
-      </group>
+      </group>}
 
       <directionalLight
         ref={sunRef}
