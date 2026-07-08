@@ -104,9 +104,12 @@ body.website-active {
 
 /* Inner marketing routes + product pages — solid frosted nav */
 .web-page--standard {
-  --web-page: #f5f5f7;
-  --web-ink: #333c4e;
-  --web-ink-soft: #5a6478;
+  --web-page: var(--warm-page, #faf8f5);
+  --web-ink: var(--warm-ink, #333c4e);
+  --web-ink-soft: var(--warm-ink-soft, #5a6478);
+  --web-cta: var(--warm-cta, #ffbf14);
+  --web-cta-soft: var(--warm-cta-soft, #e8b060);
+  --web-shadow: var(--warm-shadow, 0 16px 48px rgba(58, 42, 28, 0.08));
   min-height: 100dvh;
   background: var(--web-page);
   color: var(--web-ink);
@@ -119,7 +122,7 @@ body.website-active {
   -webkit-backdrop-filter: blur(12px) saturate(1.12);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9),
-    0 4px 24px rgba(36, 51, 65, 0.06);
+    0 4px 24px rgba(58, 42, 28, 0.06);
 }
 
 .web-simple-page {
@@ -428,7 +431,7 @@ body.website-active {
     background: #ffffff;
     border: 1px solid rgba(36, 51, 65, 0.08);
     border-radius: 20px;
-    box-shadow: 0 20px 48px rgba(36, 51, 65, 0.12);
+    box-shadow: 0 20px 48px rgba(58, 42, 28, 0.12);
     color: var(--web-slate-ink);
   }
 
@@ -513,7 +516,7 @@ body.website-active {
     overflow: hidden;
     background: #ffffff;
     border: 1px solid rgba(36, 51, 65, 0.08);
-    box-shadow: 0 12px 30px rgba(36, 51, 65, 0.1);
+    box-shadow: 0 12px 30px rgba(58, 42, 28, 0.1);
     color: var(--web-slate-ink);
   }
 
@@ -973,6 +976,43 @@ body.website-active {
   touch-action: none;
 }
 
+/* Grab affordance once the tower can be orbited / tapped */
+html.web-hero-orbit-ready .web-hero-product-line__stage .web__drag-surface {
+  cursor: grab;
+}
+
+html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
+  cursor: grabbing;
+}
+
+/* Hairline homepage scroll progress — driven purely by --web-scroll-offset,
+   no extra scroll listeners. Sits just under the nav. */
+.web-scroll-progress {
+  position: fixed;
+  top: var(--app-nav-h, 0px);
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 40;
+  transform: scaleX(var(--web-scroll-offset, 0));
+  transform-origin: left center;
+  background: var(--web-cta, #c8892a);
+  opacity: 0.85;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Shared keyboard focus ring — visible only for keyboard users, no layout shift */
+.web-page a:focus-visible,
+.web-page button:focus-visible,
+.web-page [tabindex]:focus-visible,
+.web-page summary:focus-visible,
+.web-nav a:focus-visible,
+.web-nav button:focus-visible {
+  outline: 2px solid var(--web-cta, #c8892a);
+  outline-offset: 3px;
+}
+
 .web-hero-product-line__stage .web-hero-layer {
   z-index: 3;
   pointer-events: none;
@@ -1052,6 +1092,9 @@ body.website-active {
   height: 100% !important;
   touch-action: pan-y;
   background: transparent !important;
+  opacity: 1;
+  /* Gentle fade when the hero canvas pauses/resumes instead of a hard snap */
+  transition: opacity 0.5s ease;
 }
 
 .web__page-below {
@@ -1831,6 +1874,12 @@ body.website-active {
 
 .web-partners--paused .web-partners__track {
   animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web__canvas {
+    transition: none;
+  }
 }
 
 .web-partners__track {
@@ -2661,6 +2710,28 @@ body.website-active {
   position: relative;
   z-index: 1;
   background: transparent;
+}
+
+/* Gentle scroll-in reveal — content is mounted early, then fades + rises
+   into place as it reaches the viewport. Opacity/transform only (no layout
+   shift), so the virtual-scroll height measurement is unaffected. */
+.web-deferred-section--mounted {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+
+.web-deferred-section--in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-deferred-section--mounted {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .web-landing-sky-band--solutions-media .web-panel--solutions {
@@ -3552,7 +3623,7 @@ body.website-active {
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
   overflow: hidden;
   border: 1px solid rgba(36, 51, 65, 0.08);
-  box-shadow: 0 20px 52px rgba(36, 51, 65, 0.1);
+  box-shadow: 0 20px 52px rgba(58, 42, 28, 0.1);
   background: #ffffff;
 }
 
@@ -3909,7 +3980,7 @@ body.website-active {
   overflow: hidden;
   text-decoration: none;
   color: #ffffff;
-  box-shadow: 0 18px 48px rgba(36, 51, 65, 0.1);
+  box-shadow: 0 18px 48px rgba(58, 42, 28, 0.1);
   transition:
     transform 0.32s var(--web-motion-spring, ease),
     box-shadow 0.32s var(--web-motion-spring, ease);
@@ -3917,7 +3988,7 @@ body.website-active {
 
 .web-solutions__card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 28px 64px rgba(36, 51, 65, 0.16);
+  box-shadow: 0 28px 64px rgba(58, 42, 28, 0.16);
 }
 
 .web-solutions__card-img {
@@ -3996,7 +4067,7 @@ body.website-active {
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 16px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 4px 16px rgba(58, 42, 28, 0.12);
   transition:
     transform 0.28s var(--web-motion-spring, ease),
     box-shadow 0.28s ease,
@@ -4005,7 +4076,7 @@ body.website-active {
 
 .web-solutions__card:hover .web-solutions__card-tag {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(36, 51, 65, 0.16);
+  box-shadow: 0 6px 18px rgba(58, 42, 28, 0.16);
 }
 
 .web-solutions__card-cta {
@@ -4790,7 +4861,7 @@ body.website-active {
   overflow: hidden;
   min-height: 0;
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
-  box-shadow: 0 14px 36px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 14px 36px rgba(58, 42, 28, 0.12);
 }
 
 .web-roots-beginnings__img {
@@ -4850,7 +4921,7 @@ body.website-active {
   object-fit: cover;
   object-position: center top;
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
-  box-shadow: 0 16px 40px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 16px 40px rgba(58, 42, 28, 0.12);
 }
 
 .web-roots-founder__quote {
@@ -4959,7 +5030,7 @@ body.website-active {
   object-fit: cover;
   object-position: center;
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
-  box-shadow: 0 14px 36px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 14px 36px rgba(58, 42, 28, 0.12);
 }
 
 .web-roots-gallery__mosaic {
@@ -5061,7 +5132,7 @@ body.website-active {
   object-fit: cover;
   object-position: center;
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
-  box-shadow: 0 14px 36px rgba(36, 51, 65, 0.12);
+  box-shadow: 0 14px 36px rgba(58, 42, 28, 0.12);
 }
 
 .web-roots-cta__copy {
@@ -5227,7 +5298,7 @@ body.website-active {
   border-radius: var(--radius-lg, 20px);
   border: 1px solid rgba(36, 51, 65, 0.08);
   background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 14px 36px rgba(36, 51, 65, 0.06);
+  box-shadow: 0 14px 36px rgba(58, 42, 28, 0.06);
 }
 
 .web-careers-role__label {
@@ -5293,7 +5364,7 @@ body.website-active {
   border-radius: var(--radius-lg, 20px);
   border: 1px solid rgba(36, 51, 65, 0.08);
   background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 10px 28px rgba(36, 51, 65, 0.05);
+  box-shadow: 0 10px 28px rgba(58, 42, 28, 0.05);
   transition:
     transform 0.28s var(--web-motion-spring, ease),
     box-shadow 0.28s var(--web-motion-spring, ease),
@@ -5303,7 +5374,7 @@ body.website-active {
 .web-careers-values__item:hover {
   transform: translateY(-3px);
   border-color: rgba(91, 143, 196, 0.22);
-  box-shadow: 0 16px 36px rgba(36, 51, 65, 0.09);
+  box-shadow: 0 16px 36px rgba(58, 42, 28, 0.09);
 }
 
 .web-careers-values__index {

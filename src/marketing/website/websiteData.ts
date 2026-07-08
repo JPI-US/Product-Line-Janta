@@ -4,15 +4,16 @@ export const BRAND = {
   highlight: "#ffbf14",
   cta: "#ffbf14",
   ctaHover: "#d9a612",
+  ctaSoft: "#e8b060",
   accent: "#5b8fc4",
   accentMuted: "#6b7fa8",
   ink: "#333c4e",
   inkSoft: "#5a6478",
   muted: "#6e6e73",
-  page: "#f5f5f7",
-  pageBg: "#f0f0f0",
+  page: "#faf8f5",
+  pageBg: "#f2eee8",
   surface: "#ffffff",
-  border: "rgba(51, 60, 78, 0.1)",
+  border: "rgba(58, 46, 34, 0.1)",
 } as const;
 
 /** Hero / page shell background — matches --web-page */

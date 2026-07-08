@@ -16,11 +16,7 @@ import {
   type HubSolarCoords,
 } from "../../lib/hubSolarSample";
 import { HUB_TOWER, type HubTowerLayout, type HubTowerScrollDriver } from "./hubTowerConfig";
-import {
-  getHubTowerContactShadowTexture,
-  measureHubTowerContactShadowFootprint,
-  type HubTowerContactShadowFootprint,
-} from "./hubTowerContactShadow";
+import { TowerContactShadow } from "./TowerContactShadow";
 import {
   applyHubTowerMaterials,
   syncHubTowerMaterials,
@@ -144,10 +140,10 @@ export function HubTowerScene({
   const groupRef = useRef<THREE.Group>(null);
   const cloneRef = useRef<THREE.Object3D | null>(null);
   const [groundY, setGroundY] = useState<number | null>(null);
-  const [shadowFootprint, setShadowFootprint] =
-    useState<HubTowerContactShadowFootprint | null>(null);
-  const contactShadowTex = useMemo(() => getHubTowerContactShadowTexture(), []);
-  const contactMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const shadowInitRef = useRef(false);
+  const lastShadowUpdateMs = useRef(0);
+  const contactShadowBlendRef = useRef(0.6);
+  const shadowFocusScratch = useRef(new THREE.Vector3());
   const materialsRef = useRef(createHubTowerMaterials());
   const targetYawRef = useRef(0);
   /** Unwrapped marketing yaw — stays in sync with the 360° LUT (not mod 2π) */
@@ -159,6 +155,7 @@ export function HubTowerScene({
   const skyEnvRef = useRef<HubTowerSkyEnvMap | null>(null);
   const hemiRef = useRef<THREE.HemisphereLight>(null);
   const sunRef = useRef<THREE.DirectionalLight>(null);
+  const sunLightTargetRef = useRef<THREE.Object3D>(null);
   const fillRef = useRef<THREE.DirectionalLight>(null);
   const lightScratch = useRef({
     zenith: new THREE.Color(),
@@ -195,7 +192,10 @@ export function HubTowerScene({
       cloneRef.current = null;
     }
     const clone = prepared.root.clone(true);
-    applyHubTowerMaterials(clone, materialsRef.current, { castShadow: false });
+    applyHubTowerMaterials(clone, materialsRef.current, {
+      castShadow: groundShadow,
+      receiveShadow: groundShadow,
+    });
     cloneRef.current = clone;
     group.add(clone);
     const tower = layoutRef.current;
@@ -208,14 +208,13 @@ export function HubTowerScene({
     group.updateWorldMatrix(true, true);
     const fitted = new THREE.Box3().setFromObject(group);
     setGroundY(fitted.min.y - 0.015);
-    setShadowFootprint(measureHubTowerContactShadowFootprint(group));
     meshPaintFrames.current = 0;
     if (marketingPerf) {
       markWebsiteHeroTowerMeshMounted();
     }
     invalidate();
     requestAnimationFrame(() => invalidate());
-  }, [prepared]);
+  }, [groundShadow, prepared]);
 
   useEffect(() => {
     skyEnvRef.current = new HubTowerSkyEnvMap(gl, perf.skyEnvMap);
@@ -335,6 +334,9 @@ export function HubTowerScene({
             yawLerp
           );
     }
+    if (groundShadow) {
+      groupRef.current.updateMatrixWorld(true);
+    }
 
     if (camera instanceof THREE.PerspectiveCamera) {
       const nextAspect = size.width / Math.max(size.height, 1);
@@ -426,7 +428,7 @@ export function HubTowerScene({
       ls.mid.set(env.mid);
       ls.horizon.set(env.horizon);
       ls.ground.copy(ls.horizon).multiplyScalar(0.42);
-      ls.sun.set("#fff6ea").lerp(ls.horizon, 0.35);
+      ls.sun.set("#fff1d6").lerp(ls.horizon, 0.4);
 
       if (hemiRef.current) {
         hemiRef.current.color.lerp(ls.mid, scrollDrive ? 0.028 : 0.07);
@@ -442,6 +444,10 @@ export function HubTowerScene({
     if (sunRef.current) {
       const ls = lightScratch.current;
       sunRef.current.color.lerp(ls.sun, scrollDrive ? 0.03 : 0.06);
+      if (groundShadow && !shadowInitRef.current) {
+        sunRef.current.shadow.autoUpdate = false;
+        shadowInitRef.current = true;
+      }
       if (scrollLightBlend != null) {
         const targetIntensity = THREE.MathUtils.lerp(0.22, 1.05, scrollLightBlend);
         sunIntensityRef.current = THREE.MathUtils.lerp(
@@ -461,6 +467,33 @@ export function HubTowerScene({
         sunRef.current.position
           .copy(nightFillDirRef.current)
           .multiplyScalar(14);
+      }
+
+      if (groundShadow) {
+        const tower = layoutRef.current;
+        const focus = shadowFocusScratch.current.set(
+          tower.lookAtX,
+          tower.lookAtY,
+          0
+        );
+        sunRef.current.target.position.copy(focus);
+        sunRef.current.target.updateMatrixWorld();
+        if (sunLightTargetRef.current) {
+          sunLightTargetRef.current.position.copy(focus);
+        }
+        const shadowCam = sunRef.current.shadow.camera;
+        shadowCam.position.copy(sunRef.current.position);
+        shadowCam.lookAt(focus);
+        shadowCam.updateProjectionMatrix();
+        const now = performance.now();
+        const shadowInterval =
+          scrollLightBlend != null && scrollLightBlend >= 0.98 && !orbitDragging
+            ? 320
+            : 100;
+        if (now - lastShadowUpdateMs.current >= shadowInterval) {
+          sunRef.current.shadow.needsUpdate = true;
+          lastShadowUpdateMs.current = now;
+        }
       }
     }
     if (fillRef.current) {
@@ -500,19 +533,9 @@ export function HubTowerScene({
       );
     }
 
-    if (groundShadow && contactMatRef.current) {
-      const opacity =
-        scrollLightBlend != null
-          ? THREE.MathUtils.lerp(0.36, 0.56, scrollLightBlend)
-          : tracking
-            ? 0.5
-            : 0.32;
-      const targetOpacity = opacity;
-      contactMatRef.current.opacity = THREE.MathUtils.lerp(
-        contactMatRef.current.opacity,
-        targetOpacity,
-        scrollDrive ? 0.06 : 0.12
-      );
+    if (groundShadow) {
+      contactShadowBlendRef.current =
+        scrollLightBlend ?? (tracking ? 0.6 : 0.2);
     }
 
     const nowInvalidate = performance.now();
@@ -573,32 +596,30 @@ export function HubTowerScene({
         ref={sunRef}
         position={sun.clone().multiplyScalar(16)}
         intensity={1.05}
-        color="#fff6ea"
-      />
+        color="#fff1d6"
+        castShadow={groundShadow}
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-far={30}
+        shadow-camera-left={-8}
+        shadow-camera-right={8}
+        shadow-camera-top={8}
+        shadow-camera-bottom={-8}
+        shadow-bias={-0.00015}
+        shadow-normalBias={0.02}
+      >
+        <object3D attach="target" ref={sunLightTargetRef} />
+      </directionalLight>
       <directionalLight
         ref={fillRef}
         position={[-sun.x * 9, 5, -sun.z * 9]}
         intensity={0.28}
         color="#b8c8e0"
       />
-      {groundShadow && groundY != null && shadowFootprint ? (
-        <mesh
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[layout.towerX, groundY + 0.003, 0]}
-          renderOrder={-2}
-        >
-          <planeGeometry
-            args={[shadowFootprint.width, shadowFootprint.depth]}
-          />
-          <meshBasicMaterial
-            ref={contactMatRef}
-            map={contactShadowTex}
-            transparent
-            opacity={0.44}
-            depthWrite={false}
-            toneMapped={false}
-          />
-        </mesh>
+      {groundShadow && groundY != null ? (
+        <TowerContactShadow
+          position={[layout.towerX, groundY, 0]}
+          getOpacityBlend={() => contactShadowBlendRef.current}
+        />
       ) : null}
       <group ref={groupRef} />
     </>

@@ -3,10 +3,8 @@ import * as THREE from "three";
 import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
 import type { ProductId } from "../../data/productPages";
 import {
-  DESIGNER_GLTF_URL,
   DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
-  UTILITY_GLTF_URL,
   UTILITY_READY_MODEL_URL,
   UTILITY_WEB_MODEL_URL,
 } from "./towerModelUrls";
@@ -21,17 +19,15 @@ const productLoadManager = new THREE.LoadingManager();
 
 const PRODUCT_LOAD_FALLBACKS: Record<
   ProductId,
-  { ready: string; web: string; gltf: string }
+  { ready: string; web: string }
 > = {
   designer: {
     ready: DESIGNER_READY_MODEL_URL,
     web: DESIGNER_WEB_MODEL_URL,
-    gltf: DESIGNER_GLTF_URL,
   },
   utility: {
     ready: UTILITY_READY_MODEL_URL,
     web: UTILITY_WEB_MODEL_URL,
-    gltf: UTILITY_GLTF_URL,
   },
 };
 
@@ -78,7 +74,6 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
       config.modelUrl,
       fallbacks.ready,
       fallbacks.web,
-      fallbacks.gltf,
     ].filter((url, index, list) => list.indexOf(url) === index);
 
     const startLoad = () => {
@@ -88,13 +83,12 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
         for (let i = 0; i < loadChain.length; i++) {
           if (cancelled || isTowerScenePrepared(config.prepKey)) return;
           const url = loadChain[i];
-          const useMeshopt = url !== fallbacks.gltf;
           try {
             await loadProductGltf(
               config.prepKey,
               url,
               url === fallbacks.ready,
-              useMeshopt,
+              true,
             );
             return;
           } catch {

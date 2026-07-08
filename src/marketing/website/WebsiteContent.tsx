@@ -48,7 +48,9 @@ function LazySection({ children }: { children: ReactNode }) {
 export function WebsiteContent() {
   return (
     <>
-      <WebsiteBenefitsSection />
+      <WebsiteDeferredSection mountImmediately>
+        <WebsiteBenefitsSection />
+      </WebsiteDeferredSection>
       <WebsiteDeferredSection minHeight="min(58vh, 520px)">
         <LazySection>
           <WebsiteApplicationsSection />

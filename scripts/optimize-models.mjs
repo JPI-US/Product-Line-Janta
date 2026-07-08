@@ -1,6 +1,7 @@
 /**
  * Generates web GLB assets from the CAD exports (single file, fewer triangles).
- * Requires TR-08-001.gltf + .bin files in public/models/tr-08-001/.
+ * Requires the raw TR-08-001.gltf + .bin sources in model-sources/tr-08-001/.
+ * (Raw sources live outside public/ so they are not copied into the build.)
  *
  * Run: npm run optimize:models
  */
@@ -13,12 +14,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const jobs = [
   {
     label: "utility",
-    input: path.join(root, "public/models/tr-08-001/TR-08-001.gltf"),
+    input: path.join(root, "model-sources/tr-08-001/TR-08-001.gltf"),
     output: path.join(root, "public/models/tr-08-001/TR-08-001-web.glb"),
   },
   {
     label: "designer",
-    input: path.join(root, "public/models/5.6k_10x4_panels/5.6k_10x4_panels.gltf"),
+    input: path.join(root, "model-sources/5.6k_10x4_panels/5.6k_10x4_panels.gltf"),
     output: path.join(
       root,
       "public/models/5.6k_10x4_panels/5.6k_10x4_panels-web.glb"

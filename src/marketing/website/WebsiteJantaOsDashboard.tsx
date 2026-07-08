@@ -281,6 +281,7 @@ export const WebsiteJantaOsDashboard = memo(function WebsiteJantaOsDashboard({ a
                       alt=""
                       className="web-janta-os-dashboard__tower-img"
                       decoding="async"
+                      loading="lazy"
                     />
                   </div>
                 </div>

@@ -63,9 +63,18 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
       cloneRef.current = null;
     }
     const clone = prepared.root.clone(true);
+    if (sceneConfig.castShadow) {
+      clone.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.isMesh) {
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+        }
+      });
+    }
     cloneRef.current = clone;
     group.add(clone);
-  }, [prepared]);
+  }, [prepared, sceneConfig.castShadow]);
 
   useFrame(() => {
     if (!prepared || !groupRef.current) return;

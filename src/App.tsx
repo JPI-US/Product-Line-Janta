@@ -1,4 +1,11 @@
-import { lazy, Suspense, Component, type ErrorInfo, type ReactNode } from "react";
+import {
+  lazy,
+  Suspense,
+  Component,
+  useEffect,
+  type ErrorInfo,
+  type ReactNode,
+} from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -87,6 +94,17 @@ class RouteErrorBoundary extends Component<
   }
 }
 
+/** Reset scroll to the top on every route change (SPA nav keeps scroll otherwise) */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const scroller = document.scrollingElement;
+    if (scroller) scroller.scrollTop = 0;
+  }, [pathname]);
+  return null;
+}
+
 function AppRoutes() {
   const { pathname } = useLocation();
   const showDevNav =
@@ -94,6 +112,7 @@ function AppRoutes() {
 
   return (
     <>
+      <ScrollToTop />
       {showDevNav ? <AppNav /> : null}
       <RouteErrorBoundary>
         <Suspense fallback={<RouteSuspenseFallback />}>
@@ -111,6 +130,7 @@ function AppRoutes() {
               path="/utility-prerender-bake"
               element={<UtilityPrerenderBakePage />}
             />
+            <Route path="*" element={<Navigate to="/website" replace />} />
           </Routes>
         </Suspense>
       </RouteErrorBoundary>

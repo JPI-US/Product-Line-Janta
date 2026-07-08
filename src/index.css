@@ -2,16 +2,27 @@
 
 :root {
   --app-nav-h: 53px;
-  --ink: #333c4e;
-  --ink-soft: #5a6478;
-  --surface: #ffffff;
-  --page-bg: #f0f0f0;
+
+  /* Warm brand tokens — single source of truth shared by marketing + product pages */
+  --warm-page: #faf8f5;
+  --warm-surface: #ffffff;
+  --warm-ink: #333c4e;
+  --warm-ink-soft: #5a6478;
+  --warm-cta: #ffbf14;
+  --warm-cta-soft: #e8b060;
+  --warm-shadow: 0 16px 48px rgba(58, 42, 28, 0.08);
+  --warm-border: rgba(58, 46, 34, 0.1);
+
+  --ink: var(--warm-ink);
+  --ink-soft: var(--warm-ink-soft);
+  --surface: var(--warm-surface);
+  --page-bg: var(--warm-page);
   --accent-blue: #5b8fc4;
   --accent-blue-muted: #7aa8d4;
   --cta: #e1b378;
   --cta-hover: #c99552;
-  --border: rgba(51, 60, 78, 0.1);
-  --shadow: 0 12px 40px rgba(51, 60, 78, 0.06);
+  --border: var(--warm-border);
+  --shadow: var(--warm-shadow);
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-pill: 999px;
@@ -50,7 +61,7 @@ body {
   min-height: var(--app-nav-h);
   box-sizing: border-box;
   padding: 0.5rem clamp(0.75rem, 3vw, 1.5rem);
-  background: rgba(240, 240, 240, 0.94);
+  background: rgba(250, 248, 245, 0.94);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
 }

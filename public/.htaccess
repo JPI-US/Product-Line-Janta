@@ -1,0 +1,15 @@
+# SPA rewrite for the Janta site (BrowserRouter).
+# Serve existing files/directories directly; route everything else to index.html
+# so deep links like /roots, /products/designer, /quiz work on a page refresh.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite real files or directories (assets, models, images, etc.)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else -> SPA entry point
+  RewriteRule ^ index.html [L]
+</IfModule>
