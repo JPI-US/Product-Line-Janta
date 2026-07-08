@@ -1,3 +1,5 @@
+import { SHADOWS_ENABLED } from "./sceneConfig";
+
 /** Shared mesh bake / runtime prep — same tuning for designer and utility product pages */
 export const PRODUCT_TOWER_PREP = {
   meshOptimize: {
@@ -6,9 +8,9 @@ export const PRODUCT_TOWER_PREP = {
   },
 } as const;
 
-/** DSR designer hero — compact contact shadow only (janta-vision look, no shadow-map rig) */
+/** DSR designer hero — defined shadow map on desktop, compact contact shadow on mobile */
 export const DESIGNER_PRODUCT_PERF = {
-  castShadow: false,
+  castShadow: SHADOWS_ENABLED,
   contactShadow: true,
   lightingVariant: "designer" as const,
   skipMeshOptimize: true,
@@ -19,9 +21,9 @@ export const DESIGNER_PRODUCT_PERF = {
   },
 } as const;
 
-/** LFM utility hero — compact lighting + soft contact shadow only (no shadow map rig) */
+/** LFM utility hero — defined shadow map on desktop, compact contact shadow on mobile */
 export const UTILITY_PRODUCT_PERF = {
-  castShadow: false,
+  castShadow: SHADOWS_ENABLED,
   contactShadow: true,
   lightingVariant: "utility" as const,
   skipMeshOptimize: true,

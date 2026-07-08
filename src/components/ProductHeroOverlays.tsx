@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { getProductPage } from "../data/productPages";
-import { DesignerConfigurator } from "./DesignerConfigurator";
 
 /** Centered eyebrow + title — DSR and LFM share the same hero chrome */
 export function ProductHeroOverlays({ productId }: { productId: "designer" | "utility" }) {
@@ -16,7 +15,7 @@ export function ProductHeroOverlays({ productId }: { productId: "designer" | "ut
         <h1 className="tower-3d__hero-title">{product.title}</h1>
       </header>
 
-      {/* Shared 3D controls — both DSR + LFM surface the 360 view + configurator */}
+      {/* 360 entry point — both DSR + LFM open the orbit viewer */}
       <div className="tower-3d__hero-controls">
         <Link
           to={`/orbit/${productId}`}
@@ -24,7 +23,6 @@ export function ProductHeroOverlays({ productId }: { productId: "designer" | "ut
         >
           View in 360°
         </Link>
-        <DesignerConfigurator />
       </div>
     </div>
   );

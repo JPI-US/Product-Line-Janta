@@ -226,7 +226,7 @@ html.tower-3d-scrolling body {
   }
 }
 
-/* Shared hero controls — 360 CTA + configurator on both product pages.
+/* Shared hero controls — View in 360 CTA on both product pages.
    Fades with the hero title; children re-enable pointer events over the canvas. */
 .tower-3d__hero-controls {
   position: absolute;

@@ -32,6 +32,13 @@ export const TOWER_CANVAS_DPR: [number, number] = IS_COARSE_POINTER
   ? [1, 1.35]
   : [1, 1.75];
 
+/**
+ * Well-defined shadow maps on the product tower — desktop only. Coarse
+ * pointers (mobile GPUs) fall back to the compact contact shadow so phones
+ * keep the DPR 1.75 crispness without paying the shadow-rig GPU cost.
+ */
+export const SHADOWS_ENABLED = !IS_COARSE_POINTER;
+
 /** World-space center of tower (panel seam / middle) */
 const TOWER_FOCUS = { x: -1.6, y: 1.15, z: 0 } as const;
 
@@ -58,7 +65,8 @@ export const SCENE = {
     azimuthStart: Math.PI * 0.5,
     azimuthEnd: Math.PI * 0.5,
     orbitRadius: 22,
-    elevation: 6.5,
+    /** Sun height — raised so the cast shadow is short and hugs the tower base */
+    elevation: 12,
     visualRadius: 1.15,
     glowRadius: 5.2,
     coreColor: "#fffffa",

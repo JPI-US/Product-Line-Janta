@@ -1,13 +1,18 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { SCENE } from "./sceneConfig";
+import { SCENE, SHADOWS_ENABLED } from "./sceneConfig";
 import { getSunPosition, getTowerLightTarget } from "./sceneScroll";
 
 const sunPosScratch = new THREE.Vector3();
 const sunDirScratch = new THREE.Vector3();
 const rimPosScratch = new THREE.Vector3();
 const fillPosScratch = new THREE.Vector3();
+
+/** Key-light shadow map — desktop only (gated by SHADOWS_ENABLED). */
+const PRODUCT_SHADOW_MAP = 2048;
+/** Ortho shadow-camera half-extent — bounds the tower + its cast shadow. */
+const PRODUCT_SHADOW_BOUNDS = 12;
 
 export type SunLightingVariant = "designer" | "utility";
 
@@ -39,8 +44,8 @@ export type SunLightingProps = {
 
 /**
  * Shared sun rig — designer uses full lights; utility uses a lighter static
- * rig tuned to match the same premium look. No shadow maps — the compact
- * contact shadow at the tower base is the only shadow (janta-vision look).
+ * rig tuned to match the same premium look. The key light casts a defined
+ * shadow map on desktop (SHADOWS_ENABLED); mobile keeps the contact shadow.
  */
 export function SunLighting({
   variant = "designer",
@@ -185,6 +190,16 @@ export function SunLighting({
         ref={sunRef}
         intensity={profile.keyIntensity}
         color={color}
+        castShadow={SHADOWS_ENABLED}
+        shadow-mapSize={[PRODUCT_SHADOW_MAP, PRODUCT_SHADOW_MAP]}
+        shadow-camera-near={0.5}
+        shadow-camera-far={60}
+        shadow-camera-left={-PRODUCT_SHADOW_BOUNDS}
+        shadow-camera-right={PRODUCT_SHADOW_BOUNDS}
+        shadow-camera-top={PRODUCT_SHADOW_BOUNDS}
+        shadow-camera-bottom={-PRODUCT_SHADOW_BOUNDS}
+        shadow-bias={-0.0002}
+        shadow-normalBias={0.02}
       />
 
       {isDesigner && (

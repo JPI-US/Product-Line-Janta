@@ -18,6 +18,7 @@ import {
   getProductTowerLayout,
   PRODUCT_SCENES,
 } from "./productScene";
+import { SHADOWS_ENABLED } from "./sceneConfig";
 import { TowerContactShadow } from "./TowerContactShadow";
 import { getScrollBlend } from "./sceneScroll";
 import { getCachedTowerScene } from "./towerScenePrep";
@@ -47,6 +48,16 @@ function ProductTowerContactShadow({ productId }: { productId: ProductId }) {
 
   return (
     <group ref={groupRef}>
+      {SHADOWS_ENABLED ? (
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.02, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[48, 48]} />
+          <shadowMaterial transparent opacity={0.3} />
+        </mesh>
+      ) : null}
       <TowerContactShadow
         position={[0, 0, 0]}
         getOpacityBlend={() => getScrollBlend(scroll.offset)}

@@ -45,7 +45,7 @@ function ProductScrollCanvas({
     <Canvas
       className="tower-3d__canvas"
       frameloop="demand"
-      shadows={castShadow ? { type: THREE.VSMShadowMap } : false}
+      shadows={castShadow ? { type: THREE.PCFSoftShadowMap } : false}
       camera={{
         position: [start.x, start.y, start.z],
         fov: fovStart,
