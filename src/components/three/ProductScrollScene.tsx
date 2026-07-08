@@ -49,9 +49,11 @@ function ProductTowerContactShadow({ productId }: { productId: ProductId }) {
   return (
     <group ref={groupRef}>
       {SHADOWS_ENABLED ? (
+        /* Shadow catcher at the tower footprint — the group origin sits at
+           baseLift (mid-height), so drop by -baseLift to reach the pedestal. */
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -0.02, 0]}
+          position={[0, -baseLift - 0.02, 0]}
           receiveShadow
         >
           <planeGeometry args={[48, 48]} />
