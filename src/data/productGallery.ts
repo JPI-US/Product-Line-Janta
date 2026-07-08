@@ -14,11 +14,7 @@ export const productGalleryPhoto = {
   imageObjectPosition: "center 55%",
 };
 
-export function getGallerySlideLabel(index: number, caption: string): string {
-  return `${String(index + 1).padStart(3, "0")} — ${caption}`;
-}
-
-/** Designer — horizontal scrub gallery beneath side panel finishes */
+/** Designer — horizontal scrub gallery beneath product bands */
 export const designerGallerySlides: ProductGallerySlide[] = [
   {
     id: "custom-panel-field",
@@ -35,3 +31,25 @@ export const designerGallerySlides: ProductGallerySlide[] = [
     caption: "Commercial campus",
   },
 ];
+
+/** LFM — field deployment gallery */
+export const utilityGallerySlides: ProductGallerySlide[] = [
+  {
+    id: "lfm-field",
+    imageUrl: "/marketing/lfm-tower.png",
+    imageObjectPosition: "center 58%",
+    alt: "LFM solar tower arrays deployed outdoors at a Dallas event",
+    caption: "Field deployment",
+  },
+  {
+    id: "utility-scale",
+    imageUrl: "/marketing/value-aerial-solar.png",
+    imageObjectPosition: "48% center",
+    alt: "Aerial view of Janta solar arrays in a green field",
+    caption: "Utility-scale sites",
+  },
+];
+
+export function getProductGallerySlides(productId: "designer" | "utility") {
+  return productId === "designer" ? designerGallerySlides : utilityGallerySlides;
+}

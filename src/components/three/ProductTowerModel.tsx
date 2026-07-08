@@ -3,7 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useScroll } from "@react-three/drei";
 import * as THREE from "three";
 import type { ProductId } from "../../data/productPages";
-import { SCENE } from "./sceneConfig";
+import { SCENE, DESIGNER_IDLE_YAW_HALF_RANGE } from "./sceneConfig";
 import {
   getInfoRevealProgress,
   isIntroAnimationComplete,
@@ -16,24 +16,24 @@ import {
   getTowerVisualYawOffset,
 } from "./sceneScroll";
 import { getCachedTowerScene, getLodPrepKey } from "./towerScenePrep";
-import { PRODUCT_SCENES } from "./productScene";
+import { PRODUCT_SCENES, getProductTowerLayout } from "./productScene";
 import { useTowerScenePrepared } from "./useTowerScenePrepared";
 import {
   startIdleClock,
   stopIdleClock,
   tickIdleYawOffset,
 } from "./towerIdleRotation";
+import { isProductHeroLayout } from "../../lib/productHeroScroll";
 import {
   clampTowerDragYaw,
-  TOWER_DRAG_YAW_HALF_RANGE,
   towerDragState,
 } from "./towerDragState";
 import { isAnyTowerDragging } from "./towerDragSync";
 import {
   ensureSharedIdleStarted,
   resetSharedIdle,
+  setActiveYawHalfRange,
   towerSharedRotation,
-  TOWER_YAW_HALF_RANGE,
 } from "./towerSharedRotation";
 import { isProductHero3dActive } from "./productScrollPerf";
 import { SCROLL_OFFSET_EPS } from "./utilityCanvasPerf";
@@ -63,6 +63,11 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     : lodReady
       ? getCachedTowerScene(getLodPrepKey(sceneConfig.prepKey))
       : null;
+  const yawHalfRange = DESIGNER_IDLE_YAW_HALF_RANGE;
+
+  useLayoutEffect(() => {
+    setActiveYawHalfRange(yawHalfRange);
+  }, [yawHalfRange]);
 
   useLayoutEffect(() => {
     if (!prepared || !groupRef.current) return;
@@ -85,10 +90,9 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     group.add(clone);
   }, [prepared, sceneConfig.castShadow]);
 
-  // Stage 12 configurator (designer only): finish tint + height scale.
+  // Stage 12 configurator (both products): finish tint + height scale.
   const invalidate = useThree((s) => s.invalidate);
   useEffect(() => {
-    if (productId !== "designer") return;
     const apply = () => {
       const group = groupRef.current;
       const clone = cloneRef.current;
@@ -150,20 +154,19 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     const state = towerDragState;
     const shared = towerSharedRotation;
     const blend = getScrollBlend(scrollOffset);
+    const layout = getProductTowerLayout(productId);
     const offsetY = THREE.MathUtils.lerp(
-      SCENE.tower.offsetY,
-      SCENE.tower.offsetYEnd,
+      layout.offsetY,
+      layout.offsetYEnd,
       blend
     );
-    groupRef.current.position.set(SCENE.tower.offsetX, baseLift + offsetY, 0);
+    groupRef.current.position.set(layout.offsetX, baseLift + offsetY, 0);
 
-    const splitBaseYaw = getSplitViewBaseYaw(blend, SCENE.tower.offsetX);
-    const infoReveal = getInfoRevealProgress(scrollOffset);
-    const cameraShiftComplete = isIntroAnimationComplete(scrollOffset);
-    const isDesigner = productId === "designer";
-    // Designer: idle rotation starts as soon as the camera intro shift finishes.
-    // Utility: wait until the split-view / card-compose has fully opened.
-    const rotateReady = isDesigner ? cameraShiftComplete : infoReveal >= 0.98;
+    const productHero = isProductHeroLayout(productId);
+    const splitBaseYaw = getSplitViewBaseYaw(blend, layout.offsetX);
+    const infoReveal = getInfoRevealProgress(scrollOffset, productHero);
+    const cameraShiftComplete = isIntroAnimationComplete(scrollOffset, productHero);
+    const rotateReady = productHero ? cameraShiftComplete : infoReveal >= 0.98;
     const idleCenter = SCENE.tower.idleYawCenter;
     const wasDragging = wasDraggingRef.current;
     wasDraggingRef.current = state.dragging;
@@ -172,7 +175,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
       if (shared.idleEpochMs !== null) resetSharedIdle();
       groupRef.current.rotation.y = getTowerYawTowardSun(
         blend,
-        SCENE.tower.offsetX,
+        layout.offsetX,
         0
       );
       return;
@@ -184,14 +187,14 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
       );
       stopIdleClock(
         shared,
-        tickIdleYawOffset(shared, TOWER_YAW_HALF_RANGE),
-        TOWER_YAW_HALF_RANGE
+        tickIdleYawOffset(shared, yawHalfRange),
+        yawHalfRange
       );
     } else if (rotateReady && wasDragging && !state.dragging) {
       startIdleClock(
         shared,
         groupRef.current.rotation.y - splitBaseYaw,
-        TOWER_YAW_HALF_RANGE
+        yawHalfRange
       );
     } else if (
       !state.dragging &&
@@ -208,7 +211,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     if (!rotateReady) {
       groupRef.current.rotation.y = getTowerYawTowardSun(
         blend,
-        SCENE.tower.offsetX,
+        layout.offsetX,
         0
       );
       return;
@@ -217,7 +220,7 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
     groupRef.current.rotation.y = applySplitViewYawOffset(
       splitBaseYaw,
       yawOffset,
-      TOWER_DRAG_YAW_HALF_RANGE
+      yawHalfRange
     );
   });
 

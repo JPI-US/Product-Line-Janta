@@ -7,5 +7,5 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true
   },
-  "include": ["vite.config.ts", "src/lib/lovablePreviewOrigin.ts"]
+  "include": ["vite.config.ts"]
 }

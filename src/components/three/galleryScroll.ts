@@ -1,4 +1,5 @@
-import { SCENE } from "./sceneConfig";
+import { ANIMATION_SCROLL_END, SCENE } from "./sceneConfig";
+import { isProductHeroPageFromDom } from "../../lib/productHeroScroll";
 import {
   getDesignerFrozenBelow,
   getDesignerGalleryProgress,
@@ -8,11 +9,18 @@ import {
 
 const PAGE_SLIDE_SHARE = 0.42;
 
-export function scrollOffsetToBelowFraction(scrollOffset: number): number {
-  const introEnd = SCENE.scroll.introEnd;
-  const postSpan = 1 - introEnd;
+function isProductHeroPage(): boolean {
+  return isProductHeroPageFromDom();
+}
+
+export function scrollOffsetToBelowFraction(
+  scrollOffset: number,
+  productHero = isProductHeroPage()
+): number {
+  const postStart = productHero ? ANIMATION_SCROLL_END : SCENE.scroll.introEnd;
+  const postSpan = 1 - postStart;
   if (postSpan <= 0) return 0;
-  const phase = Math.min(1, Math.max(0, (scrollOffset - introEnd) / postSpan));
+  const phase = Math.min(1, Math.max(0, (scrollOffset - postStart) / postSpan));
   if (phase <= PAGE_SLIDE_SHARE) return 0;
   return (phase - PAGE_SLIDE_SHARE) / (1 - PAGE_SLIDE_SHARE);
 }
@@ -23,7 +31,10 @@ export function getGalleryScrollProgress(_scrollOffset: number): number {
 }
 
 /** Below-scroll — frozen while gallery scrubs horizontally */
-export function getBelowScrollVisualProgress(scrollOffset: number): number {
+export function getBelowScrollVisualProgress(
+  scrollOffset: number,
+  productHero = isProductHeroPage()
+): number {
   const frozen = getDesignerFrozenBelow();
   if (frozen !== undefined) return frozen;
 
@@ -32,7 +43,7 @@ export function getBelowScrollVisualProgress(scrollOffset: number): number {
     if (page) syncDesignerGalleryScrub(scrollOffset, page);
   }
 
-  return scrollOffsetToBelowFraction(scrollOffset);
+  return scrollOffsetToBelowFraction(scrollOffset, productHero);
 }
 
 export function markGalleryReady(page: HTMLElement): void {

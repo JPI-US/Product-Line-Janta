@@ -3,7 +3,6 @@ import { CalendlyInline } from './CalendlyInline'
 import { usePreliminarySolarEstimate } from '../hooks/usePreliminarySolarEstimate'
 import {
   PROJECT_LIFE_YEARS,
-  UTILITY_RATE_ESCALATION_ANNUAL,
   type SavingsProjectType,
 } from '../lib/roiSpreadsheet'
 
@@ -14,13 +13,12 @@ const JANTA_EMAIL = 'info@jantaus.com'
 const JANTA_PHONE_DISPLAY = '(469) 694-3818'
 const JANTA_PHONE_TEL = '+14696943818'
 
-type ContactMethod = 'schedule' | 'email' | 'phone' | 'form'
+type ContactMethod = 'schedule' | 'email' | 'phone'
 
 const CONTACT_METHODS: { id: ContactMethod; label: string; hint: string }[] = [
   { id: 'schedule', label: 'Book a call', hint: 'Schedule with Calendly' },
   { id: 'email', label: 'Email us', hint: JANTA_EMAIL },
   { id: 'phone', label: 'Call us', hint: JANTA_PHONE_DISPLAY },
-  { id: 'form', label: 'Contact form', hint: 'On jantaus.com' },
 ]
 
 type Props = {
@@ -102,8 +100,12 @@ export function SavingsSummaryStep({
 
   return (
     <div className="savings-summary">
-      <h1 className="savings-card__title">Your estimated savings</h1>
-      <p className="savings-card__hint">Quick savings estimate only, not a quote or site visit.</p>
+      <header className="savings__header savings__header--summary">
+        <h1 className="savings__title">Your estimated savings</h1>
+        <p className="savings__hint">
+          This is a preliminary prediction, not an official proposal or quote.
+        </p>
+      </header>
 
       <div className="savings-estimate">
         {estimate.status === 'loading' && (
@@ -114,31 +116,34 @@ export function SavingsSummaryStep({
         )}
         {estimate.status === 'ok' && (
           <>
-            <div className="savings-estimate__metric-row" role="group" aria-label="Key system metrics">
+            <div className="savings-estimate__hero">
+              <div className="savings-estimate__hero-value">
+                {fmtUsd(estimate.roi.lifetimeNetSavingsUsd)}
+              </div>
+              <div className="savings-estimate__hero-label">
+                Estimated savings over {PROJECT_LIFE_YEARS} years
+              </div>
+            </div>
+
+            <div className="savings-estimate__metric-row" role="group" aria-label="Supporting estimates">
+              <div className="savings-estimate__metric-box">
+                <div className="savings-estimate__metric-value">
+                  {fmtUsd(estimate.roi.netSavingsYear1Usd)}
+                </div>
+                <div className="savings-estimate__metric-label">First-year savings</div>
+              </div>
               <div className="savings-estimate__metric-box">
                 <div className="savings-estimate__metric-value">{estimate.systemCapacityKw} kW</div>
-                <div className="savings-estimate__metric-label">Est. system size</div>
+                <div className="savings-estimate__metric-label">System size</div>
               </div>
               <div className="savings-estimate__metric-box">
                 <div className="savings-estimate__metric-value">
                   {fmtPct1(estimate.roi.offsetVsAnnualLoadPercent)}
                 </div>
-                <div className="savings-estimate__metric-label">Offset vs annual usage</div>
+                <div className="savings-estimate__metric-label">Usage offset</div>
               </div>
             </div>
-            <ul className="savings-estimate__stats">
-              <li className="savings-estimate__stat savings-estimate__stat--savings">
-                <span className="savings-estimate__label">Estimated savings on your electric bill (first year)</span>
-                <span className="savings-estimate__value">{fmtUsd(estimate.roi.netSavingsYear1Usd)} per year</span>
-              </li>
-              <li className="savings-estimate__stat savings-estimate__stat--savings">
-                <span className="savings-estimate__label">
-                  Rough cumulative savings over {PROJECT_LIFE_YEARS} years (
-                  {(UTILITY_RATE_ESCALATION_ANNUAL * 100).toFixed(0)}% annual utility rate escalation)
-                </span>
-                <span className="savings-estimate__value">{fmtUsd(estimate.roi.lifetimeNetSavingsUsd)} total</span>
-              </li>
-            </ul>
+
           </>
         )}
       </div>
@@ -167,12 +172,8 @@ export function SavingsSummaryStep({
 
       <section className="savings-contact savings-contact--options" aria-labelledby="savings-contact-heading">
         <h2 id="savings-contact-heading" className="savings-contact__title">
-          Get in touch with Janta
+          Talk to our team
         </h2>
-        <p className="savings-contact__hint">
-          Choose how you&apos;d like to reach us: book a call, send an email, call directly, or use our site contact
-          form.
-        </p>
 
         <ul className="savings-contact__methods" role="tablist" aria-label="Contact options">
           {CONTACT_METHODS.map((method) => (
@@ -201,9 +202,6 @@ export function SavingsSummaryStep({
 
         {contactMethod === 'email' && (
           <ContactPanel id="email" label="Email us" action>
-            <p className="savings-contact__panel-text">
-              Send your project details and we&apos;ll follow up by email.
-            </p>
             <a className="savings-next savings-next--link" href={`mailto:${JANTA_EMAIL}`}>
               Email {JANTA_EMAIL}
             </a>
@@ -212,33 +210,19 @@ export function SavingsSummaryStep({
 
         {contactMethod === 'phone' && (
           <ContactPanel id="phone" label="Call us" action>
-            <p className="savings-contact__panel-text">
-              Speak with our team during business hours.
-            </p>
             <a className="savings-next savings-next--link" href={`tel:${JANTA_PHONE_TEL}`}>
               Call {JANTA_PHONE_DISPLAY}
             </a>
           </ContactPanel>
         )}
-
-        {contactMethod === 'form' && (
-          <ContactPanel id="form" label="Contact form" action>
-            <p className="savings-contact__panel-text">
-              Our full contact form lives on jantaus.com. This button will link there soon.
-            </p>
-            <button type="button" className="savings-next savings-contact__panel-placeholder" disabled>
-              Open contact form
-            </button>
-          </ContactPanel>
-        )}
       </section>
 
-      <div className="savings-card__footer savings-card__footer--split savings-summary__footer">
+      <div className="savings__actions savings__actions--nav savings-summary__footer">
         <button type="button" className="savings-back" onClick={onBack}>
           <span className="savings-back__arrow" aria-hidden>
             ←
           </span>
-          <span>Previous Page</span>
+          <span>Back</span>
         </button>
         <button type="button" className="savings-ghost" onClick={onStartOver}>
           Start over

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SCENE } from "./sceneConfig";
+import { SCENE, DESIGNER_TOWER_LAYOUT } from "./sceneConfig";
 import { optimizeTowerMeshes } from "./towerMaterials";
 import type { MeshOptimizeOptions } from "./towerMeshOptimizer";
 import { countObjectTriangles } from "./towerGeometryStats";
@@ -19,7 +19,7 @@ export type PreparedTowerScene = {
 
 export const TOWER_PREP_KEYS = {
   /** v2 — skip runtime merge on *-ready.glb (hub was double-optimizing v1 cache) */
-  designer: "designer-ready-glb-v2",
+  designer: "designer-ready-glb-v3",
   utility: "utility-ready-glb-v1",
 } as const;
 
@@ -31,7 +31,7 @@ export function getLodPrepKey(prepKey: string): string {
 /** Bbox fit only — mesh merge is baked offline into *-ready.glb */
 export function getDesignerTowerPrepConfig(): TowerPrepConfig {
   return {
-    scale: SCENE.tower.scale,
+    scale: DESIGNER_TOWER_LAYOUT.scale,
     baseClearance: SCENE.tower.baseClearance,
     skipMeshOptimize: true,
   };

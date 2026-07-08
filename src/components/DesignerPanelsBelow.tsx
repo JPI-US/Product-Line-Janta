@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { DesignerPageCta } from "./DesignerPageCta";
-import { DesignerPowerChartsSection } from "./DesignerPowerChartsSection";
-import { DesignerTowerSpecs } from "./DesignerTowerSpecs";
 import { PanelFinishesMarquee } from "./PanelFinishesMarquee";
 import {
   ProductHorizontalGallery,
   syncDesignerGalleryLayout,
 } from "./ProductHorizontalGallery";
+import { ProductTowerSpecs } from "./ProductTowerSpecs";
+import { ProductYieldSection } from "./ProductYieldSection";
+import { WebsiteFooter } from "../marketing/website/WebsiteFooter";
 
 /** Designer-only content below the scroll hero */
 export function DesignerPanelsBelow() {
@@ -25,22 +26,26 @@ export function DesignerPanelsBelow() {
         >
           <header className="tower-3d__panels-header">
             <div className="tower-3d__below-copy">
-              <p className="tower-3d__below-eyebrow">Panel designs</p>
               <h2 className="tower-3d__below-title">Side panel finishes</h2>
+              <p className="tower-3d__below-lede">
+                Wrap the tower to match the site — clean matte tones or bold
+                branded panels, same hardware underneath.
+              </p>
             </div>
           </header>
           <PanelFinishesMarquee />
         </section>
 
-        <DesignerTowerSpecs />
+        <ProductYieldSection productId="designer" />
 
-        <DesignerPowerChartsSection />
+        <ProductTowerSpecs productId="designer" />
 
-        <ProductHorizontalGallery />
+        <ProductHorizontalGallery productId="designer" />
       </div>
 
       <DesignerPageCta />
+
+      <WebsiteFooter />
     </div>
   );
-
 }

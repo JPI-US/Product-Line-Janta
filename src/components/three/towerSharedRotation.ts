@@ -9,7 +9,7 @@ import {
 
 export { TOWER_IDLE_PENDULUM_PERIOD_S };
 
-/** ±90° — shared by Designer and Utility tower */
+/** ±90° — default swing; designer uses DESIGNER_IDLE_YAW_HALF_RANGE via activeYawHalfRange */
 export const TOWER_YAW_HALF_RANGE = Math.PI / 2;
 
 /** Single yaw / idle timeline for both product canvases */
@@ -20,10 +20,19 @@ export const towerSharedRotation = {
   idleEpochMs: null as number | null,
   dragging: false,
   canRotate: false,
+  activeYawHalfRange: TOWER_YAW_HALF_RANGE,
 };
 
+export function setActiveYawHalfRange(halfRange: number) {
+  towerSharedRotation.activeYawHalfRange = halfRange;
+}
+
+function yawHalfRange() {
+  return towerSharedRotation.activeYawHalfRange;
+}
+
 export function clampSharedDragYaw(yaw: number): number {
-  return clampIdleYaw(yaw, TOWER_YAW_HALF_RANGE);
+  return clampIdleYaw(yaw, yawHalfRange());
 }
 
 /** Current idle/drag yaw offset — same value both towers must use */
@@ -32,7 +41,7 @@ export function getSharedYawOffset(isDragging: boolean): number {
     return clampSharedDragYaw(towerSharedRotation.yaw);
   }
   if (towerSharedRotation.idleEpochMs !== null) {
-    return tickIdleYawOffset(towerSharedRotation, TOWER_YAW_HALF_RANGE);
+    return tickIdleYawOffset(towerSharedRotation, yawHalfRange());
   }
   return towerSharedRotation.idleCenterYaw;
 }
@@ -53,11 +62,11 @@ export function ensureSharedIdleStarted(reducedMotion: boolean) {
   startIdleClock(
     towerSharedRotation,
     towerSharedRotation.idleCenterYaw,
-    TOWER_YAW_HALF_RANGE
+    yawHalfRange()
   );
   notifyIdleWake();
 }
 
 export function resetSharedIdle() {
-  stopIdleClock(towerSharedRotation, 0, TOWER_YAW_HALF_RANGE);
+  stopIdleClock(towerSharedRotation, 0, yawHalfRange());
 }

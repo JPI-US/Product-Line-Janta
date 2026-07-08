@@ -11,7 +11,7 @@ export default function DesignerTowerPage() {
       "The DSR commercial-scale three-dimensional solar tower with custom side panels and a scroll-driven 3D preview.",
   });
   return (
-    <WebsiteMarketingShell>
+    <WebsiteMarketingShell showFooter={false}>
       <TowerPageWarmup productId="designer" />
       <ProductTowerPage productId="designer" />
     </WebsiteMarketingShell>

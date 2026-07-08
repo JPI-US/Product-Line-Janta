@@ -188,7 +188,7 @@ export const VALUE_COPY = {
       id: "uptime",
       title: "99% Uptime",
       detail:
-        "Dual-axis tracking and live monitoring deliver 99% uptime when the load cannot wait.",
+        "Azimuthal tracking and live monitoring deliver 99% uptime when the load cannot wait.",
     },
     {
       id: "resilience",
@@ -292,22 +292,6 @@ export const APPLICATIONS_COPY = {
       imagePosition: "center 55%",
     },
     {
-      id: "aviation",
-      title: "Aviation",
-      body: "More generation where land cannot sprawl. Airport-grade density built for sites that never stop running.",
-      image: applicationsPhoto("photo-1683971336619-d445cbec0276"),
-      imageAlt: "Commercial airplane on an airport runway",
-      imagePosition: "center 45%",
-    },
-    {
-      id: "agriculture",
-      title: "Agriculture",
-      body: "Add solar without taking fields out of production. More energy per acre while ground stays open for crops and equipment.",
-      image: applicationsPhoto("photo-1560493676-04071c5f467b"),
-      imageAlt: "Aerial view of green farmland and crop fields",
-      imagePosition: "center 42%",
-    },
-    {
       id: "data-centers",
       title: "Data Centers",
       body: "Reliable, dense power beside uptime-critical facilities. More MW in less space, closer to the load.",
@@ -323,6 +307,22 @@ export const APPLICATIONS_COPY = {
       imageAlt: "Electric vehicle charging stations in a parking lot",
       imagePosition: "center 50%",
     },
+    {
+      id: "aviation",
+      title: "Aviation",
+      body: "More generation where land cannot sprawl. Airport-grade density built for sites that never stop running.",
+      image: applicationsPhoto("photo-1683971336619-d445cbec0276"),
+      imageAlt: "Commercial airplane on an airport runway",
+      imagePosition: "center 45%",
+    },
+    {
+      id: "agriculture",
+      title: "Agriculture",
+      body: "Add solar without taking fields out of production. More energy per acre while ground stays open for crops and equipment.",
+      image: applicationsPhoto("photo-1560493676-04071c5f467b"),
+      imageAlt: "Aerial view of green farmland and crop fields",
+      imagePosition: "center 42%",
+    },
   ],
 } as const;
 
@@ -333,11 +333,11 @@ export const SOLUTIONS_COPY = {
       id: "designer",
       acronym: "DSR",
       title: "Tower",
-      tags: ["5.4 kW", "Dual-axis tracking", "Custom body"],
+      tags: ["5.4 kW", "Azimuthal tracking", "Custom body"],
       hoverCta: "Visit the 3D experience",
       bannerHeadline: "The DSR Tower.",
       bannerLines: [
-        "5.4 kW dual-axis tracking.",
+        "5.4 kW azimuthal tracking.",
         "Custom enclosure built for your site.",
       ],
       image: "/marketing/dsr-tower.png",
@@ -351,7 +351,7 @@ export const SOLUTIONS_COPY = {
       id: "utility",
       acronym: "LFM",
       title: "Tower",
-      tags: ["5.6 kW", "Dual-axis tracking", "Utility-scale"],
+      tags: ["5.6 kW", "Azimuthal tracking", "Utility-scale"],
       hoverCta: "Visit the 3D experience",
       bannerHeadline: "The LFM Tower.",
       bannerLines: [

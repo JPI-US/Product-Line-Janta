@@ -7,6 +7,10 @@
  */
 
 import { readJsonResponse } from './readJsonResponse'
+import {
+  shouldUseLocalPvwattsEstimate,
+  sizeProductionEstimateLocal,
+} from './estimateFallback'
 
 export type PvwattsV8Response = {
   errors?: string[]
@@ -194,6 +198,32 @@ function inUsageBand(acAnnualKwh: number, annualUsageKwh: number): boolean {
  * targeting ~100% offset. Sizes are **multiples of {@link SYSTEM_SIZE_STEP_KW}** kWdc.
  */
 export async function sizePvwattsToUsageBand(input: {
+  lat: number
+  lon: number
+  annualUsageKwh: number
+  maxIterations?: number
+}): Promise<{
+  system_capacity_kw: number
+  ac_annual_kwh: number
+  capacity_factor?: number
+  estimateSource: 'pvwatts' | 'model'
+}> {
+  const annual = Math.max(1, input.annualUsageKwh)
+
+  if (shouldUseLocalPvwattsEstimate()) {
+    return sizeProductionEstimateLocal({ annualUsageKwh: annual })
+  }
+
+  try {
+    const sized = await sizePvwattsToUsageBandViaApi(input)
+    return { ...sized, estimateSource: 'pvwatts' as const }
+  } catch (e) {
+    console.warn('[pvwatts] API sizing failed; using local production model.', e)
+    return sizeProductionEstimateLocal({ annualUsageKwh: annual })
+  }
+}
+
+async function sizePvwattsToUsageBandViaApi(input: {
   lat: number
   lon: number
   annualUsageKwh: number

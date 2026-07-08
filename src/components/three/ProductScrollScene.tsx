@@ -13,8 +13,11 @@ import { TowerSceneEnvironment } from "./TowerSceneEnvironment";
 import { TowerGpuWarmup } from "./TowerGpuWarmup";
 import { TowerCanvasInvalidateBridge } from "./TowerCanvasInvalidateBridge";
 import { useTowerScenePrepared } from "./useTowerScenePrepared";
-import { getProductIntroScroll, PRODUCT_SCENES } from "./productScene";
-import { SCENE } from "./sceneConfig";
+import {
+  getProductIntroScroll,
+  getProductTowerLayout,
+  PRODUCT_SCENES,
+} from "./productScene";
 import { TowerContactShadow } from "./TowerContactShadow";
 import { getScrollBlend } from "./sceneScroll";
 import { getCachedTowerScene } from "./towerScenePrep";
@@ -28,15 +31,16 @@ function ProductTowerContactShadow({ productId }: { productId: ProductId }) {
 
   useFrame(() => {
     if (!groupRef.current) return;
+    const layout = getProductTowerLayout(productId);
     const blend = getScrollBlend(scroll.offset);
     const offsetY = THREE.MathUtils.lerp(
-      SCENE.tower.offsetY,
-      SCENE.tower.offsetYEnd,
+      layout.offsetY,
+      layout.offsetYEnd,
       blend
     );
     groupRef.current.position.set(
-      SCENE.tower.offsetX,
-      baseLift + offsetY + SCENE.tower.baseClearance,
+      layout.offsetX,
+      baseLift + offsetY + layout.baseClearance,
       0
     );
   });
@@ -83,7 +87,6 @@ export function ProductScrollScene({ productId }: { productId: ProductId }) {
       {sceneConfig.contactShadow ? (
         <ProductTowerContactShadow productId={productId} />
       ) : null}
-
 
       <Scroll html style={{ width: "100%", pointerEvents: "none" }}>
         <div className="tower-3d__scroll-track">

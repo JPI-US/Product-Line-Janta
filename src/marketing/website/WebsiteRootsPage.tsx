@@ -1,4 +1,3 @@
-import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { WebsiteRootsFilmSection } from "./WebsiteRootsFilmSection";
 import { ROOTS_COPY } from "./websiteRootsData";
@@ -163,7 +162,6 @@ export default function WebsiteRootsPage() {
           </section>
         </div>
       </main>
-      <WebsiteFooter />
     </WebsiteMarketingShell>
   );
 }

@@ -18,6 +18,7 @@ export type SolarEstimateState =
       lon: number
       systemCapacityKw: number
       roi: PreliminaryRoi
+      estimateSource: 'pvwatts' | 'model'
     }
 
 export function usePreliminarySolarEstimate(input: {
@@ -62,7 +63,7 @@ export function usePreliminarySolarEstimate(input: {
         }
 
         const annualUsage = Math.max(1, input.monthlyUsageKwh * 12)
-        const { system_capacity_kw: systemKw, ac_annual_kwh, capacity_factor } =
+        const { system_capacity_kw: systemKw, ac_annual_kwh, capacity_factor, estimateSource } =
           await sizePvwattsToUsageBand({
             lat: geo.lat,
             lon: geo.lon,
@@ -86,6 +87,7 @@ export function usePreliminarySolarEstimate(input: {
           lon: geo.lon,
           systemCapacityKw: systemKw,
           roi,
+          estimateSource,
         })
       } catch (e) {
         if (cancelled) return

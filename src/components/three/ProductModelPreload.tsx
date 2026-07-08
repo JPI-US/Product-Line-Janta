@@ -15,8 +15,7 @@ import {
   isTowerScenePrepared,
   scheduleTowerScenePrepare,
 } from "./towerScenePrep";
-import { PRODUCT_SCENES } from "./productScene";
-import { SCENE } from "./sceneConfig";
+import { PRODUCT_SCENES, getProductTowerLayout } from "./productScene";
 
 const productLoadManager = new THREE.LoadingManager();
 
@@ -35,6 +34,7 @@ const PRODUCT_LOAD_FALLBACKS: Record<
 };
 
 function loadProductGltf(
+  productId: ProductId,
   prepKey: string,
   url: string,
   skipMeshOptimize: boolean
@@ -44,9 +44,10 @@ function loadProductGltf(
     loader.load(
       url,
       (gltf) => {
+        const layout = getProductTowerLayout(productId);
         void scheduleTowerScenePrepare(gltf.scene, prepKey, {
-          scale: SCENE.tower.scale,
-          baseClearance: SCENE.tower.baseClearance,
+          scale: layout.scale,
+          baseClearance: layout.baseClearance,
           skipMeshOptimize,
         });
         resolve();
@@ -80,11 +81,14 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
       // on screen in a few hundred ms while the full GLB streams in.
       const lod2Url = MODEL_LOD_URLS[config.modelUrl]?.lod2;
       if (lod2Url && !isTowerScenePrepared(getLodPrepKey(config.prepKey))) {
-        void loadProductGltf(getLodPrepKey(config.prepKey), lod2Url, true).catch(
-          () => {
-            /* stand-in is best-effort; full chain below still runs */
-          },
-        );
+        void loadProductGltf(
+          productId,
+          getLodPrepKey(config.prepKey),
+          lod2Url,
+          true,
+        ).catch(() => {
+          /* stand-in is best-effort; full chain below still runs */
+        });
       }
       void (async () => {
         for (let i = 0; i < loadChain.length; i++) {
@@ -92,6 +96,7 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
           const url = loadChain[i];
           try {
             await loadProductGltf(
+              productId,
               config.prepKey,
               url,
               url === fallbacks.ready,

@@ -4,10 +4,10 @@ import * as THREE from "three";
 
 import type { ProductId } from "../data/productPages";
 import { getProductPage } from "../data/productPages";
-import { DesignerHeroOverlays } from "./DesignerHeroOverlays";
 import { DesignerPanelsBelow } from "./DesignerPanelsBelow";
-import { ProductScrollStatsOverlay } from "./ProductScrollStatsOverlay";
-import { UtilityProductBelow } from "./UtilityProductBelow";
+import { ProductHeroOverlays } from "./ProductHeroOverlays";
+import { ProductScrollHint } from "./ProductScrollHint";
+import { UtilityPanelsBelow } from "./UtilityPanelsBelow";
 import {
   PAGE_BG,
   SCENE,
@@ -25,6 +25,7 @@ import { TowerRotationBackground } from "./three/TowerRotationBackground";
 import { WebGLCanvasBoundary } from "./WebGLCanvasBoundary";
 import { supportsWebGL } from "../lib/webglSupport";
 import { AmbientAudioToggle } from "./AmbientAudioToggle";
+import { isProductHeroLayout } from "../lib/productHeroScroll";
 
 type ProductTowerPageProps = {
   productId: ProductId;
@@ -38,7 +39,7 @@ function ProductScrollCanvas({
   castShadow: boolean;
 }) {
   const { start, fovStart } = SCENE.camera;
-  const softPanelBg = productId === "designer";
+  const softPanelBg = isProductHeroLayout(productId);
 
   return (
     <Canvas
@@ -81,11 +82,19 @@ function ProductScrollCanvas({
   );
 }
 
+function productPageClass(productId: ProductId) {
+  if (productId === "designer") {
+    return "tower-3d-page tower-3d-page--designer";
+  }
+  return "tower-3d-page tower-3d-page--designer tower-3d-page--utility";
+}
+
 /** Single product — shared scroll intro, then product-specific content below */
 export function ProductTowerPage({ productId }: ProductTowerPageProps) {
   const page = getProductPage(productId);
   const scene = PRODUCT_SCENES[productId];
   const webgl = supportsWebGL();
+  const productHero = isProductHeroLayout(productId);
 
   return (
     <>
@@ -93,81 +102,42 @@ export function ProductTowerPage({ productId }: ProductTowerPageProps) {
       <TowerIdlePageDriver singleCanvas />
       <ProductModelPreload productId={productId} />
       <TowerRotationBackground />
-      <div
-        className={
-          productId === "designer"
-            ? "tower-3d-page tower-3d-page--designer"
-            : "tower-3d-page"
-        }
-      >
+      <div className={productPageClass(productId)}>
         <TowerPageScroll />
         <AmbientAudioToggle className="tower-3d__audio-toggle" />
 
         <div
           className={`tower-3d__experience${
-            productId === "designer" ? " tower-3d__soft-panel-bg" : ""
+            productHero ? " tower-3d__soft-panel-bg" : ""
           }`}
         >
-          {productId === "designer" ? (
-            <>
-              <DesignerHeroOverlays />
-              {webgl ? (
-                <>
-                  <TowerDragSurface />
-                  <div className="tower-3d__viewport">
-                    <WebGLCanvasBoundary label="product-tower">
-                      <ProductScrollCanvas
-                        productId={productId}
-                        castShadow={scene.castShadow}
-                      />
-                    </WebGLCanvasBoundary>
-                  </div>
-                </>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <header
-                className="tower-3d__hero-fixed"
-                aria-label={`${page.tower.title} hero`}
-              >
-                <p className="tower-3d__hero-eyebrow">Janta Power</p>
-                <h1 className="tower-3d__hero-title">{page.tower.title}</h1>
-                <p className="tower-3d__hero-hint">Scroll to learn more.</p>
-              </header>
+          {productHero ? <ProductHeroOverlays productId={productId} /> : null}
 
-              {webgl ? (
-                <>
-                  <TowerDragSurface />
-                  <div className="tower-3d__viewport">
-                    <WebGLCanvasBoundary label="product-tower">
-                      <ProductScrollCanvas
-                        productId={productId}
-                        castShadow={scene.castShadow}
-                      />
-                    </WebGLCanvasBoundary>
-                  </div>
-                </>
-              ) : null}
-
-              <aside
-                className="tower-3d__split-pane"
-                aria-label={`${page.tower.title} product information`}
-              >
-                <ProductScrollStatsOverlay productId={productId} />
-              </aside>
+          {webgl ? (
+            <>
+              <TowerDragSurface productId={productId} />
+              <div className="tower-3d__viewport">
+                <WebGLCanvasBoundary label="product-tower">
+                  <ProductScrollCanvas
+                    productId={productId}
+                    castShadow={scene.castShadow}
+                  />
+                </WebGLCanvasBoundary>
+              </div>
             </>
-          )}
+          ) : null}
+
+          <ProductScrollHint />
         </div>
 
         <section
           className="tower-3d__page-below"
           aria-label={`More about ${page.tower.title}`}
         >
-          {page.belowVariant === "panels" ? (
+          {productId === "designer" ? (
             <DesignerPanelsBelow />
           ) : (
-            <UtilityProductBelow />
+            <UtilityPanelsBelow />
           )}
         </section>
       </div>

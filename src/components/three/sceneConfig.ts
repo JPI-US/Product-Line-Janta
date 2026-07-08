@@ -11,7 +11,6 @@ export const TOWER_CANVAS_GL = {
   failIfMajorPerformanceCaveat: false,
   toneMapping: THREE.ACESFilmicToneMapping,
   toneMappingExposure: 1.0,
-
 } as const;
 
 /** Product routes — same tone map + antialiasing as the hub canvas */
@@ -83,7 +82,6 @@ export const SCENE = {
     intensity: 0.75,
     rotationY: -Math.PI * 0.5,
   },
-
   /**
    * Both product scroll pages render without shadow maps — the compact
    * TowerContactShadow at the base is the only shadow (janta-vision look).
@@ -134,6 +132,27 @@ export const SCENE = {
     introEnd: 7 / 11,
     animationScrollEndRatio: 0.40,
   },
+} as const;
+
+/** DSR hero — framed with margin so idle swing stays inside the viewport */
+export const DESIGNER_TOWER_LAYOUT = {
+  scale: 5.48,
+  offsetY: -4.05,
+  offsetYEnd: -2.52,
+} as const;
+
+/** Smaller idle arc — keeps corners inside the hero frame at DSR scale */
+export const DESIGNER_IDLE_YAW_HALF_RANGE = Math.PI / 3.25;
+
+/** DSR camera — slightly wider FOV and pullback so the tower is not cropped */
+export const DESIGNER_CAMERA_FRAMING = {
+  startYOffset: -0.35,
+  endYOffset: -0.72,
+  lookAtStartYOffset: -0.45,
+  lookAtEndYOffset: -0.88,
+  fovStart: 44,
+  fovEnd: 42.5,
+  endPullBack: 2.1,
 } as const;
 
 export const ANIMATION_SCROLL_END =

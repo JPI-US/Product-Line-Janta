@@ -88,16 +88,6 @@ export function WebsiteNav() {
             {NAV_COPY.roots}
           </NavLink>
 
-          <NavLink
-            to={NAV_COPY.careersHref}
-            className={({ isActive }) =>
-              isActive ? "web-nav__link web-nav__link--active" : "web-nav__link"
-            }
-            onClick={closeMobile}
-          >
-            {NAV_COPY.careers}
-          </NavLink>
-
           <WebsiteNavProductsDropdown onNavigate={closeMobile} />
 
           <Link

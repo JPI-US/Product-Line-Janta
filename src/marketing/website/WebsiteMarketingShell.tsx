@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteNav } from "./WebsiteNav";
 import {
   isWebsiteHeroSkyPainted,
@@ -10,6 +11,8 @@ import "./websiteReactBits.css";
 type WebsiteMarketingShellProps = {
   /** Hub homepage — transparent nav over sky; scroll sync surfaces the bar */
   variant?: "hub-hero" | "standard";
+  /** Standard pages include the site footer unless disabled (e.g. product scroll pages). */
+  showFooter?: boolean;
   className?: string;
   children: ReactNode;
 };
@@ -17,6 +20,7 @@ type WebsiteMarketingShellProps = {
 /** Shared marketing chrome — nav, fonts, and page shell across site routes */
 export function WebsiteMarketingShell({
   variant = "standard",
+  showFooter = variant === "standard",
   className,
   children,
 }: WebsiteMarketingShellProps) {
@@ -61,6 +65,7 @@ export function WebsiteMarketingShell({
     <div className={className ? `${pageClass} ${className}` : pageClass}>
       <WebsiteNav />
       {children}
+      {showFooter ? <WebsiteFooter /> : null}
     </div>
   );
 }
