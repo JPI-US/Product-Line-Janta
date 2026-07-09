@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Internal build/prerender tooling route — not for indexing.
+Disallow: /utility-prerender-bake
+
+Sitemap: https://jantaus.com/sitemap.xml

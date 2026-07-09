@@ -1,0 +1,16 @@
+# Cloudflare Pages redirects & SPA fallback.
+# Format: <from>  <to>  <status>   (first match wins; keep the SPA fallback LAST)
+# Docs: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# --- Old WordPress URL 301 map (fill in from Google Search Console / old WP sitemap) ---
+# Pull the real indexed URLs so nothing that ranks 404s after cutover. Examples:
+# /career/            /careers            301
+# /category/articles  /roots              301
+# /contact-us/        /contact            301
+
+# --- Legacy internal paths ---
+/3d        /products/designer   301
+
+# --- SPA fallback: every unmatched path serves the app shell (BrowserRouter) ---
+# Keep this as the LAST rule. Without it, deep links like /quiz, /roots 404 on refresh.
+/*   /index.html   200
