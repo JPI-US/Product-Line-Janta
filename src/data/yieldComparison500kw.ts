@@ -25,6 +25,10 @@ function formatKwh(value: number): string {
   return Math.round(value).toLocaleString("en-US");
 }
 
+export function formatAnnualKwh(value: number): string {
+  return formatKwh(value);
+}
+
 export function yield500kwOutput(values: {
   annualKwh: number;
   monthlyKwh: number;
@@ -45,4 +49,17 @@ export function formatLandAcres(acres: number): { value: string; unit: string } 
   const value = Number.isInteger(acres) ? String(acres) : acres.toFixed(1);
   const unit = acres === 1 ? "acre" : "acres";
   return { value, unit };
+}
+
+/** Relative bar widths for the marketing yield comparison cards. */
+export function yieldCompareBarWidths() {
+  const { janta, fixed } = YIELD_500KW_DALLAS;
+  const maxAnnual = Math.max(janta.annualKwh, fixed.annualKwh);
+  const maxLand = Math.max(janta.landAcres, fixed.landAcres);
+  return {
+    jantaAnnual: (janta.annualKwh / maxAnnual) * 100,
+    fixedAnnual: (fixed.annualKwh / maxAnnual) * 100,
+    jantaLand: (janta.landAcres / maxLand) * 100,
+    fixedLand: (fixed.landAcres / maxLand) * 100,
+  };
 }

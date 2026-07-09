@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { AppLoadingScreen } from "./components/AppLoadingScreen";
 import { AppNav } from "./components/AppNav";
+
 const WebsitePage = lazy(() => import("./marketing/website/WebsitePage"));
 const WebsiteCareersPage = lazy(
   () => import("./marketing/website/WebsiteCareersPage"),
@@ -25,23 +26,15 @@ const WebsiteContactPage = lazy(
 const WebsiteQuizPage = lazy(
   () => import("./marketing/website/WebsiteQuizPage"),
 );
-const WebsiteRootsPage = lazy(
-  () => import("./marketing/website/WebsiteRootsPage"),
-);
-const DesignerTowerPage = lazy(() => import("./pages/DesignerTowerPage"));
-const UtilityTowerPage = lazy(() => import("./pages/UtilityTowerPage"));
 const UtilityPrerenderBakePage = lazy(
   () => import("./pages/UtilityPrerenderBakePage")
 );
 
 const MARKETING_PATHS = new Set([
   "/website",
-  "/roots",
   "/careers",
   "/contact",
   "/quiz",
-  "/products/designer",
-  "/products/utility",
 ]);
 
 function RouteSuspenseFallback() {
@@ -118,14 +111,10 @@ function AppRoutes() {
         <Suspense fallback={<RouteSuspenseFallback />}>
           <Routes>
             <Route path="/website" element={<WebsitePage />} />
-            <Route path="/roots" element={<WebsiteRootsPage />} />
             <Route path="/careers" element={<WebsiteCareersPage />} />
             <Route path="/contact" element={<WebsiteContactPage />} />
             <Route path="/quiz" element={<WebsiteQuizPage />} />
             <Route path="/" element={<Navigate to="/website" replace />} />
-            <Route path="/products/designer" element={<DesignerTowerPage />} />
-            <Route path="/products/utility" element={<UtilityTowerPage />} />
-            <Route path="/3d" element={<Navigate to="/products/designer" replace />} />
             <Route
               path="/utility-prerender-bake"
               element={<UtilityPrerenderBakePage />}

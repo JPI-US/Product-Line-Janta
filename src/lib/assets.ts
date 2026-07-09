@@ -3,7 +3,7 @@ export const partnerLogos = [
   { id: "greentown", name: "Greentown Labs", logo: "/marketing/partners/greentown-labs-white.png" },
   { id: "aena", name: "Aena", logo: "/marketing/partners/aena-white.png" },
   { id: "pv-magazine", name: "PV Magazine", logo: "/marketing/partners/pv-magazine-white.png" },
-  { id: "fifa", name: "FIFA", logo: "/marketing/partners/fifa-white.png" },
+  { id: "c3", name: "C3", logo: "/marketing/partners/c3-white.png" },
   { id: "dfw", name: "DFW Airport", logo: "/marketing/partners/dfw-airport-white.png" },
   { id: "dallas-innovates", name: "Dallas Innovates", logo: "/marketing/partners/dallas-innovates-white.png" },
 ] as const;

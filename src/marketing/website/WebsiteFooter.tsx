@@ -4,49 +4,9 @@ import { lazy, Suspense } from "react";
 import { FOOTER_COPY } from "./websiteData";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
-import { WebsiteSolutionCardName } from "./WebsiteSolutionCardName";
 import { WebsiteContactForm } from "./WebsiteContactForm";
 
 const Aurora = lazy(() => import("./react-bits/Aurora/Aurora"));
-
-function FooterNavLink({
-  href,
-  label,
-  acronym,
-  towerTitle,
-}: {
-  href: string;
-  label: string;
-  acronym?: string;
-  towerTitle?: string;
-}) {
-  const content =
-    acronym && towerTitle ? (
-      <WebsiteSolutionCardName acronym={acronym} title={towerTitle} />
-    ) : (
-      label
-    );
-
-  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")) {
-    return (
-      <a
-        href={href}
-        className="web-footer__link"
-        {...(href.startsWith("http")
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return (
-    <Link to={href} className="web-footer__link">
-      {content}
-    </Link>
-  );
-}
 
 function FooterLink({
   href,
@@ -115,12 +75,7 @@ export function WebsiteFooter() {
           <ul className="web-footer__list">
             {FOOTER_COPY.exploreLinks.map((link) => (
               <li key={link.label}>
-                <FooterNavLink
-                  href={link.href}
-                  label={link.label}
-                  acronym={"acronym" in link ? link.acronym : undefined}
-                  towerTitle={"towerTitle" in link ? link.towerTitle : undefined}
-                />
+                <FooterLink href={link.href} label={link.label} />
               </li>
             ))}
           </ul>
@@ -140,7 +95,11 @@ export function WebsiteFooter() {
 
       <div className="web-footer__bar">
         <p className="web-footer__legal">{FOOTER_COPY.copyright}</p>
-        <p className="web-footer__location">{FOOTER_COPY.location}</p>
+        <div className="web-footer__contact-details">
+          <span className="web-footer__address">{FOOTER_COPY.location}</span>
+          <a href={`mailto:${FOOTER_COPY.contactEmail}`}>{FOOTER_COPY.contactEmail}</a>
+          <a href={`tel:${FOOTER_COPY.contactPhoneTel}`}>{FOOTER_COPY.contactPhone}</a>
+        </div>
       </div>
     </footer>
   );

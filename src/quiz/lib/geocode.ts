@@ -79,6 +79,30 @@ async function geocodeCityCommaRegion(query: string): Promise<GeocodeHit | null>
   }
 }
 
+/** Address suggestions for autocomplete — Open-Meteo geocoding, no API key. */
+export async function searchAddressSuggestions(
+  query: string,
+  limit = 6,
+): Promise<GeocodeHit[]> {
+  const q = stripTrailingCountry(query.trim())
+  if (q.length < 3) return []
+
+  let hits = await openMeteoSearch(q, { countryCode: 'US', count: limit })
+  if (!hits.length) {
+    hits = await openMeteoSearch(q, { count: limit })
+  }
+
+  const seen = new Set<string>()
+  const results: GeocodeHit[] = []
+  for (const hit of hits) {
+    const label = formatLabel(hit)
+    if (seen.has(label)) continue
+    seen.add(label)
+    results.push({ lat: hit.latitude, lon: hit.longitude, label })
+  }
+  return results
+}
+
 export async function geocodeAddress(query: string): Promise<GeocodeHit | null> {
   const q0 = query.trim()
   if (q0.length < 2) return null

@@ -14,10 +14,7 @@ export function Hero() {
             <br />
             Less land.
           </h1>
-          <p className="hero-lead">
-            Janta Power builds vertical 3D photovoltaic towers engineered for
-            airports, utilities, and developers who can't afford to waste an acre.
-          </p>
+          <p className="hero-lead">{HERO_COPY.sub}</p>
           <div className="hero-stats-wrap">
             <div className="hero-stats">
               {HERO_COPY.stats.map((stat, index) => (

@@ -51,19 +51,19 @@ function YieldMatrix({
 }) {
   const rows = [
     {
-      id: "traditional",
-      name: "Fixed solar",
-      note: "Traditional fixed-tilt",
-      output: traditional,
-      land: land?.traditional,
-    },
-    {
       id: "janta",
       name: "Janta",
       note: jantaNote,
       output: janta,
       land: land?.janta,
       badge,
+    },
+    {
+      id: "traditional",
+      name: "Fixed solar",
+      note: "Traditional fixed-tilt",
+      output: traditional,
+      land: land?.traditional,
     },
   ] as const;
 
@@ -155,7 +155,9 @@ export function ProductYieldSection({
         <div className="tower-3d__yield-section__inner">
           <header className="tower-3d__yield-section__header">
             <h2 id={`tower-yield-title-${sectionId}`} className="tower-3d__below-title">
-              Fixed solar vs Janta
+              <span className="tower-3d__yield-section__title-brand">Janta</span>
+              <span className="tower-3d__yield-section__title-vs"> vs </span>
+              <span className="tower-3d__yield-section__title-muted">fixed solar</span>
             </h2>
             <p className="tower-3d__yield-section__lede">{YIELD_500KW_DALLAS.siteLabel}</p>
           </header>
@@ -189,7 +191,9 @@ export function ProductYieldSection({
       <div className="tower-3d__yield-section__inner">
         <header className="tower-3d__yield-section__header">
           <h2 id={`tower-yield-title-${sectionId}`} className="tower-3d__below-title">
-            Fixed solar vs Janta
+            <span className="tower-3d__yield-section__title-brand">Janta</span>
+            <span className="tower-3d__yield-section__title-vs"> vs </span>
+            <span className="tower-3d__yield-section__title-muted">fixed solar</span>
           </h2>
           <p className="tower-3d__yield-section__lede">
             Typical yield band for a comparable site footprint.

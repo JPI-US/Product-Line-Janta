@@ -332,14 +332,14 @@
   opacity: 0.94;
 }
 
-.partner-logo--fifa {
-  height: clamp(2.85rem, 5.8vw, 3.75rem);
-  max-width: clamp(13.5rem, 27vw, 20rem);
+.partner-logo--c3 {
+  height: clamp(3.05rem, 6.2vw, 3.95rem);
+  max-width: clamp(10.5rem, 21vw, 15rem);
 }
 
 .partner-logo--munich {
-  height: clamp(2.7rem, 5.5vw, 3.55rem);
-  max-width: clamp(12.75rem, 25.5vw, 19rem);
+  height: clamp(3.25rem, 6.6vw, 4.2rem);
+  max-width: clamp(14.5rem, 29vw, 21.5rem);
 }
 
 .partner-logo--greentown {
@@ -348,8 +348,8 @@
 }
 
 .partner-logo--dallas-innovates {
-  height: clamp(2.35rem, 5vw, 3.15rem);
-  max-width: clamp(11.25rem, 22.5vw, 16.5rem);
+  height: clamp(2.95rem, 6.1vw, 3.85rem);
+  max-width: clamp(13.5rem, 27vw, 19.5rem);
 }
 
 .partner-diamond {

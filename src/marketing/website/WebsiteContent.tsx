@@ -49,36 +49,32 @@ function LazySection({ children }: { children: ReactNode }) {
 export function WebsiteContent() {
   return (
     <>
-      <div className="web-landing-sky-band">
+      <div className="web-landing-sky-band web-landing-sky-band--continuous">
         <WebsiteDeferredSection minHeight="min(90vh, 820px)">
           <LazySection>
             <WebsiteValueSection />
           </LazySection>
         </WebsiteDeferredSection>
-      </div>
-      <WebsiteDeferredSection minHeight="min(58vh, 520px)">
-        <LazySection>
-          <WebsiteApplicationsSection />
-        </LazySection>
-      </WebsiteDeferredSection>
-      <div className="web-landing-sky-band">
+        <WebsiteDeferredSection minHeight="min(58vh, 520px)">
+          <LazySection>
+            <WebsiteApplicationsSection />
+          </LazySection>
+        </WebsiteDeferredSection>
         <WebsiteDeferredSection minHeight="min(70vh, 620px)">
           <LazySection>
             <WebsiteYieldSection />
           </LazySection>
         </WebsiteDeferredSection>
-        <WebsiteDeferredSection minHeight="min(52vh, 480px)">
+        <WebsiteDeferredSection minHeight="min(80vh, 720px)">
+          <LazySection>
+            <WebsiteSoftwareShowcaseSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+        <WebsiteDeferredSection minHeight="min(68vh, 640px)">
           <LazySection>
             <WebsiteSpecsHighlight />
           </LazySection>
         </WebsiteDeferredSection>
-      </div>
-      <WebsiteDeferredSection minHeight="min(80vh, 720px)">
-        <LazySection>
-          <WebsiteSoftwareShowcaseSection />
-        </LazySection>
-      </WebsiteDeferredSection>
-      <div className="web-landing-sky-band web-landing-sky-band--solutions-media">
         <WebsiteDeferredSection minHeight="min(80vh, 700px)">
           <LazySection>
             <WebsitePowerProfileSection />

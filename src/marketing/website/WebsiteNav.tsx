@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { NAV_COPY } from "./websiteData";
 import { WebsiteNavLogo } from "./WebsiteNavLogo";
 import { WebsiteFlowingMenuOverlay } from "./WebsiteFlowingMenuOverlay";
@@ -36,9 +36,9 @@ export function WebsiteNav() {
     <header className="web-nav" role="banner">
       <div className="web-nav__inner">
         <Link
-          to="/website"
+          to={NAV_COPY.brandHref}
           className="web-nav__brand"
-          aria-label={NAV_COPY.brand}
+          aria-label={NAV_COPY.brandAria}
           onClick={closeMobile}
         >
           <WebsiteNavLogo />
@@ -66,17 +66,6 @@ export function WebsiteNav() {
           aria-label="Primary"
           data-open={mobileOpen || undefined}
         >
-          <NavLink
-            to="/website"
-            end
-            className={({ isActive }) =>
-              isActive ? "web-nav__link web-nav__link--active" : "web-nav__link"
-            }
-            onClick={closeMobile}
-          >
-            {NAV_COPY.home}
-          </NavLink>
-
           <Link
             to={NAV_COPY.ctaHref}
             className="web-nav__cta web-nav__cta--menu"

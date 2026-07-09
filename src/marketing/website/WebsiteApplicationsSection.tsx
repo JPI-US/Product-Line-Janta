@@ -5,11 +5,21 @@ import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 
 type PanelId = (typeof APPLICATIONS_COPY.panels)[number]["id"];
 
+const PANEL_RESIZE_MS = 400;
+
 /** Where Janta Shines — image accordion panels */
 export function WebsiteApplicationsSection() {
   const accordionRef = useRef<HTMLDivElement>(null);
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeId, setActiveId] = useState<PanelId | null>(null);
+  const [labelsReady, setLabelsReady] = useState(true);
   const reducedMotion = useWebsiteReducedMotion();
+
+  useEffect(() => {
+    return () => {
+      if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const accordion = accordionRef.current;
@@ -36,9 +46,27 @@ export function WebsiteApplicationsSection() {
     return () => observer.disconnect();
   }, []);
 
+  const activatePanel = (id: PanelId) => {
+    if (collapseTimerRef.current) {
+      clearTimeout(collapseTimerRef.current);
+      collapseTimerRef.current = null;
+    }
+    setActiveId(id);
+  };
+
+  const collapsePanels = () => {
+    setActiveId(null);
+    setLabelsReady(false);
+    const delay = reducedMotion ? 0 : PANEL_RESIZE_MS;
+    collapseTimerRef.current = setTimeout(() => {
+      setLabelsReady(true);
+      collapseTimerRef.current = null;
+    }, delay);
+  };
+
   const clearActiveUnlessMovingInside = (relatedTarget: EventTarget | null) => {
     if (relatedTarget && accordionRef.current?.contains(relatedTarget as Node)) return;
-    setActiveId(null);
+    collapsePanels();
   };
 
   return (
@@ -61,6 +89,7 @@ export function WebsiteApplicationsSection() {
               {APPLICATIONS_COPY.titleAccent}
             </span>
           </h2>
+          <p className="web-applications__description">{APPLICATIONS_COPY.description}</p>
         </header>
 
         <div
@@ -71,7 +100,7 @@ export function WebsiteApplicationsSection() {
           <div
             className={`web-applications__accordion-panels${
               activeId ? " is-expanded" : ""
-            }`}
+            }${labelsReady ? " labels-ready" : ""}`}
             role="list"
           >
             {APPLICATIONS_COPY.panels.map((panel) => (
@@ -83,8 +112,10 @@ export function WebsiteApplicationsSection() {
                 image={panel.image}
                 imagePosition={panel.imagePosition}
                 isActive={activeId === panel.id}
-                onActivate={() => setActiveId(panel.id)}
-                onDeactivate={() => setActiveId((current) => (current === panel.id ? null : current))}
+                onActivate={() => activatePanel(panel.id)}
+                onDeactivate={() => {
+                  if (activeId === panel.id) collapsePanels();
+                }}
               />
             ))}
           </div>
