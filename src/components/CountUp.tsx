@@ -30,20 +30,33 @@ export function CountUp({ value }: { value: string }) {
     }
     const el = ref.current;
     if (!el) return;
-    let started = false;
+    let inView = false;
+
+    const runCount = () => {
+      cancelAnimationFrame(rafRef.current);
+      setDisplay(0);
+      const duration = 1400;
+      const startAt = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - startAt) / duration);
+        setDisplay(end * easeOutCubic(progress));
+        if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+      };
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    // Replay on every entry — count up each time it scrolls back into view.
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || started) return;
-        started = true;
-        observer.disconnect();
-        const duration = 1400;
-        const startAt = performance.now();
-        const tick = (now: number) => {
-          const progress = Math.min(1, (now - startAt) / duration);
-          setDisplay(end * easeOutCubic(progress));
-          if (progress < 1) rafRef.current = requestAnimationFrame(tick);
-        };
-        rafRef.current = requestAnimationFrame(tick);
+        if (entry.isIntersecting) {
+          if (!inView) {
+            inView = true;
+            runCount();
+          }
+        } else {
+          inView = false;
+          cancelAnimationFrame(rafRef.current);
+        }
       },
       { threshold: 0.4 },
     );
