@@ -917,6 +917,8 @@ body.website-active {
 .web-media__title,
 .web-ps-roi__title {
   font-family: var(--web-font-display);
+  /* Keep titles clear of the fixed nav if a scroll settles at a section start */
+  scroll-margin-top: calc(var(--app-nav-h, 72px) + 1rem);
 }
 
 .web-display,

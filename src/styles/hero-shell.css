@@ -142,7 +142,7 @@
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .hero-stats {
@@ -191,6 +191,25 @@
 @media (min-width: 768px) {
   .hero-tower-col {
     height: min(780px, 72vh);
+  }
+}
+
+/* Mobile hero: single-column stack is taller than 100dvh, so top-align the
+   content below the fixed nav (instead of centering, which clipped the H1
+   above the fold) and give the tower a shorter, fitting height. */
+@media (max-width: 767px) {
+  .hero-main {
+    align-items: flex-start;
+    padding-top: calc(var(--app-nav-h, 72px) + 1.25rem);
+  }
+
+  .hero-grid {
+    gap: 2rem;
+    transform: none;
+  }
+
+  .hero-tower-col {
+    height: min(360px, 42vh);
   }
 }
 

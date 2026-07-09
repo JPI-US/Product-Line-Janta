@@ -219,6 +219,7 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
 
       <path
         d={areaPath(jantaPath, geom, chart.hourMin, chart.hourMax)}
+        className="tower-3d__power-profile__area"
         fill={`url(#${gradId})`}
         stroke="none"
       />
@@ -226,6 +227,7 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
         d={jantaPath}
         className="tower-3d__power-profile__line tower-3d__power-profile__line--janta"
         fill="none"
+        pathLength={1}
         vectorEffect="non-scaling-stroke"
       />
 
@@ -286,6 +288,8 @@ export function ProductPowerProfileSection({
   autoCycleSeason?: boolean;
 }) {
   const reducedMotion = useWebsiteReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const [drawn, setDrawn] = useState(false);
   const [season, setSeason] = useState<PowerSeason>("summer");
   const [cycleKey, setCycleKey] = useState(0);
   const charts = scenario === "500kw-dallas" ? powerCurves500kw : designerPowerCharts;
@@ -306,9 +310,34 @@ export function ProductPowerProfileSection({
     return () => window.clearInterval(id);
   }, [autoCycleSeason, reducedMotion, cycleKey]);
 
+  // Draw the chart in once it scrolls into view (one-way latch so the season
+  // auto-cycle remounts don't re-trigger the animation).
+  useEffect(() => {
+    if (reducedMotion) {
+      setDrawn(true);
+      return;
+    }
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setDrawn(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [reducedMotion]);
+
   return (
     <section
-      className="tower-3d__power-profile tower-3d__designer-band"
+      ref={sectionRef}
+      className={`tower-3d__power-profile tower-3d__designer-band${
+        drawn ? " is-drawn" : ""
+      }`}
       aria-labelledby="tower-power-profile-title"
     >
       <div className="tower-3d__power-profile__inner">
