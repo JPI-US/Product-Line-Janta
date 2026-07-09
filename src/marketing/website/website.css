@@ -389,8 +389,8 @@ body.website-active {
 .web-nav__logo {
   position: relative;
   display: block;
-  width: clamp(3.45rem, 6.6vw, 4.25rem);
-  height: clamp(2.65rem, 5.1vw, 3.25rem);
+  width: clamp(6rem, 12vw, 7.6rem);
+  height: clamp(2rem, 4vw, 2.55rem);
   flex-shrink: 0;
   transition: transform 0.28s var(--web-motion-spring, ease);
 }
@@ -399,25 +399,21 @@ body.website-active {
   transform: scale(1.04);
 }
 
+/* Full "JANTA POWER" wordmark (jantaus.com brand). Two-tone, so it's a real
+   image swapped by background — color on light chrome, white over the hero. */
 .web-nav__logo-mark {
   position: absolute;
   inset: 0;
-  background-color: var(--web-cta, #ffbf14);
-  mask-image: url("/marketing/janta-logo-mark-mask.png");
-  mask-mode: alpha;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-  -webkit-mask-image: url("/marketing/janta-logo-mark-mask.png");
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  -webkit-mask-size: contain;
-  transition: background-color 0.4s ease;
+  background-image: url("/marketing/janta-wordmark-color.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+  transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
 .web-page--hub-hero:not(.web-nav--surfaced) .web-nav__logo-mark {
-  background-color: #ffffff;
+  background-image: url("/marketing/janta-wordmark-white.png");
 }
 
 .web-nav__logo-img {

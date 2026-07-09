@@ -499,6 +499,5 @@
   background: #ffffff;
 }
 
-.web-page--hub-hero:not(.web-nav--surfaced) .web-nav__logo-mark {
-  filter: brightness(0) invert(1);
-}
+/* The white wordmark variant is swapped in via background-image (website.css),
+   so no colour filter is needed over the hero. */

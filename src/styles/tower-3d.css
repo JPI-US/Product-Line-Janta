@@ -1196,9 +1196,9 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   );
 }
 
-/* Reactive hover — a subtle blue + warm wash so the comparison rows feel alive.
-   Inset box-shadows layer over each row's own background and transition
-   smoothly (unlike background-image). */
+/* Reactive hover — the row gets a soft wash for context, and the specific
+   cell (block) lights up more so the hovered figure clearly stands out and
+   feels responsive. Inset shadows layer over each row's own background. */
 .tower-3d__yield-matrix__row--traditional,
 .tower-3d__yield-matrix__row--janta {
   transition: box-shadow 0.3s ease;
@@ -1206,9 +1206,30 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 
 .tower-3d__yield-matrix__row--traditional:hover,
 .tower-3d__yield-matrix__row--janta:hover {
-  box-shadow:
-    inset 0 0 0 200px rgba(74, 140, 210, 0.06),
-    inset 0 0 0 200px rgba(255, 191, 20, 0.035);
+  box-shadow: inset 0 0 0 200px rgba(74, 140, 210, 0.045);
+}
+
+.tower-3d__yield-matrix__cell {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tower-3d__yield-matrix__cell:hover {
+  background: rgba(74, 140, 210, 0.11);
+  box-shadow: inset 0 0 0 1px rgba(58, 132, 220, 0.22);
+}
+
+.tower-3d__yield-matrix__value {
+  transition: transform 0.2s ease;
+}
+
+.tower-3d__yield-matrix__cell:hover .tower-3d__yield-matrix__value {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tower-3d__yield-matrix__cell:hover .tower-3d__yield-matrix__value {
+    transform: none;
+  }
 }
 
 .tower-3d__yield-matrix__row--janta .tower-3d__yield-matrix__system {
