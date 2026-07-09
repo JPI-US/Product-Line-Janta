@@ -942,6 +942,24 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   text-transform: uppercase;
 }
 
+/* Scroll-triggered count-up (shared CountUp component). The hidden sizer holds
+   the final width so nothing shifts while the number ticks up. */
+.count-up {
+  position: relative;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.count-up__sizer {
+  visibility: hidden;
+}
+
+.count-up__live {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .tower-3d__power-profile__line--trad {
   stroke: var(--warm-cta, #ffbf14);
   stroke-width: 2.5;
@@ -965,24 +983,34 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
   stroke-dashoffset: 1;
 }
 
-.tower-3d__power-profile__line--trad,
+.tower-3d__power-profile__line--trad {
+  opacity: 0;
+}
+
+/* Area fill rises up from the baseline as the line draws in. */
 .tower-3d__power-profile__area {
   opacity: 0;
+  transform: scaleY(0.35);
+  transform-origin: bottom;
+  transform-box: fill-box;
 }
 
 .tower-3d__power-profile.is-drawn .tower-3d__power-profile__line--janta {
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: stroke-dashoffset 1.05s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .tower-3d__power-profile.is-drawn .tower-3d__power-profile__area {
   opacity: 1;
-  transition: opacity 0.8s ease 0.3s;
+  transform: scaleY(1);
+  transition:
+    opacity 0.7s ease 0.1s,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
 }
 
 .tower-3d__power-profile.is-drawn .tower-3d__power-profile__line--trad {
   opacity: 1;
-  transition: opacity 0.7s ease 0.5s;
+  transition: opacity 0.6s ease 0.45s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -991,9 +1019,13 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
     stroke-dashoffset: 0;
   }
 
-  .tower-3d__power-profile__line--trad,
+  .tower-3d__power-profile__line--trad {
+    opacity: 1;
+  }
+
   .tower-3d__power-profile__area {
     opacity: 1;
+    transform: none;
   }
 }
 
@@ -1176,8 +1208,8 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 
 .tower-3d__yield-matrix__unit {
   font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--warm-ink-soft);
+  font-weight: 700;
+  color: #c8930a;
 }
 
 .tower-3d__yield-matrix__row--traditional {
@@ -1241,7 +1273,7 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 }
 
 .tower-3d__yield-matrix__row--janta .tower-3d__yield-matrix__unit {
-  color: color-mix(in srgb, var(--tower-brand-blue) 62%, var(--warm-ink-soft));
+  color: #c8930a;
 }
 
 .tower-3d__yield-matrix__row--janta .tower-3d__yield-matrix__badge {

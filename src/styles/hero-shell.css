@@ -166,6 +166,24 @@
   color: #ffffff;
 }
 
+/* Count-up wrapper — the hidden sizer reserves the final width so the row
+   doesn't shift while the number animates up. */
+.hero-stat__count {
+  position: relative;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stat__count-sizer {
+  visibility: hidden;
+}
+
+.hero-stat__count-live {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .hero-stat__label {
   font-size: 0.75rem;
   font-weight: 600;

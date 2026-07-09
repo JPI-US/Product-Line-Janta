@@ -68,7 +68,12 @@ export function WebsiteApplicationsSection() {
           className="web-applications__accordion"
           onPointerLeave={(ev) => clearActiveUnlessMovingInside(ev.relatedTarget)}
         >
-          <div className="web-applications__accordion-panels" role="list">
+          <div
+            className={`web-applications__accordion-panels${
+              activeId ? " is-expanded" : ""
+            }`}
+            role="list"
+          >
             {APPLICATIONS_COPY.panels.map((panel) => (
               <WebsiteApplicationsAccordionPanel
                 key={panel.id}

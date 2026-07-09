@@ -1,3 +1,4 @@
+import { CountUp } from "../../components/CountUp";
 import { utilityTowerSpecs } from "../../data/utilityTowerSpecs";
 
 /** Subtle, condensed "Built for real-world sites" spec strip for the home page. */
@@ -21,7 +22,7 @@ export function WebsiteSpecsHighlight() {
           {utilityTowerSpecs.map((spec) => (
             <li key={spec.id} className="web-specs-lite__item">
               <span className="web-specs-lite__value">
-                {spec.value}
+                <CountUp value={spec.value} />
                 {spec.unit ? (
                   <span className="web-specs-lite__unit"> {spec.unit}</span>
                 ) : null}

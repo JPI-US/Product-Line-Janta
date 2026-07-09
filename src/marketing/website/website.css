@@ -2937,8 +2937,8 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 .web-specs-lite__unit {
   font-size: 0.62em;
-  font-weight: 600;
-  color: var(--warm-ink-soft, #5a6478);
+  font-weight: 700;
+  color: #c8930a;
 }
 
 .web-specs-lite__label {
@@ -3383,8 +3383,52 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   align-items: center;
   justify-content: center;
   padding: clamp(3.25rem, 7.5vh, 5rem) var(--web-rail-x);
-  background: var(--web-brand-blue);
+  /* Living "wavy" blue like the hero, but kept in the darker range (never
+     lighter than the brand blue) so the white title + tablet stay legible. */
+  background-color: var(--web-brand-blue);
+  background-image: linear-gradient(
+    120deg,
+    #12294a 0%,
+    #1c3f72 14%,
+    #2a63a8 30%,
+    #3a84dc 46%,
+    #2f6fc0 60%,
+    #23528f 74%,
+    #17386b 88%,
+    #12294a 100%
+  );
+  background-size: 320% 320%;
+  animation: web-dashboard-drift 55s ease-in-out infinite;
   overflow: hidden;
+}
+
+/* Let the dot grid sit over the animated gradient instead of hiding it. */
+.web-panel--software-showcase .web-software-showcase__texture {
+  background-color: transparent;
+}
+
+@keyframes web-dashboard-drift {
+  0% {
+    background-position: 12% 20%;
+  }
+  25% {
+    background-position: 88% 60%;
+  }
+  50% {
+    background-position: 30% 90%;
+  }
+  75% {
+    background-position: 70% 30%;
+  }
+  100% {
+    background-position: 12% 20%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-panel--software-showcase {
+    animation: none;
+  }
 }
 
 .web-software-showcase__texture {
@@ -4092,6 +4136,28 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   pointer-events: auto;
 }
 
+/* When one panel is open, the collapsed panels are too narrow for a horizontal
+   label — rotate their titles vertical so each stays fully readable. */
+.web-applications__accordion-panels.is-expanded
+  .web-applications__panel:not(.is-active)
+  .web-applications__panel-content {
+  justify-content: center;
+}
+
+.web-applications__accordion-panels.is-expanded
+  .web-applications__panel:not(.is-active)
+  .web-applications__panel-title {
+  width: auto;
+  max-height: 100%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  text-align: center;
+  /* Smaller so even the longest label ("Manufacturing") fits the strip height. */
+  font-size: clamp(0.82rem, 1.35vw, 1.02rem);
+  letter-spacing: 0.01em;
+}
+
 @media (max-width: 900px) {
   .web-applications__intro {
     margin-bottom: clamp(0.75rem, 2vh, 1rem);
@@ -4134,6 +4200,21 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
   .web-applications__panel-body {
     max-width: none;
+  }
+
+  /* Panels stack as horizontal rows on mobile — keep labels horizontal. */
+  .web-applications__accordion-panels.is-expanded
+    .web-applications__panel:not(.is-active)
+    .web-applications__panel-content {
+    justify-content: flex-end;
+  }
+
+  .web-applications__accordion-panels.is-expanded
+    .web-applications__panel:not(.is-active)
+    .web-applications__panel-title {
+    width: 100%;
+    writing-mode: horizontal-tb;
+    transform: none;
   }
 }
 

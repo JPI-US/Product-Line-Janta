@@ -42,3 +42,7 @@ dist-ssr
 
 # Local archives / exports
 *.zip
+
+# Local temp scripts / scratch outputs
+scripts/tmp-*.mjs
+main-code-merge/

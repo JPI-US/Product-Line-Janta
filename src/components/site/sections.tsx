@@ -1,7 +1,7 @@
 import { partnerLogos } from "@/lib/assets";
 import { HERO_TOWER_POSE } from "@/lib/heroTowerPose";
 import { HERO_COPY } from "@/marketing/website/websiteData";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Tower3D } from "./Tower3D";
 
 export function Hero() {
@@ -62,9 +62,81 @@ export function Hero() {
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="hero-stat">
-      <div className="hero-stat__value">{value}</div>
+      <div className="hero-stat__value">
+        <CountUpValue value={value} />
+      </div>
       <div className="hero-stat__label">{label}</div>
     </div>
+  );
+}
+
+/** Counts a stat up from 0 to its target on load (e.g. "50%", "3X"). */
+function CountUpValue({ value }: { value: string }) {
+  const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
+  const end = match ? parseFloat(match[1]) : 0;
+  const suffix = match ? match[2] : "";
+  const isInteger = Number.isInteger(end);
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    if (!match) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(end);
+      return;
+    }
+    let cancelled = false;
+    let idleId = 0;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    const run = () => {
+      const duration = 1400;
+      const startAt = performance.now();
+      const tick = (now: number) => {
+        if (cancelled) return;
+        const progress = Math.min(1, (now - startAt) / duration);
+        const eased = 1 - (1 - progress) ** 3;
+        setDisplay(end * eased);
+        if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+      };
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    // Start once the main thread is idle — the 3D hero blocks it while
+    // initialising, which would otherwise starve the rAF loop and snap the
+    // number straight to its final value instead of counting up.
+    if (w.requestIdleCallback) {
+      idleId = w.requestIdleCallback(run, { timeout: 1600 });
+    } else {
+      idleId = window.setTimeout(run, 600);
+    }
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafRef.current);
+      if (w.cancelIdleCallback) w.cancelIdleCallback(idleId);
+      else clearTimeout(idleId);
+    };
+    // Re-run only when the source string changes (match/end/suffix derive from it).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  if (!match) return <>{value}</>;
+  const shown = isInteger ? String(Math.round(display)) : display.toFixed(1);
+  return (
+    <span className="hero-stat__count">
+      <span className="sr-only">{value}</span>
+      <span className="hero-stat__count-sizer" aria-hidden>
+        {value}
+      </span>
+      <span className="hero-stat__count-live" aria-hidden>
+        {shown}
+        {suffix}
+      </span>
+    </span>
   );
 }
 

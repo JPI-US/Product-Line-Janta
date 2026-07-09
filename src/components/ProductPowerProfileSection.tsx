@@ -310,8 +310,10 @@ export function ProductPowerProfileSection({
     return () => window.clearInterval(id);
   }, [autoCycleSeason, reducedMotion, cycleKey]);
 
-  // Draw the chart in once it scrolls into view (one-way latch so the season
-  // auto-cycle remounts don't re-trigger the animation).
+  // Draw the chart in whenever it scrolls into view — toggling `drawn` off when
+  // it leaves means the animation replays each time it re-enters. (A season
+  // auto-cycle remounts the chart while in view, which just renders at the
+  // final state, so it doesn't re-trigger mid-view.)
   useEffect(() => {
     if (reducedMotion) {
       setDrawn(true);
@@ -320,13 +322,8 @@ export function ProductPowerProfileSection({
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setDrawn(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.35 },
+      ([entry]) => setDrawn(entry.isIntersecting),
+      { threshold: 0.35, rootMargin: "0px 0px -10% 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();

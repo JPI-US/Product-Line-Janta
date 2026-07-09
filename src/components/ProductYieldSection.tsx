@@ -1,3 +1,4 @@
+import { CountUp } from "./CountUp";
 import { getProductPage } from "../data/productPages";
 import type { TowerOutput } from "../data/towers";
 import {
@@ -24,7 +25,7 @@ export type YieldScenario = "product" | "500kw-dallas";
 function YieldValue({ value, unit = "kWh" }: { value: string; unit?: string }) {
   return (
     <span className="tower-3d__yield-matrix__value">
-      {value}
+      <CountUp value={value} />
       <span className="tower-3d__yield-matrix__unit"> {unit}</span>
     </span>
   );
