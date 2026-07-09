@@ -36,6 +36,11 @@ const WebsiteRoiSection = lazy(() =>
     default: m.WebsiteRoiSection,
   })),
 );
+const PremiumGlobe = lazy(() =>
+  import("../../components/PremiumGlobe").then((m) => ({
+    default: m.PremiumGlobe,
+  })),
+);
 const WebsiteFooter = lazy(() =>
   import("./WebsiteFooter").then((m) => ({
     default: m.WebsiteFooter,
@@ -55,13 +60,11 @@ export function WebsiteContent() {
             <WebsiteValueSection />
           </LazySection>
         </WebsiteDeferredSection>
-      </div>
-      <WebsiteDeferredSection minHeight="min(58vh, 520px)">
-        <LazySection>
-          <WebsiteApplicationsSection />
-        </LazySection>
-      </WebsiteDeferredSection>
-      <div className="web-landing-sky-band">
+        <WebsiteDeferredSection minHeight="min(58vh, 520px)">
+          <LazySection>
+            <WebsiteApplicationsSection />
+          </LazySection>
+        </WebsiteDeferredSection>
         <WebsiteDeferredSection minHeight="min(70vh, 620px)">
           <LazySection>
             <WebsiteYieldSection />
@@ -84,13 +87,18 @@ export function WebsiteContent() {
             <WebsitePowerProfileSection />
           </LazySection>
         </WebsiteDeferredSection>
+        <WebsiteDeferredSection minHeight="min(90vh, 820px)">
+          <LazySection>
+            <PremiumGlobe />
+          </LazySection>
+        </WebsiteDeferredSection>
       </div>
       <WebsiteDeferredSection>
         <LazySection>
           <WebsiteRoiSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection minHeight="min(48vh, 420px)">
+      <WebsiteDeferredSection mountImmediately>
         <LazySection>
           <WebsiteFooter />
         </LazySection>

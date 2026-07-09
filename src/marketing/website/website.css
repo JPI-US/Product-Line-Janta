@@ -1227,7 +1227,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   );
   contain: layout style;
   overflow: visible;
-  padding-bottom: max(clamp(2rem, 6vh, 4rem), 12vh);
+  padding-bottom: clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
 }
 
@@ -1365,7 +1365,43 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-hero-layer .web-lead:not(.web-rb-text-type) {
-  animation: web-hero-lead-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  animation: web-hero-lead-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) 1.15s both;
+}
+
+.web-hero-title__line {
+  display: block;
+}
+
+.web-hero-title:not(.web-hero-title--ready):not(.web-hero-title--static) .web-hero-title__line {
+  opacity: 0;
+  transform: translate3d(clamp(2.5rem, 10vw, 5rem), 0, 0);
+}
+
+.web-hero-title--static .web-hero-title__line {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .web-hero-title--ready .web-hero-title__line:nth-child(1) {
+    animation: web-hero-title-slide-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+  }
+
+  .web-hero-title--ready .web-hero-title__line:nth-child(2) {
+    animation: web-hero-title-slide-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both;
+  }
+}
+
+@keyframes web-hero-title-slide-in {
+  from {
+    opacity: 0;
+    transform: translate3d(clamp(2.5rem, 10vw, 5rem), 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes web-hero-lead-in {
@@ -2805,7 +2841,8 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-landing-sky-band > .web-deferred-section,
 .web-landing-sky-band .web-panel--value,
 .web-landing-sky-band .web-panel--solutions,
-.web-landing-sky-band .web-panel--media {
+.web-landing-sky-band .web-panel--media,
+.web-landing-sky-band .web-panel--applications {
   position: relative;
   z-index: 1;
   background: transparent;
@@ -2839,6 +2876,45 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 .web-landing-sky-band--solutions-media .web-panel--media {
   padding-top: clamp(1.25rem, 3vh, 2rem);
+}
+
+/* Chart + globe — slightly richer blue / gold washes */
+.web-landing-sky-band--solutions-media::before {
+  background:
+    radial-gradient(ellipse 82% 58% at 10% 16%, rgba(42, 96, 175, 0.22), transparent 60%),
+    radial-gradient(ellipse 72% 52% at 90% 74%, rgba(201, 140, 8, 0.19), transparent 56%);
+}
+
+/* Seamless chart → globe — slight overlap only, keep header clear of chart */
+.web-landing-sky-band--solutions-media > .web-deferred-section + .web-deferred-section {
+  margin-top: calc(-1 * clamp(0.75rem, 2vh, 1.5rem));
+}
+
+.web-landing-sky-band--solutions-media .web-home-chart {
+  padding-bottom: clamp(0.75rem, 2vh, 1.25rem);
+}
+
+/* Value → applications — one continuous sky wash, no dividing line */
+.web-landing-sky-band .web-panel--value {
+  padding-bottom: clamp(1.5rem, 3vh, 2.25rem);
+}
+
+.web-landing-sky-band > .web-deferred-section:has(.web-panel--value) + .web-deferred-section {
+  margin-top: 0;
+}
+
+/* Applications → yield — one continuous sky wash, no dividing line */
+.web-landing-sky-band .web-panel--applications {
+  padding-top: clamp(2rem, 4.5vh, 3rem);
+  padding-bottom: clamp(2rem, 5vh, 3.25rem);
+}
+
+.web-landing-sky-band .web-home-yield {
+  padding-top: clamp(1.25rem, 3vh, 2rem);
+}
+
+.web-landing-sky-band > .web-deferred-section:has(.web-panel--applications) + .web-deferred-section {
+  margin-top: calc(-1 * clamp(0.75rem, 2vh, 1.5rem));
 }
 
 /* Home embeds of the LFM yield comparison + daily-output chart */
@@ -2957,7 +3033,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: auto;
   align-items: center;
   padding-top: clamp(4.5rem, 12vh, 8rem);
-  padding-bottom: clamp(1.25rem, 2.5vh, 2rem);
+  padding-bottom: clamp(1.5rem, 3vh, 2.25rem);
 }
 
 .web-value {
@@ -3937,7 +4013,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: auto;
   align-items: center;
   padding-block: clamp(4rem, 10vh, 6.5rem);
-  background: #ffffff;
+  background: transparent;
 }
 
 .web-applications {
@@ -5008,7 +5084,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   gap: 1rem;
   max-width: var(--web-content-max, 72rem);
   margin: 0 auto;
-  padding: 1.15rem var(--web-rail-x, clamp(1.25rem, 5vw, 4.5rem)) 1.65rem;
+  padding: 1.15rem var(--web-rail-x, clamp(1.25rem, 5vw, 4.5rem)) 1rem;
   border-top: 1px solid rgba(26, 35, 50, 0.1);
 }
 

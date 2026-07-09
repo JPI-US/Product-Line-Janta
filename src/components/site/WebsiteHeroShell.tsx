@@ -8,10 +8,6 @@ export function WebsiteHeroShell() {
       <div
         aria-hidden
         className="hero-sky-highlight"
-        style={{
-          background:
-            "radial-gradient(90% 60% at 12% 4%, rgba(255,255,255,0.16), transparent 55%)",
-        }}
       />
       <div className="hero-main">
         <Hero />

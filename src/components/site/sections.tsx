@@ -1,24 +1,50 @@
 import { partnerLogos } from "@/lib/assets";
 import { HERO_TOWER_POSE } from "@/lib/heroTowerPose";
 import { HERO_COPY } from "@/marketing/website/websiteData";
+import { useWebsiteReducedMotion } from "@/marketing/website/useWebsiteReducedMotion";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Tower3D } from "./Tower3D";
+
+const HERO_HEADING_LINES = ["More power.", "Less land."] as const;
+
+function HeroHeading() {
+  const reducedMotion = useWebsiteReducedMotion();
+  const [ready, setReady] = useState(reducedMotion);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const frame1 = window.requestAnimationFrame(() => setReady(true));
+    return () => window.cancelAnimationFrame(frame1);
+  }, [reducedMotion]);
+
+  const className =
+    "hero-heading hero-heading--slide" +
+    (ready ? " is-ready" : "") +
+    (reducedMotion ? " is-static" : "");
+
+  return (
+    <h1 className={className}>
+      {HERO_HEADING_LINES.map((line) => (
+        <span key={line} className="hero-heading__clip">
+          <span className="hero-heading__line">{line}</span>
+        </span>
+      ))}
+    </h1>
+  );
+}
 
 export function Hero() {
   return (
     <section className="hero-section">
       <div className="container-page hero-grid">
-        <div className="anim-fade-up">
-          <h1 className="hero-heading">
-            More power.
-            <br />
-            Less land.
-          </h1>
-          <p className="hero-lead">
+        <div className="hero-copy">
+          <HeroHeading />
+          <p className="hero-lead anim-fade-up-delayed">
             Janta Power builds vertical 3D photovoltaic towers engineered for
             airports, utilities, and developers who can't afford to waste an acre.
           </p>
-          <div className="hero-stats-wrap">
+          <div className="hero-stats-wrap anim-fade-up-delayed">
             <div className="hero-stats">
               {HERO_COPY.stats.map((stat, index) => (
                 <Fragment key={stat.label}>

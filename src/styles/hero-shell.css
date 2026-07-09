@@ -1,27 +1,32 @@
 /* —— Janta Vision hero shell —— */
 
 :root {
-  --sky: #397fce;
-  --sky-rgb: 57, 127, 206;
+  --sky: #3a84dc;
+  --sky-rgb: 58, 132, 220;
   --sky-light: #7ab6ea;
-  --sky-muted: #6aa3dd;
+  --sky-muted: #6ba0e3;
   --sky-mid: #2a63a8;
   --sky-deep: #24568f;
-  --sky-dusk: #17386b;
-  --sky-night: #12294a;
+  --sky-dusk: #1e3a5c;
+  --sky-night: #1a2332;
+  --hero-gold: #ffbf14;
+  --hero-gold-soft: #e8c56a;
+  --hero-cream: #faf8f5;
   --shadow-soft: 0 12px 40px rgba(51, 60, 78, 0.06);
   --gradient-hero-sky: linear-gradient(
-    120deg,
+    145deg,
     var(--sky-night) 0%,
-    var(--sky-dusk) 14%,
-    var(--sky-mid) 26%,
-    var(--sky) 40%,
-    var(--sky-muted) 52%,
-    var(--sky-light) 62%,
-    var(--sky-muted) 72%,
+    #1c3558 7%,
+    var(--hero-gold-soft) 14%,
+    var(--sky-deep) 22%,
+    var(--sky) 32%,
+    var(--sky-light) 42%,
+    rgba(250, 248, 245, 0.55) 50%,
+    var(--hero-gold-soft) 58%,
+    var(--sky-muted) 66%,
+    #8eb8e8 74%,
     var(--sky) 82%,
-    var(--sky-mid) 90%,
-    var(--sky-dusk) 96%,
+    var(--sky-dusk) 90%,
     var(--sky-night) 100%
   );
 }
@@ -67,6 +72,32 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: var(--sky-night);
+}
+
+.hero-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 72% 55% at 88% 18%, rgba(255, 191, 20, 0.22), transparent 58%),
+    radial-gradient(ellipse 68% 50% at 12% 38%, rgba(107, 160, 227, 0.18), transparent 56%),
+    radial-gradient(ellipse 75% 52% at 50% 52%, rgba(58, 132, 220, 0.14), transparent 60%),
+    radial-gradient(ellipse 62% 48% at 78% 62%, rgba(255, 223, 150, 0.14), transparent 55%),
+    radial-gradient(ellipse 58% 44% at 22% 72%, rgba(250, 248, 245, 0.16), transparent 54%),
+    linear-gradient(
+      180deg,
+      rgba(26, 35, 50, 0.55) 0%,
+      rgba(42, 96, 175, 0.22) 18%,
+      rgba(58, 132, 220, 0.16) 34%,
+      rgba(107, 160, 227, 0.18) 50%,
+      rgba(255, 191, 20, 0.1) 64%,
+      rgba(250, 248, 245, 0.12) 76%,
+      rgba(58, 132, 220, 0.14) 88%,
+      rgba(30, 58, 92, 0.24) 100%
+    );
 }
 
 .hero-sky {
@@ -83,6 +114,19 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(ellipse 85% 65% at 14% 12%, rgba(255, 255, 255, 0.13), transparent 52%),
+    radial-gradient(ellipse 70% 55% at 86% 32%, rgba(255, 191, 20, 0.16), transparent 56%),
+    radial-gradient(ellipse 68% 52% at 18% 58%, rgba(107, 160, 227, 0.14), transparent 55%),
+    radial-gradient(ellipse 64% 48% at 72% 48%, rgba(255, 223, 150, 0.11), transparent 54%),
+    linear-gradient(
+      180deg,
+      rgba(58, 132, 220, 0.06) 0%,
+      rgba(107, 160, 227, 0.1) 25%,
+      rgba(255, 191, 20, 0.08) 50%,
+      rgba(250, 248, 245, 0.1) 72%,
+      rgba(58, 132, 220, 0.08) 100%
+    );
 }
 
 .hero-main {
@@ -123,6 +167,60 @@
   line-height: 1.02;
   letter-spacing: -0.03em;
   color: #ffffff;
+}
+
+.hero-heading__clip {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-heading__line {
+  display: block;
+}
+
+.hero-heading--slide:not(.is-ready):not(.is-static) .hero-heading__line {
+  transform: translate3d(108%, 0, 0);
+}
+
+.hero-heading--slide.is-static .hero-heading__line {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-heading--slide.is-ready .hero-heading__clip:nth-child(1) .hero-heading__line {
+    animation: hero-heading-slide-in 1.65s linear 0s both;
+  }
+
+  .hero-heading--slide.is-ready .hero-heading__clip:nth-child(2) .hero-heading__line {
+    animation: hero-heading-slide-in 1.65s linear 0.75s both;
+  }
+}
+
+@keyframes hero-heading-slide-in {
+  0% {
+    transform: translate3d(108%, 0, 0);
+    color: rgba(255, 208, 118, 0.84);
+  }
+
+  30% {
+    transform: translate3d(72%, 0, 0);
+    color: rgba(196, 224, 255, 0.9);
+  }
+
+  55% {
+    transform: translate3d(42%, 0, 0);
+    color: rgba(228, 240, 255, 0.95);
+  }
+
+  78% {
+    transform: translate3d(14%, 0, 0);
+    color: rgba(248, 252, 255, 0.98);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+    color: #ffffff;
+  }
 }
 
 .hero-lead {
@@ -409,6 +507,11 @@
   animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+.anim-fade-up-delayed {
+  opacity: 0;
+  animation: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 2.25s both;
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -472,9 +575,17 @@
 
 @media (prefers-reduced-motion: reduce) {
   .anim-fade-up,
+  .anim-fade-up-delayed,
+  .hero-heading--slide.is-ready .hero-heading__line,
   .anim-marquee,
   .hero-sky {
     animation: none !important;
+  }
+
+  .anim-fade-up-delayed,
+  .hero-heading--slide .hero-heading__line {
+    opacity: 1;
+    transform: none;
   }
 }
 
