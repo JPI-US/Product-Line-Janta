@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { NAV_COPY } from "./websiteData";
-import { WebsiteNavProductsDropdown } from "./WebsiteNavProductsDropdown";
 import { WebsiteNavLogo } from "./WebsiteNavLogo";
 import { WebsiteFlowingMenuOverlay } from "./WebsiteFlowingMenuOverlay";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
@@ -77,18 +76,6 @@ export function WebsiteNav() {
           >
             {NAV_COPY.home}
           </NavLink>
-
-          <NavLink
-            to={NAV_COPY.rootsHref}
-            className={({ isActive }) =>
-              isActive ? "web-nav__link web-nav__link--active" : "web-nav__link"
-            }
-            onClick={closeMobile}
-          >
-            {NAV_COPY.roots}
-          </NavLink>
-
-          <WebsiteNavProductsDropdown onNavigate={closeMobile} />
 
           <Link
             to={NAV_COPY.ctaHref}

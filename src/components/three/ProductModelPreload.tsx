@@ -1,17 +1,14 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three-stdlib";
-import { configureGltfLoaders } from "../../three/loaders";
+import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
 import type { ProductId } from "../../data/productPages";
 import {
   DESIGNER_READY_MODEL_URL,
   DESIGNER_WEB_MODEL_URL,
-  MODEL_LOD_URLS,
   UTILITY_READY_MODEL_URL,
   UTILITY_WEB_MODEL_URL,
 } from "./towerModelUrls";
 import {
-  getLodPrepKey,
   isTowerScenePrepared,
   scheduleTowerScenePrepare,
 } from "./towerScenePrep";
@@ -37,10 +34,16 @@ function loadProductGltf(
   productId: ProductId,
   prepKey: string,
   url: string,
-  skipMeshOptimize: boolean
+  skipMeshOptimize: boolean,
+  useMeshopt: boolean
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const loader = configureGltfLoaders(new GLTFLoader(productLoadManager));
+    const loader = new GLTFLoader(productLoadManager);
+    if (useMeshopt) {
+      loader.setMeshoptDecoder(
+        typeof MeshoptDecoder === "function" ? MeshoptDecoder() : MeshoptDecoder
+      );
+    }
     loader.load(
       url,
       (gltf) => {
@@ -77,19 +80,6 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
     const startLoad = () => {
       if (cancelled || startedRef.current) return;
       startedRef.current = true;
-      // Progressive tier: kick the tiny -lod2 stand-in first so the tower is
-      // on screen in a few hundred ms while the full GLB streams in.
-      const lod2Url = MODEL_LOD_URLS[config.modelUrl]?.lod2;
-      if (lod2Url && !isTowerScenePrepared(getLodPrepKey(config.prepKey))) {
-        void loadProductGltf(
-          productId,
-          getLodPrepKey(config.prepKey),
-          lod2Url,
-          true,
-        ).catch(() => {
-          /* stand-in is best-effort; full chain below still runs */
-        });
-      }
       void (async () => {
         for (let i = 0; i < loadChain.length; i++) {
           if (cancelled || isTowerScenePrepared(config.prepKey)) return;
@@ -100,6 +90,7 @@ export function ProductModelPreload({ productId }: { productId: ProductId }) {
               config.prepKey,
               url,
               url === fallbacks.ready,
+              true,
             );
             return;
           } catch {

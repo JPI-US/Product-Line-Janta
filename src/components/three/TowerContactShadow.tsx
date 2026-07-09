@@ -5,11 +5,10 @@ import { getHubTowerContactShadowTexture } from "./hubTowerContactShadow";
 
 /** janta-vision Tower3D contact shadow tuning (warm charcoal texture) */
 export const TOWER_CONTACT_SHADOW = {
-  /** Tight disc — the dark core must hug the pedestal, not haze the ground */
-  scale: 6,
+  scale: 9,
   /** Visible at night without reading as a hole; deeper in daylight */
   opacityMin: 0.38,
-  opacityMax: 0.72,
+  opacityMax: 0.52,
   /** Matches janta-vision sampleLighting shadowOpacity ramp */
   opacityBlendStart: 0.15,
   opacityBlendEnd: 0.7,

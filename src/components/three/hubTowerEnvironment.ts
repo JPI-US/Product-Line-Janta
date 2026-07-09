@@ -241,19 +241,13 @@ export function applyHubTowerEnvMap(
 }
 
 export function createHubTowerMaterials(): MaterialPair {
-  // MeshPhysicalMaterial with the product-bake clearcoat so the hero tower
-  // glass reads the same as the product pages (Stage 9 material alignment).
-  const panel = new THREE.MeshPhysicalMaterial({
+  const panel = new THREE.MeshStandardMaterial({
     color: "#0a1828",
     metalness: 0.62,
     roughness: 0.14,
     envMapIntensity: 1.65,
     emissive: "#1e4068",
     emissiveIntensity: 0.1,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.12,
-    iridescence: 0.3,
-    iridescenceIOR: 1.3,
   });
 
   const frame = new THREE.MeshStandardMaterial({

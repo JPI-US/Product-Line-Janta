@@ -15,7 +15,6 @@ import { websiteTowerOrbit } from "./websiteTowerOrbit";
 
 /** Page-level scroll → CSS vars (immediate wheel position). */
 export function WebsitePageScrollCssSync() {
-  const scrollRaf = useRef(0);
   const tailRaf = useRef(0);
   const scrollingUntil = useRef(0);
 
@@ -52,11 +51,7 @@ export function WebsitePageScrollCssSync() {
     const scheduleSync = (el: HTMLElement) => {
       scrollingUntil.current = performance.now() + 120;
       if (!tailRaf.current) tailRaf.current = requestAnimationFrame(runTail);
-      if (scrollRaf.current) return;
-      scrollRaf.current = requestAnimationFrame(() => {
-        scrollRaf.current = 0;
-        syncOffset(el);
-      });
+      syncOffset(el);
     };
 
     let detach: (() => void) | null = null;
@@ -99,7 +94,6 @@ export function WebsitePageScrollCssSync() {
       detach?.();
       window.removeEventListener("resize", onResize);
       page.removeEventListener("load", onResize, true);
-      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
       if (tailRaf.current) cancelAnimationFrame(tailRaf.current);
       resetWebsiteScrollCompositing();
     };

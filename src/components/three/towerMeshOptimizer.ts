@@ -2,10 +2,6 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { meshUsesPvPanelMaterial, TOWER_PANEL_COLOR } from "./towerMaterials";
 import { simplifyPanelGeometry } from "./towerPanelSimplify";
-import {
-  getPanelAlbedoTexture,
-  getPanelNormalTexture,
-} from "./towerPanelTexture";
 
 export type MeshOptimizeOptions = {
   structureCastShadow?: boolean;
@@ -21,12 +17,11 @@ export type MeshOptimizeOptions = {
 /** World-space +Y threshold after bake — faces pointing up = glass tops */
 const DEFAULT_TOP_NORMAL_MIN_Y = 0.52;
 
-const PANEL_METALNESS = 0.9;
-const PANEL_ROUGHNESS = 0.15;
-const PANEL_ENV_INTENSITY = 0.9;
-const PANEL_CLEARCOAT = 0.6;
-const PANEL_CLEARCOAT_ROUGHNESS = 0.12;
-
+const PANEL_METALNESS = 0.06;
+const PANEL_ROUGHNESS = 0.38;
+const PANEL_ENV_INTENSITY = 0.62;
+const PANEL_CLEARCOAT = 0.1;
+const PANEL_CLEARCOAT_ROUGHNESS = 0.22;
 
 let sharedPanelMaterial: THREE.MeshPhysicalMaterial | null = null;
 const structureMaterialCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -73,51 +68,10 @@ export function getSharedPanelMaterial(): THREE.MeshPhysicalMaterial {
       roughness: PANEL_ROUGHNESS,
       clearcoat: PANEL_CLEARCOAT,
       clearcoatRoughness: PANEL_CLEARCOAT_ROUGHNESS,
-      // Thin-film interference — the faint blue-purple sheen of real PV glass
-      iridescence: 0.3,
-      iridescenceIOR: 1.3,
-      map: getPanelAlbedoTexture(),
-      normalMap: getPanelNormalTexture(),
-      normalScale: new THREE.Vector2(0.35, 0.35),
     });
     sharedPanelMaterial.envMapIntensity = PANEL_ENV_INTENSITY;
-
-    // Bifacial hint — faint warm bounce on downward-facing glass, strongest
-    // at grazing (low-sun) view angles. Static uniform keeps it cheap.
-    sharedPanelMaterial.onBeforeCompile = (shader) => {
-      shader.uniforms.uBifacialGlow = { value: 0.16 };
-      shader.fragmentShader = shader.fragmentShader
-        .replace(
-          "#include <common>",
-          "uniform float uBifacialGlow;\n#include <common>",
-        )
-        .replace(
-          "#include <emissivemap_fragment>",
-          `#include <emissivemap_fragment>
-	{
-		float downFacing = max( 0.0, -normal.y );
-		totalEmissiveRadiance += vec3( 1.0, 0.82, 0.58 ) * downFacing * downFacing * uBifacialGlow;
-	}`,
-        );
-    };
   }
   return sharedPanelMaterial;
-}
-
-/**
- * World-space planar UVs (XZ dominant for tilted glass) so the procedural
- * monocrystalline texture tiles evenly across the merged panel surface.
- */
-function applyPanelPlanarUvs(geometry: THREE.BufferGeometry, tile = 1.35) {
-  const pos = geometry.getAttribute("position");
-  if (!pos) return;
-  if (!geometry.getAttribute("normal")) geometry.computeVertexNormals();
-  const uv = new Float32Array(pos.count * 2);
-  for (let i = 0; i < pos.count; i++) {
-    uv[i * 2] = pos.getX(i) / tile;
-    uv[i * 2 + 1] = (pos.getY(i) + pos.getZ(i)) / tile;
-  }
-  geometry.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
 }
 
 function getCachedStructureMaterial(
@@ -292,15 +246,11 @@ export function optimizeTowerMeshes(
         panelParts.forEach((g) => g.dispose());
       }
       merged.computeVertexNormals();
-      applyPanelPlanarUvs(merged);
       const panelMesh = new THREE.Mesh(merged, getSharedPanelMaterial());
       panelMesh.name = "tower-panels-merged";
-      // Cast + receive so panels self-shadow (back rows dim under front rows)
-      // and pick up the sun-rig shadow onto their glass.
-      panelMesh.castShadow = true;
-      panelMesh.receiveShadow = true;
+      panelMesh.castShadow = false;
+      panelMesh.receiveShadow = false;
       panelMesh.frustumCulled = true;
-
       mergedGroup.add(panelMesh);
       panelsMerged = true;
     }
@@ -316,9 +266,8 @@ export function optimizeTowerMeshes(
     const structureMesh = new THREE.Mesh(merged, bucket.material);
     structureMesh.name = `tower-structure-${key}`;
     structureMesh.castShadow = structureCastShadow;
-    structureMesh.receiveShadow = true;
+    structureMesh.receiveShadow = false;
     structureMesh.frustumCulled = true;
-
     mergedGroup.add(structureMesh);
   });
 

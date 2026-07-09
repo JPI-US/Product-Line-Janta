@@ -1,8 +1,4 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import {
-  WebsiteBenefitsSection,
-  WebsiteSolutionsSection,
-} from "./WebsiteLandingSections";
 import { WebsiteDeferredSection } from "./WebsiteDeferredSection";
 
 const WebsiteApplicationsSection = lazy(() =>
@@ -10,9 +6,14 @@ const WebsiteApplicationsSection = lazy(() =>
     default: m.WebsiteApplicationsSection,
   })),
 );
-const WebsiteVisionSection = lazy(() =>
-  import("./WebsiteVisionSection").then((m) => ({
-    default: m.WebsiteVisionSection,
+const WebsiteYieldSection = lazy(() =>
+  import("./WebsiteYieldSection").then((m) => ({
+    default: m.WebsiteYieldSection,
+  })),
+);
+const WebsitePowerProfileSection = lazy(() =>
+  import("./WebsitePowerProfileSection").then((m) => ({
+    default: m.WebsitePowerProfileSection,
   })),
 );
 const WebsiteValueSection = lazy(() =>
@@ -25,9 +26,9 @@ const WebsiteSoftwareShowcaseSection = lazy(() =>
     default: m.WebsiteSoftwareShowcaseSection,
   })),
 );
-const WebsiteMediaSection = lazy(() =>
-  import("./WebsiteMediaSection").then((m) => ({
-    default: m.WebsiteMediaSection,
+const WebsiteSpecsHighlight = lazy(() =>
+  import("./WebsiteSpecsHighlight").then((m) => ({
+    default: m.WebsiteSpecsHighlight,
   })),
 );
 const WebsiteRoiSection = lazy(() =>
@@ -48,23 +49,27 @@ function LazySection({ children }: { children: ReactNode }) {
 export function WebsiteContent() {
   return (
     <>
-      <WebsiteDeferredSection mountImmediately>
-        <WebsiteBenefitsSection />
-      </WebsiteDeferredSection>
+      <div className="web-landing-sky-band">
+        <WebsiteDeferredSection minHeight="min(90vh, 820px)">
+          <LazySection>
+            <WebsiteValueSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+      </div>
       <WebsiteDeferredSection minHeight="min(58vh, 520px)">
         <LazySection>
           <WebsiteApplicationsSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection minHeight="min(100vh, 720px)">
-        <LazySection>
-          <WebsiteVisionSection />
-        </LazySection>
-      </WebsiteDeferredSection>
       <div className="web-landing-sky-band">
-        <WebsiteDeferredSection>
+        <WebsiteDeferredSection minHeight="min(70vh, 620px)">
           <LazySection>
-            <WebsiteValueSection />
+            <WebsiteYieldSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+        <WebsiteDeferredSection minHeight="min(52vh, 480px)">
+          <LazySection>
+            <WebsiteSpecsHighlight />
           </LazySection>
         </WebsiteDeferredSection>
       </div>
@@ -74,14 +79,9 @@ export function WebsiteContent() {
         </LazySection>
       </WebsiteDeferredSection>
       <div className="web-landing-sky-band web-landing-sky-band--solutions-media">
-        <WebsiteDeferredSection minHeight="min(52vh, 480px)">
+        <WebsiteDeferredSection minHeight="min(80vh, 700px)">
           <LazySection>
-            <WebsiteSolutionsSection />
-          </LazySection>
-        </WebsiteDeferredSection>
-        <WebsiteDeferredSection>
-          <LazySection>
-            <WebsiteMediaSection />
+            <WebsitePowerProfileSection />
           </LazySection>
         </WebsiteDeferredSection>
       </div>

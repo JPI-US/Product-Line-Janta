@@ -10,34 +10,17 @@ export const TOWER_CANVAS_GL = {
   powerPreference: "default" as WebGLPowerPreference,
   failIfMajorPerformanceCaveat: false,
   toneMapping: THREE.ACESFilmicToneMapping,
-  toneMappingExposure: 1.0,
+  toneMappingExposure: 1.18,
 } as const;
 
-/** Product routes — same tone map + antialiasing as the hub canvas */
+/** Product routes — same tone map, less fill rate than the hub / legacy dual-canvas page */
 export const PRODUCT_CANVAS_GL = {
   ...TOWER_CANVAS_GL,
+  antialias: false,
 } as const;
 
-const IS_COARSE_POINTER =
-  typeof window !== "undefined" &&
-  typeof window.matchMedia === "function" &&
-  window.matchMedia("(pointer: coarse)").matches;
-
-/**
- * Pixel-ratio cap — janta-vision renders at 1.75 for the crisp tower look.
- * Dropping the shadow-map rigs freed the GPU budget this consumes; coarse
- * pointers (mobile GPUs) keep a lower cap.
- */
-export const TOWER_CANVAS_DPR: [number, number] = IS_COARSE_POINTER
-  ? [1, 1.35]
-  : [1, 1.75];
-
-/**
- * Well-defined shadow maps on the product tower — desktop only. Coarse
- * pointers (mobile GPUs) fall back to the compact contact shadow so phones
- * keep the DPR 1.75 crispness without paying the shadow-rig GPU cost.
- */
-export const SHADOWS_ENABLED = !IS_COARSE_POINTER;
+/** Cap pixel ratio — same layout, less GPU fill on HiDPI displays */
+export const TOWER_CANVAS_DPR: [number, number] = [1, 1];
 
 /** World-space center of tower (panel seam / middle) */
 const TOWER_FOCUS = { x: -1.6, y: 1.15, z: 0 } as const;
@@ -65,8 +48,7 @@ export const SCENE = {
     azimuthStart: Math.PI * 0.5,
     azimuthEnd: Math.PI * 0.5,
     orbitRadius: 22,
-    /** Sun height — near-zenith so the cast shadow pools at the tower's foot */
-    elevation: 45,
+    elevation: 6.5,
     visualRadius: 1.15,
     glowRadius: 5.2,
     coreColor: "#fffffa",
@@ -77,38 +59,39 @@ export const SCENE = {
     intensity: 3.95,
     ambient: "#ebeae8",
     fill: "#fff8f0",
-    /** Cool sky rim — janta-vision's #b6d4ff separates the structure metal */
-    rim: "#c6d9f5",
+    rim: "#dde4f0",
     hemisphereSky: "#ebe9e6",
     hemisphereGround: "#454a48",
     point: "#fffaf6",
   },
-  /** Sunset HDRI — warm directional bounce that reads as "product photo" */
+  /** Neutral HDRI — avoids blue sky tint on PV panels; rotated to match sun (+X) */
   environment: {
-    preset: "sunset" as const,
+    preset: "warehouse" as const,
     resolution: 256,
-    intensity: 0.75,
+    intensity: 0.42,
     rotationY: -Math.PI * 0.5,
   },
   /**
-   * Both product scroll pages render without shadow maps — the compact
-   * TowerContactShadow at the base is the only shadow (janta-vision look).
+   * Product scroll pages use `utility` (compact rig, no shadows) by default.
+   * Designer product hero enables the full shadow rig via DESIGNER_PRODUCT_PERF.
    */
   lighting: {
     designer: {
+      castShadow: true,
+      shadowMapSize: 512,
       shadowIntensity: 0.38,
-      /** Lifted ambient/rim compensate for the removed shadow-map depth */
-      ambientIntensity: 0.3,
-      hemisphereIntensity: 0.48,
+      ambientIntensity: 0.22,
+      hemisphereIntensity: 0.44,
       keyIntensity: 3.95,
       fillIntensity: 0.88,
-      rimIntensity: 1.15,
+      rimIntensity: 1.05,
       pointIntensity: 0.68,
       sunDetail: "full" as const,
     },
     utility: {
-      ambientIntensity: 0.36,
-      hemisphereIntensity: 0.62,
+      castShadow: false,
+      ambientIntensity: 0.3,
+      hemisphereIntensity: 0.56,
       /** Merged fill/rim character for a single bounce pass */
       hemisphereSky: "#f2f0ec",
       hemisphereGround: "#3d4341",

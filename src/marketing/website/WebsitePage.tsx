@@ -1,11 +1,11 @@
 import { HubPreviewProvider } from "../../context/HubPreviewContext";
 import { WebsiteContent } from "./WebsiteContent";
-import { WebsiteHeroProductLine } from "./WebsiteHeroProductLine";
+import { WebsiteHeroShell } from "../../components/site/WebsiteHeroShell";
 import { WebsiteHubHeroProvider } from "./WebsiteHubHeroContext";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { WebsitePageScroll } from "./WebsitePageScroll";
 import { WebsitePageScrollCssSync } from "./WebsitePageScrollCssSync";
-import { WebsitePageWarmup } from "./WebsitePageWarmup";
+import { WebsitePageScrollRoot } from "./WebsitePageScrollRoot";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 export default function WebsitePage() {
@@ -18,14 +18,12 @@ export default function WebsitePage() {
     <HubPreviewProvider>
       <WebsiteHubHeroProvider>
         <WebsiteMarketingShell variant="hub-hero">
-          <WebsitePageWarmup />
+          <WebsitePageScrollRoot />
           <WebsitePageScrollCssSync />
           <WebsitePageScroll />
 
-          <div className="web-scroll-progress" aria-hidden />
-
           <div className="web__experience">
-            <WebsiteHeroProductLine />
+            <WebsiteHeroShell />
           </div>
 
           <section className="web__page-below" aria-label="Website content">

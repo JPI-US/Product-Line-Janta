@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import { towers } from "../../data/towers";
-
 
 const tower = towers.find((t) => t.id === "10kw")!;
 
@@ -40,10 +38,6 @@ export function UtilityTowerInfo() {
       <button type="button" className="tower-3d__cta">
         SEE YOUR SAVINGS
       </button>
-      <Link to="/orbit/utility" className="tower-3d__cta tower-3d__cta--ghost">
-        View in 360°
-      </Link>
     </div>
   );
 }
-

@@ -34,14 +34,29 @@ export const NAV_COPY = {
   products: "Products",
   contact: "Contact",
   contactHref: "/contact",
-  cta: "See Your Savings",
-  ctaHref: "/quiz",
+  cta: "Contact Us",
+  ctaHref: "/contact",
 } as const;
 
 export const HERO_COPY = {
   eyebrow: "Janta Power",
   title: ["More MW.", "Less Land."],
   sub: "Three-dimensional solar that doesn't\nspare acres or energy.",
+  statsContext: "Compared to traditional solar",
+  stats: [
+    {
+      value: "50%",
+      label: "More Energy",
+    },
+    {
+      value: "3X",
+      label: "Power/Unit Area",
+    },
+    {
+      value: "32%",
+      label: "Capacity Factor",
+    },
+  ],
 } as const;
 
 export const VISION_EYEBROW = "Our Vision";
@@ -65,10 +80,23 @@ export const WEBSITE_SKY_GRADIENT = {
 export const ROI_COPY = {
   title: "Save Millions Annually",
   body: "Answer a few quick questions and we'll estimate tower count, land use, and lifetime savings for your project.",
-  savingsCta: "See Your Savings",
-  savingsHref: "/quiz",
+  savingsCta: "Contact us",
+  savingsHref: "/contact",
   image: "/marketing/roi-hero.png",
   imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
+} as const;
+
+export const CONTACT_PAGE_COPY = {
+  eyebrow: "Get in touch",
+  title: "Contact us",
+  lede:
+    "Tell us about your site or project. We'll follow up by email within one business day.",
+  quizEyebrow: "Savings estimate",
+  quizTitle: "See your savings",
+  quizBody:
+    "Answer a few quick questions and we'll estimate tower count, land use, and lifetime savings for your project.",
+  quizCta: "Start savings quiz",
+  quizHref: "/quiz",
 } as const;
 
 export const COMPARE_COPY = {
@@ -167,34 +195,53 @@ export const BENEFITS_COPY = {
 
 export const VALUE_COPY = {
   title: "Bringing You",
-  titleEmphasis: "Value",
-  image: "/marketing/value-aerial-solar.png",
-  imageAlt: "Aerial view of Janta solar arrays in a green field",
-  imagePosition: "48% center",
+  titleEmphasisWords: [
+    "More Power",
+    "More Energy",
+    "Higher ROI",
+    "Fast Installation",
+    "Land Savings",
+  ] as const,
+  body:
+    "Janta's solar technology delivers the lowest energy cost in the market, alongside 4-tier resilience, and energy density.",
   items: [
     {
-      id: "lcoe",
-      title: "Lower Levelized Cost",
+      id: "density",
+      tag: "Density",
+      metric: "500",
+      metricUnit: "kW / acre",
+      title: "Power density per acre",
       detail:
-        "Project-lifetime energy at $0.05/kWh, undercutting flat arrays with costs that stay predictable.",
+        "More power from the same footprint, without giving up operational land.",
+      image: "/marketing/value-dsr-campus.png",
+      imageAlt: "Janta DSR solar tower on a commercial campus",
+      imagePosition: "52% center",
+      imageScale: 1.32,
     },
     {
-      id: "density",
-      title: "More Power Per Acre",
+      id: "lcoe",
+      tag: "Economics",
+      metric: "$0.05",
+      metricUnit: "/ kWh",
+      title: "Levelized cost of energy",
       detail:
-        "500 kW per acre means more power from the same footprint, without giving up operational land.",
+        "Project-lifetime energy that undercuts flat arrays, with costs that stay predictable.",
+      image: "/marketing/value-aerial-solar.png",
+      imageAlt: "Aerial view of Janta solar arrays in a green field",
+      imagePosition: "50% center",
+      imageScale: 1.18,
     },
     {
       id: "uptime",
-      title: "99% Uptime",
+      tag: "Reliability",
+      metric: "99%",
+      metricUnit: "uptime",
+      title: "Target fleet availability",
       detail:
-        "Azimuthal tracking and live monitoring deliver 99% uptime when the load cannot wait.",
-    },
-    {
-      id: "resilience",
-      title: "Four-Tier Resilience",
-      detail:
-        "Solar, battery, grid, and generator layers keep sites online through outages.",
+        "Azimuthal tracking and live monitoring keep output steady when the load cannot wait.",
+      image: "/marketing/vision-banner.png",
+      imageAlt: "Three Janta solar towers in a green field",
+      imagePosition: "center 42%",
     },
   ],
 } as const;
@@ -377,7 +424,8 @@ export const FOOTER_COPY = {
     { label: "Home", href: "/website" },
     { label: "Janta", href: "/roots" },
     { label: "Careers", href: "/careers" },
-    { label: "Savings", href: "/quiz" },
+    { label: "Contact", href: "/contact" },
+    { label: "Savings quiz", href: "/quiz" },
     { label: "DSR Tower", href: "/products/designer", acronym: "DSR", towerTitle: "Tower" },
     { label: "LFM Tower", href: "/products/utility", acronym: "LFM", towerTitle: "Tower" },
   ],

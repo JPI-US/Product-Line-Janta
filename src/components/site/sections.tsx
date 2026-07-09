@@ -1,0 +1,104 @@
+import { partnerLogos } from "@/lib/assets";
+import { HERO_TOWER_POSE } from "@/lib/heroTowerPose";
+import { HERO_COPY } from "@/marketing/website/websiteData";
+import { Fragment } from "react";
+import { Tower3D } from "./Tower3D";
+
+export function Hero() {
+  return (
+    <section className="hero-section">
+      <div className="container-page hero-grid">
+        <div className="anim-fade-up">
+          <h1 className="hero-heading">
+            More power.
+            <br />
+            Less land.
+          </h1>
+          <p className="hero-lead">
+            Janta Power builds vertical 3D photovoltaic towers engineered for
+            airports, utilities, and developers who can't afford to waste an acre.
+          </p>
+          <div className="hero-stats-wrap">
+            <div className="hero-stats">
+              {HERO_COPY.stats.map((stat, index) => (
+                <Fragment key={stat.label}>
+                  {index > 0 ? <Divider /> : null}
+                  <Stat value={stat.value} label={stat.label} />
+                </Fragment>
+              ))}
+            </div>
+            <p className="hero-stats__context">{HERO_COPY.statsContext}</p>
+          </div>
+        </div>
+        <div className="hero-tower-col">
+          <div
+            aria-hidden
+            className="hero-tower-glow"
+            style={{
+              background:
+                "radial-gradient(55% 50% at 50% 55%, rgba(var(--sky-rgb), 0.16), transparent 72%)",
+            }}
+          />
+          <Tower3D
+            variant="designer"
+            interactive
+            autoRotateSpeed={0.32}
+            modelScale={1}
+            initialRotationY={HERO_TOWER_POSE.initialRotationY}
+            cameraPosition={[...HERO_TOWER_POSE.cameraPosition]}
+            cameraTarget={[...HERO_TOWER_POSE.cameraTarget]}
+            cameraFov={HERO_TOWER_POSE.cameraFov}
+            showSky={false}
+            showHint={false}
+            className="hero-tower-canvas"
+            height="100%"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="hero-stat">
+      <div className="hero-stat__value">{value}</div>
+      <div className="hero-stat__label">{label}</div>
+    </div>
+  );
+}
+
+const Divider = () => <span className="hero-stat-divider" aria-hidden />;
+
+export function ProofBand() {
+  const loop = [...partnerLogos, ...partnerLogos];
+  const count = partnerLogos.length;
+
+  return (
+    <section className="hero-partners-band" aria-label="Partners">
+      <div className="hero-partners-marquee">
+        <div className="hero-partners-track anim-marquee">
+          {loop.map((p, i) => (
+            <span key={`${p.id}-${i}`} className="hero-partners-segment">
+              <span className="partner-mark">
+                <img
+                  className={`partner-logo partner-logo--${p.id}`}
+                  src={p.logo}
+                  alt={p.name}
+                  decoding="async"
+                  loading={i >= count ? "lazy" : "eager"}
+                />
+              </span>
+              <span aria-hidden className="partner-diamond" />
+            </span>
+          ))}
+        </div>
+      </div>
+      <ul className="sr-only">
+        {partnerLogos.map((p) => (
+          <li key={p.id}>{p.name}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}

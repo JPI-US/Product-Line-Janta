@@ -26,6 +26,7 @@ import {
 import { markWebsiteHeroSkyPainted } from "../marketing/website/websiteHeroSkyBoot";
 import { subscribeWebsiteHeroScroll } from "../marketing/website/websiteHeroScrollBus";
 import { websiteTowerOrbit } from "../marketing/website/websiteTowerOrbit";
+import { WEBSITE_HERO_STATIC_DAY } from "../marketing/website/websiteHeroMode";
 
 /** Night-only gold fireflies — mounted just for the marketing hero */
 const HubFirefliesCanvas = lazy(() =>
@@ -512,7 +513,7 @@ export function HubSkyBackground({
         <div className="hub__sky-flow" aria-hidden />
         <div className="hub__sky-aurora" aria-hidden />
         <div className="hub__sky-stars" aria-hidden />
-        {marketingHero ? (
+        {marketingHero && !WEBSITE_HERO_STATIC_DAY ? (
           <Suspense fallback={null}>
             <HubFirefliesCanvas lite skyPeriod="night" opacity={1} />
           </Suspense>

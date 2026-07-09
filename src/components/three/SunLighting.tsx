@@ -1,18 +1,14 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { SCENE, SHADOWS_ENABLED } from "./sceneConfig";
+import { SCENE } from "./sceneConfig";
 import { getSunPosition, getTowerLightTarget } from "./sceneScroll";
+import { isAnyTowerDragging } from "./towerDragSync";
 
 const sunPosScratch = new THREE.Vector3();
 const sunDirScratch = new THREE.Vector3();
 const rimPosScratch = new THREE.Vector3();
 const fillPosScratch = new THREE.Vector3();
-
-/** Key-light shadow map — desktop only (gated by SHADOWS_ENABLED). */
-const PRODUCT_SHADOW_MAP = 2048;
-/** Ortho shadow-camera half-extent — bounds the tower + its cast shadow. */
-const PRODUCT_SHADOW_BOUNDS = 12;
 
 export type SunLightingVariant = "designer" | "utility";
 
@@ -43,9 +39,8 @@ export type SunLightingProps = {
 };
 
 /**
- * Shared sun rig — designer uses full lights; utility uses a lighter static
- * rig tuned to match the same premium look. The key light casts a defined
- * shadow map on desktop (SHADOWS_ENABLED); mobile keeps the contact shadow.
+ * Shared sun rig — designer uses full lights + shadows; utility uses a
+ * lighter static rig tuned to match the same premium look.
  */
 export function SunLighting({
   variant = "designer",
@@ -73,6 +68,10 @@ export function SunLighting({
   const haloRef = useRef<THREE.Mesh>(null);
   const coreRef = useRef<THREE.Mesh>(null);
   const lastKey = useRef<string | null>(null);
+  const shadowInit = useRef(false);
+  const lastShadowUpdateMs = useRef(0);
+  const SHADOW_UPDATE_MIN_MS = 100;
+  const SHADOW_UPDATE_IDLE_MS = 320;
   const isDesigner = variant === "designer";
   const sunDetail = profile.sunDetail;
 
@@ -118,9 +117,30 @@ export function SunLighting({
       .add(new THREE.Vector3(-sunDirScratch.z * 8, 5, sunDirScratch.x * 8));
 
     if (sunRef.current) {
+      if (profile.castShadow && !shadowInit.current) {
+        sunRef.current.shadow.autoUpdate = false;
+        shadowInit.current = true;
+      }
       sunRef.current.position.copy(sunPos);
       sunRef.current.target.position.copy(focus);
       sunRef.current.target.updateMatrixWorld();
+
+      if (profile.castShadow) {
+        const shadowCam = sunRef.current.shadow.camera;
+        shadowCam.position.copy(sunPos);
+        shadowCam.lookAt(focus);
+        shadowCam.updateProjectionMatrix();
+        const now = performance.now();
+        const dragging = isAnyTowerDragging();
+        const shadowInterval =
+          blend >= 0.98 && !dragging
+            ? SHADOW_UPDATE_IDLE_MS
+            : SHADOW_UPDATE_MIN_MS;
+        if (now - lastShadowUpdateMs.current >= shadowInterval) {
+          sunRef.current.shadow.needsUpdate = true;
+          lastShadowUpdateMs.current = now;
+        }
+      }
     }
 
     if (isDesigner && rimRef.current) {
@@ -150,6 +170,9 @@ export function SunLighting({
     lastKey.current = key;
     updateSun(blend, panelYaw);
   });
+
+  const shadowSize = designerProfile.shadowMapSize;
+  const shadowIntensity = designerProfile.shadowIntensity;
 
   return (
     <>
@@ -190,16 +213,16 @@ export function SunLighting({
         ref={sunRef}
         intensity={profile.keyIntensity}
         color={color}
-        castShadow={SHADOWS_ENABLED}
-        shadow-mapSize={[PRODUCT_SHADOW_MAP, PRODUCT_SHADOW_MAP]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={60}
-        shadow-camera-left={-PRODUCT_SHADOW_BOUNDS}
-        shadow-camera-right={PRODUCT_SHADOW_BOUNDS}
-        shadow-camera-top={PRODUCT_SHADOW_BOUNDS}
-        shadow-camera-bottom={-PRODUCT_SHADOW_BOUNDS}
-        shadow-bias={-0.0002}
+        castShadow={profile.castShadow}
+        shadow-mapSize={[shadowSize, shadowSize]}
+        shadow-camera-far={50}
+        shadow-camera-left={-18}
+        shadow-camera-right={18}
+        shadow-camera-top={18}
+        shadow-camera-bottom={-18}
+        shadow-bias={-0.00015}
         shadow-normalBias={0.02}
+        shadow-intensity={shadowIntensity}
       />
 
       {isDesigner && (

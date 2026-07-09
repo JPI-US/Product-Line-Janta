@@ -11,6 +11,10 @@ import {
   clampWebsiteCameraPitch,
   websiteTowerOrbit,
 } from "./websiteTowerOrbit";
+import {
+  WEBSITE_HERO_STATIC_BLEND,
+  WEBSITE_HERO_STATIC_DAY,
+} from "./websiteHeroMode";
 
 function getWebsiteIntroNightDate(ref: Date): Date {
   const d = new Date(ref);
@@ -48,6 +52,7 @@ export type WebsiteScrollSolarState = {
 
 /** Shared 0→1 ramp for scroll sun brightness + tower materials */
 export function getWebsiteScrollLightBlend(scrollBlend: number): number {
+  if (WEBSITE_HERO_STATIC_DAY) return WEBSITE_HERO_STATIC_BLEND;
   return THREE.MathUtils.clamp(scrollBlend, 0, 1);
 }
 
@@ -80,7 +85,11 @@ export function getWebsiteScrollSolarState(
   }
 
   const cycleBlend = getWebsiteOrbitBlend(scrollOffset);
-  const skyBlend = getWebsiteSkyChoreographyBlend(scrollOffset);
+  // Static-day mode: freeze the sky/lighting ramp on full day while leaving the
+  // tower's scroll orbit (yaw) untouched, so the model still rotates on scroll.
+  const skyBlend = WEBSITE_HERO_STATIC_DAY
+    ? WEBSITE_HERO_STATIC_BLEND
+    : getWebsiteSkyChoreographyBlend(scrollOffset);
   const calendarRef = new Date();
   const simulatedAt = lerpDate(
     getWebsiteIntroNightDate(calendarRef),
@@ -129,7 +138,7 @@ export function getWebsiteScrollSolarState(
     towerYaw: commandedTowerYaw,
     trackingYaw,
     tracking: animating,
-    scrollBlend: cycleBlend,
+    scrollBlend: WEBSITE_HERO_STATIC_DAY ? WEBSITE_HERO_STATIC_BLEND : cycleBlend,
     orbitBlend: cycleBlend,
     skyBlend,
   };

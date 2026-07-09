@@ -41,7 +41,7 @@ function isMobileNav() {
 export function WebsiteNavProductsDropdown({ onNavigate }: Props) {
   const [desktopOpen, setDesktopOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const rootRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
   const open = desktopOpen || mobileOpen;

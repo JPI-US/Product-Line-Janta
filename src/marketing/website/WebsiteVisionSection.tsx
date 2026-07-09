@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef } from "react";
-import { Picture } from "../../components/Picture";
 import { applyWebsiteBelowScrollRange } from "./websiteBelowScrollMeasure";
 import { subscribeWebsiteScrollRoot } from "./websiteScrollRoot";
 import { VISION_EYEBROW, VISION_HERO_IMAGE, VISION_STATEMENT_LINES } from "./websiteData";
@@ -169,10 +168,12 @@ export function WebsiteVisionSection() {
       <div className="web-vision-hero">
           <div className="web-vision-hero__media" aria-hidden>
             <div className="web-vision-hero__sky-tint" aria-hidden />
-            <Picture
+            <img
               className="web-vision-hero__img"
               src={VISION_HERO_IMAGE}
               alt=""
+              decoding="async"
+              loading="lazy"
               onLoad={() => {
                 const page = document.querySelector<HTMLElement>(".web-page");
                 if (page) applyWebsiteBelowScrollRange(page);

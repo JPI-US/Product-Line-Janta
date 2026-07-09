@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -10,7 +11,11 @@ import {
   type PowerCurveChart,
   type PowerSeason,
 } from "../data/designerPowerCurves";
+import { powerCurves500kw } from "../data/powerCurves500kw";
 import type { ChartGeom } from "../lib/powerCurvePaths";
+import { useWebsiteReducedMotion } from "../marketing/website/useWebsiteReducedMotion";
+
+export type PowerProfileScenario = "product" | "500kw-dallas";
 
 const CHART = {
   width: 1000,
@@ -22,6 +27,8 @@ const SEASONS: { id: PowerSeason; label: string }[] = [
   { id: "summer", label: "Summer" },
   { id: "winter", label: "Winter" },
 ];
+
+const SEASON_CYCLE_MS = 4000;
 
 type Geom = ChartGeom & { plotRight: number };
 
@@ -68,7 +75,13 @@ function fmtHour(h: number): string {
 }
 
 function fmtKw(kw: number): string {
-  return `${kw.toFixed(1)} kW`;
+  return kw >= 100 ? `${Math.round(kw)} kW` : `${kw.toFixed(1)} kW`;
+}
+
+function yTickStep(yMax: number): number {
+  if (yMax <= 10) return 1;
+  if (yMax <= 100) return 10;
+  return 50;
 }
 
 function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
@@ -84,8 +97,9 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
   }, [chart.hourMin, chart.hourMax, step]);
 
   const yTicks = useMemo(() => {
+    const step = yTickStep(chart.yMax);
     const ticks: number[] = [];
-    for (let kw = 0; kw <= chart.yMax; kw += 1) ticks.push(kw);
+    for (let kw = 0; kw <= chart.yMax; kw += step) ticks.push(kw);
     return ticks;
   }, [chart.yMax]);
 
@@ -262,9 +276,35 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
 }
 
 /** Daily power shape — Janta tracking vs fixed solar, toggled by season. */
-export function ProductPowerProfileSection() {
+export function ProductPowerProfileSection({
+  scenario = "product",
+  lede = "Tracking holds output from morning to evening, instead of a single midday peak.",
+  autoCycleSeason = true,
+}: {
+  scenario?: PowerProfileScenario;
+  lede?: string;
+  autoCycleSeason?: boolean;
+}) {
+  const reducedMotion = useWebsiteReducedMotion();
   const [season, setSeason] = useState<PowerSeason>("summer");
-  const chart = designerPowerCharts[season];
+  const [cycleKey, setCycleKey] = useState(0);
+  const charts = scenario === "500kw-dallas" ? powerCurves500kw : designerPowerCharts;
+  const chart = charts[season];
+
+  const selectSeason = (id: PowerSeason) => {
+    setSeason(id);
+    setCycleKey((key) => key + 1);
+  };
+
+  useEffect(() => {
+    if (!autoCycleSeason || reducedMotion) return;
+
+    const id = window.setInterval(() => {
+      setSeason((current) => (current === "summer" ? "winter" : "summer"));
+    }, SEASON_CYCLE_MS);
+
+    return () => window.clearInterval(id);
+  }, [autoCycleSeason, reducedMotion, cycleKey]);
 
   return (
     <section
@@ -276,9 +316,7 @@ export function ProductPowerProfileSection() {
           <h2 id="tower-power-profile-title" className="tower-3d__below-title">
             Output across the day
           </h2>
-          <p className="tower-3d__below-lede">
-            Tracking holds output from morning to evening, instead of a single midday peak.
-          </p>
+          <p className="tower-3d__below-lede">{lede}</p>
         </header>
 
         <div className="tower-3d__power-profile__legend">
@@ -305,7 +343,7 @@ export function ProductPowerProfileSection() {
                 className={`tower-3d__power-profile__season-btn${
                   season === item.id ? " is-active" : ""
                 }`}
-                onClick={() => setSeason(item.id)}
+                onClick={() => selectSeason(item.id)}
               >
                 {item.label}
               </button>

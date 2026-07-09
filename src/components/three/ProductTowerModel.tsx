@@ -1,6 +1,6 @@
 import { useRef, useLayoutEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useScroll } from "@react-three/drei";
+import { useGLTF, useScroll } from "@react-three/drei";
 import * as THREE from "three";
 import type { ProductId } from "../../data/productPages";
 import { SCENE, DESIGNER_IDLE_YAW_HALF_RANGE } from "./sceneConfig";
@@ -15,7 +15,7 @@ import {
   getTowerYawTowardSun,
   getTowerVisualYawOffset,
 } from "./sceneScroll";
-import { getCachedTowerScene, getLodPrepKey } from "./towerScenePrep";
+import { getCachedTowerScene } from "./towerScenePrep";
 import { PRODUCT_SCENES, getProductTowerLayout } from "./productScene";
 import { useTowerScenePrepared } from "./useTowerScenePrepared";
 import {
@@ -37,7 +37,6 @@ import {
 } from "./towerSharedRotation";
 import { isProductHero3dActive } from "./productScrollPerf";
 import { SCROLL_OFFSET_EPS } from "./utilityCanvasPerf";
-import { TowerHoverHighlight } from "./TowerHoverHighlight";
 
 const reducedMotion = () =>
   typeof window !== "undefined" &&
@@ -51,16 +50,10 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
   const lastScrollOffset = useRef(-1);
   const scroll = useScroll();
   const sceneConfig = PRODUCT_SCENES[productId];
+  useGLTF(sceneConfig.modelUrl);
 
   const ready = useTowerScenePrepared(sceneConfig.prepKey);
-  const lodReady = useTowerScenePrepared(getLodPrepKey(sceneConfig.prepKey));
-  // Progressive swap: render the -lod2 stand-in the moment it's prepared,
-  // then re-clone the full-res scene when it lands (same effect below).
-  const prepared = ready
-    ? getCachedTowerScene(sceneConfig.prepKey)
-    : lodReady
-      ? getCachedTowerScene(getLodPrepKey(sceneConfig.prepKey))
-      : null;
+  const prepared = ready ? getCachedTowerScene(sceneConfig.prepKey) : null;
   const yawHalfRange = DESIGNER_IDLE_YAW_HALF_RANGE;
 
   useLayoutEffect(() => {
@@ -179,10 +172,5 @@ export function ProductTowerModel({ productId }: { productId: ProductId }) {
 
   if (!prepared) return null;
 
-  return (
-    <>
-      <group ref={groupRef} />
-      <TowerHoverHighlight targetRef={cloneRef} />
-    </>
-  );
+  return <group ref={groupRef} />;
 }

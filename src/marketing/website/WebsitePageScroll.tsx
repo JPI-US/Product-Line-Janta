@@ -28,8 +28,7 @@ export function WebsitePageScroll() {
       if (!(event instanceof WheelEvent)) return;
       if (websiteTowerOrbit.dragging) return;
 
-      // Eased wheel scroll — smooths the choreographed hero (reduced-motion
-      // is handled inside the driver by writing the delta immediately).
+      // Direct wheel scroll — 1:1 with input (no eased lag).
       applyWebsiteWheelDelta(event.deltaY);
       event.preventDefault();
     };

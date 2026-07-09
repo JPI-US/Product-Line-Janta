@@ -1,16 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FlowingMenu from "./react-bits/FlowingMenu/FlowingMenu";
-import { NAV_COPY, SOLUTIONS_COPY } from "./websiteData";
+import { NAV_COPY } from "./websiteData";
 
 const MENU_ITEMS = [
   { link: "/website", text: NAV_COPY.home, image: "/marketing/janta-logo-mark.png" },
-  { link: NAV_COPY.rootsHref, text: NAV_COPY.roots, image: "/marketing/roi-hero.png" },
-  ...SOLUTIONS_COPY.cards.map((card) => ({
-    link: card.href,
-    text: `${card.acronym} ${card.title}`,
-    image: card.image,
-  })),
   { link: NAV_COPY.contactHref, text: NAV_COPY.contact, image: "/marketing/energy-cta.png" },
 ];
 

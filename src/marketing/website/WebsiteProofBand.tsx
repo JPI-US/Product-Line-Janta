@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
-import { Picture } from "../../components/Picture";
 import { ROI_COPY } from "./websiteData";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
@@ -35,10 +34,12 @@ export function WebsiteRoiSection() {
       aria-labelledby="web-roi-title"
     >
       <div className="web-ps-roi">
-          <Picture
+          <img
             className="web-ps-roi__img"
             src={ROI_COPY.image}
             alt={ROI_COPY.imageAlt}
+            loading="lazy"
+            decoding="async"
           />
           {darkVeilActive ? (
             <div

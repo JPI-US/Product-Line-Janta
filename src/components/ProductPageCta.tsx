@@ -8,7 +8,7 @@ const CTA_BY_PRODUCT = {
     title: "Ready for your next site?",
     lead:
       "Custom panels, field-proven performance, and a tower built for commercial campuses like this one.",
-    primary: { label: "See your savings", href: "/quiz" },
+    primary: { label: "Contact us", href: "/contact" },
     secondary: { label: "Explore LFM Tower", href: "/products/utility" },
   },
   utility: {
@@ -17,7 +17,7 @@ const CTA_BY_PRODUCT = {
     title: "Ready to deploy at scale?",
     lead:
       "Utility-scale output, field-ready installs, and a platform built for repeatable deployment.",
-    primary: { label: "See your savings", href: "/quiz" },
+    primary: { label: "Contact us", href: "/contact" },
     secondary: { label: "Explore DSR Tower", href: "/products/designer" },
   },
 } as const;

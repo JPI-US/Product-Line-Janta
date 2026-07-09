@@ -1,7 +1,7 @@
-import { Environment } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { SCENE } from "./sceneConfig";
+import { ProceduralTowerEnvironment } from "./ProceduralTowerEnvironment";
 import {
   applySharedEnvironmentToScene,
   captureSharedEnvironmentMap,
@@ -46,18 +46,16 @@ export function TowerSceneEnvironment({
   environmentIntensity = SCENE.environment.intensity,
   environmentResolution = SCENE.environment.resolution,
 }: TowerSceneEnvironmentProps) {
-  const { preset, rotationY } = SCENE.environment;
+  const { rotationY } = SCENE.environment;
   const hasCachedEnv = getSharedEnvironmentMap() !== null;
 
   return (
     <>
       {!hasCachedEnv && (
-        <Environment
-          preset={preset}
-          resolution={environmentResolution}
+        <ProceduralTowerEnvironment
           environmentIntensity={environmentIntensity}
-          environmentRotation={[0, rotationY, 0]}
-          background={false}
+          environmentResolution={environmentResolution}
+          rotationY={rotationY}
         />
       )}
       <SharedEnvironmentApply />

@@ -212,20 +212,16 @@ export function applyWebsiteWheelDelta(deltaY: number): number {
   const limit = getScrollLimit(root);
   const current = readScrollPx(root);
 
-  if (!rafId && Math.abs(targetScrollPx - current) > SNAP_EPS) {
-    targetScrollPx = current;
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+    lastTickMs = 0;
   }
 
-  targetScrollPx = Math.max(0, Math.min(limit, targetScrollPx + deltaY));
-
-  if (prefersReducedMotion()) {
-    const applied = writeScrollPx(root, targetScrollPx, limit);
-    targetScrollPx = applied;
-    storeOffset(applied / limit);
-    dispatchScroll(root);
-    return storedOffset;
-  }
-
-  scheduleTick();
-  return storeOffset(readScrollPx(root) / limit);
+  targetScrollPx = Math.max(0, Math.min(limit, current + deltaY));
+  const applied = writeScrollPx(root, targetScrollPx, limit);
+  targetScrollPx = applied;
+  storeOffset(applied / limit);
+  dispatchScroll(root, true);
+  return storedOffset;
 }

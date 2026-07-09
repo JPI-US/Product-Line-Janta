@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import type { CSSProperties } from "react";
 import { lazy, Suspense } from "react";
-import { Picture } from "../../components/Picture";
 import { WebsitePictureCardGlow } from "./WebsitePictureCardGlow";
 import { WebsiteStatGrid } from "./WebsiteStatGrid";
 import {
@@ -26,10 +25,12 @@ function SolutionCardLink({ card }: { card: SolutionCard }) {
       to={card.href}
       aria-label={`${solutionCardLabel(card)}, ${card.hoverCta}`}
     >
-      <Picture
+      <img
         className="web-solutions__card-img"
         src={card.image}
         alt={card.imageAlt}
+        loading="lazy"
+        decoding="async"
       />
       <div className="web-solutions__card-scrim" aria-hidden />
       <div className="web-solutions__card-copy">

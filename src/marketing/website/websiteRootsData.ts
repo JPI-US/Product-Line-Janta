@@ -1,89 +1,120 @@
-/**
- * Roots ("Our Roots" / Gambia story) page copy — rebuilt from the Janta
- * Clean-Energy-Gambia prototype. All imagery is local under /marketing/roots/.
- */
+const JANTAGM_IMG =
+  "https://images.squarespace-cdn.com/content/v1/5e8618a2cd1f6c5ba81a3384";
+
+function img(path: string, width = 1600) {
+  return `${JANTAGM_IMG}/${path}?format=${width}w`;
+}
+
 export const ROOTS_COPY = {
   hero: {
-    eyebrow: "Janta",
+    title: "Janta",
     tagline: ["Born in Gambia,", "built for the world."],
-    image: "/marketing/roots/roots-hero.jpg",
-    imageAlt: "Coastline in The Gambia at dawn",
+    image: "/marketing/roots/roots-hero.png",
+    imageAlt: "Tropical beach with palm trees and ocean waves",
   },
-  origin: {
-    title: "Where Janta began.",
+  beginnings: {
+    title: "Where Janta began",
     body:
-      "Founder Mohammed Njie grew up in rural Gambia, where unreliable energy is almost commonplace in everyday life. Seeing these struggles firsthand, he reimagined solar the way trees grow — upward, not outward — delivering more energy from less land so affordable power can finally reach the people who need it most.",
-    image: "/marketing/roots/roots-beginnings.jpg",
-    imageAlt: "Founder Mohammed Njie presenting Janta Power",
+      "Founder Mohammed Njie grew up in rural Gambia, where unreliable energy is almost commonplace in everyday life. Seeing these struggles, he reimagined solar the way trees grow, upward and not outward, creating three-dimensional solar technology that delivers more energy from less land, so affordable power can reach the people who need it most.",
+    image: "/marketing/roots/roots-beginnings.png",
+    imageAlt: "Mohammed Njie presenting Janta Power",
   },
-  stats: [
-    { n: "2.4M", l: "People across The Gambia" },
-    { n: "3D", l: "Vertical solar architecture" },
-    { n: "+60%", l: "Energy per square meter" },
-    { n: "1st", l: "Solar-powered school in Tintinto" },
-  ],
   gallery: {
-    title: "The smiling coast of Africa.",
-    body:
-      "A diverse, multi-lingual society of 2.4 million — the smallest country on mainland Africa. Village life is rich with community and tradition, yet many rural families still gather firewood before sunset and send children to schools that have gone years without reliable power.",
-    items: [
-      { src: "/marketing/roots/roots-hero.jpg", cap: "Coastline at dawn — Kombo" },
-      { src: "/marketing/roots/roots-solar-field.jpg", cap: "Fields awaiting energy — rural Gambia" },
-      { src: "/marketing/roots/roots-beginnings.jpg", cap: "Sharing the vision — Silicon Valley" },
-      { src: "/marketing/roots/roots-highlight-poster.jpg", cap: "Village life — community and tradition" },
+    images: [
+      {
+        id: "firewood",
+        src: img("1599492500658-O8Y9LUZXKYBNY6GUFE4D/Journey+to+fetch+firewood+arial+view+55.JPG"),
+        alt: "The walk for firewood near Tintinto",
+        fit: "wide",
+      },
+      {
+        id: "school",
+        src: img("1594611082079-QKA758VD2UDC792J05XR/Tintinto+School+arial+view+26.JPG"),
+        alt: "Tintinto Primary and Secondary School",
+        fit: "landscape",
+      },
+      {
+        id: "gathering",
+        src: img("1595128698014-APXGKMEOBF4SVG5AAJKO/pic+23.png"),
+        alt: "Community gathering in The Gambia",
+        fit: "landscape",
+      },
+      {
+        id: "carrying",
+        src: img("1599492618146-6Y6DTXJPPKO2D4XN62MB/DSCN0054.JPG"),
+        alt: "Carrying firewood home",
+        fit: "portrait",
+      },
+      {
+        id: "village",
+        src: img("1595128739380-KSSXN5YSVWBB199DV64I/pic+6.png"),
+        alt: "Village life in rural Gambia",
+        fit: "portrait",
+      },
+      {
+        id: "daily",
+        src: img("1595128912726-Q1R8PZP92G9PNQWOA1LL/pic+5.png"),
+        alt: "Daily life in a Gambian village",
+        fit: "wide",
+      },
+      {
+        id: "children",
+        src: img("1595129107134-J35Y0QLV4GBKY6TLWV13/pic+21.png"),
+        alt: "Village children",
+        fit: "portrait",
+      },
+      {
+        id: "celebration",
+        src: img("1595129104603-QH8XQNWY553S2744I615/pic+13.png"),
+        alt: "Community celebration",
+        fit: "landscape",
+      },
+      {
+        id: "destination",
+        src: img("1599495654739-OX1OP597SX6P1YAR5I69/Journey+to+fetch+firewood+2.jpg"),
+        alt: "Women cooking with gathered firewood in Tintinto village",
+        fit: "landscape",
+      },
     ],
+    columns: [
+      ["firewood", "destination"],
+      ["school", "daily"],
+      ["village"],
+      ["gathering", "carrying", "celebration", "children"],
+    ],
+  },
+  gambia: {
+    title: "The Gambia",
+    body:
+      "Known as the smiling coast of Africa, The Gambia is a diverse, multi-lingual society of about 2.4 million people, the smallest country on mainland Africa. Village life is rich with community and tradition, yet many rural families still gather firewood before sunset, walk long distances for water, and send children to schools that have gone years without reliable power.",
+    spotlight: {
+      title: "Let there be light!",
+      body:
+        "For the first time, Tintinto school now has access to electricity from the use of Solar PV. The school was founded in 2009 and has had to operate without any electricity. In addition to having lights, the library now can have computers for both students and teachers. This opens up so many possibilities for the school, and we anticipate an imminent transition towards digitized education.",
+      image: img(
+        "1599504864034-LI79UKT18L8JY2X6UCJG/PHOTO-2020-06-14-18-18-29+v.jpg",
+      ),
+      imageAlt: "Tintinto school library with lights and bookshelves",
+    },
   },
   founder: {
     name: "Mohammed Njie",
-    role: "Founder, Janta",
-    image: "/marketing/roots/mohamed-founder.jpg",
-    imageAlt: "Mohammed Njie, Founder of Janta",
+    role: "Founder",
+    image: "/marketing/roots/mohamed-og.png",
+    imageAlt: "Mohammed Njie, founder of Janta Energy",
     quote:
-      "There's a lot of things children wouldn't necessarily be able to learn, just because they don't have electricity. When it gets dark, that's it — everybody has to go home. Reliable, clean energy could change that.",
-  },
-  firewood: {
-    quote:
-      "Fetching firewood is exhausting. Every time we come out of our houses, it requires a lot of effort to fetch the firewood.",
-    attribution: "Fatou, resident of Tintinto village",
-    poster: "/marketing/roots/roots-highlight-poster.jpg",
+      "There's a lot of things children wouldn't necessarily be able to learn, just because they don't have electricity. When it gets dark: that's it, everybody has to go home. Reliable, sustainable, clean energy could change that.",
   },
   film: {
     /** Drop the reel at this path in public/ to enable playback; poster shows until then */
     src: "/marketing/roots/roots-highlight.mp4",
     poster: "/marketing/roots/roots-highlight-poster.jpg",
   },
-  impact: {
-    title: "Let there be light.",
-    body:
-      "Our pilot brings reliable, affordable 3D solar to the places that need it most — starting with a school that had gone 15 years without electricity.",
-    image: "/marketing/roots/roots-solar-field.jpg",
-    imageAlt: "Janta three-dimensional solar tower at Tintinto",
-    columns: [
-      {
-        kicker: "The school",
-        title: "Tintinto Lower Basic School",
-        body:
-          "Founded in 2009. Operated 15 years without electricity. For the first time, students have consistent light and the library can support computers.",
-      },
-      {
-        kicker: "How we solve it",
-        title: "3D solar, one tower at a time",
-        body:
-          "A single Janta tower generates more energy than a traditional flat array of comparable footprint — critical where land and grid access are scarce.",
-      },
-      {
-        kicker: "What's next",
-        title: "From one school to a region",
-        body:
-          "Tintinto is the first of many. We're scaling toward clinics, market halls, and homes across The Gambia and beyond.",
-      },
-    ],
-  },
   cta: {
-    title: "Power that reaches everyone.",
+    title: "How we solve it",
     body:
-      "Partner with Janta to bring reliable, affordable 3D solar to your community, campus, or country.",
-    primary: { label: "Get in touch", href: "/contact" },
-    secondary: { label: "Learn more", href: "#roots-impact" },
+      "Communities like Tintinto need dense, dependable power without clearing land or waiting years for grid expansion. Janta's three-dimensional solar generates more energy from a smaller footprint, bringing reliable energy to remote schools, villages, and communities that can't afford to stay in the dark.",
+    image: "/marketing/roots/roots-solar-field.png",
+    imageAlt: "Janta three-dimensional solar arrays in a rural field",
   },
 } as const;

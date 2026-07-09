@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { ProductId } from "../data/productPages";
 import { getProductPage } from "../data/productPages";
 
@@ -46,12 +45,6 @@ export function ProductScrollStatsOverlay({
       <button type="button" className="tower-3d__cta">
         SEE YOUR SAVINGS
       </button>
-      <Link
-        to={`/orbit/${productId}`}
-        className="tower-3d__cta tower-3d__cta--ghost"
-      >
-        View in 360°
-      </Link>
     </div>
   );
 }

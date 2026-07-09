@@ -1,10 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteNav } from "./WebsiteNav";
-import {
-  isWebsiteHeroSkyPainted,
-  subscribeWebsiteHeroSkyPainted,
-} from "./websiteHeroSkyBoot";
 import "./website.css";
 import "./websiteReactBits.css";
 
@@ -34,21 +30,14 @@ export function WebsiteMarketingShell({
       document.documentElement.classList.remove("web-boot-hero");
     };
 
-    let unsubscribe: (() => void) | undefined;
-    let safety = 0;
-
     if (variant !== "hub-hero") {
       dropBootHero();
-    } else if (isWebsiteHeroSkyPainted()) {
-      dropBootHero();
     } else {
-      unsubscribe = subscribeWebsiteHeroSkyPainted(dropBootHero);
-      safety = window.setTimeout(dropBootHero, 5000);
+      // New CSS hero sky — no WebGL sky paint gate
+      dropBootHero();
     }
 
     return () => {
-      unsubscribe?.();
-      if (safety) window.clearTimeout(safety);
       if (bodyActiveRef.current) {
         document.body.classList.remove("website-active");
         bodyActiveRef.current = false;

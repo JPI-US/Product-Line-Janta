@@ -23,8 +23,8 @@ export const utilityTowerSpecs: DesignerTowerSpec[] = [
   },
   {
     id: "solar",
-    value: "12 × 467 W",
-    title: "Solar array",
+    value: "8 × 720 W",
+    title: "Solar panels",
     detail: "5.6 kW field-ready array tuned for utility-scale output",
   },
 ];

@@ -1,6 +1,6 @@
 import { Scroll, ScrollControls, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Suspense, useRef } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import type { ProductId } from "../../data/productPages";
 import { CameraRig } from "./CameraRig";
@@ -13,12 +13,7 @@ import { TowerSceneEnvironment } from "./TowerSceneEnvironment";
 import { TowerGpuWarmup } from "./TowerGpuWarmup";
 import { TowerCanvasInvalidateBridge } from "./TowerCanvasInvalidateBridge";
 import { useTowerScenePrepared } from "./useTowerScenePrepared";
-import {
-  getProductIntroScroll,
-  getProductTowerLayout,
-  PRODUCT_SCENES,
-} from "./productScene";
-import { SHADOWS_ENABLED } from "./sceneConfig";
+import { getProductIntroScroll, getProductTowerLayout, PRODUCT_SCENES } from "./productScene";
 import { TowerContactShadow } from "./TowerContactShadow";
 import { getScrollBlend } from "./sceneScroll";
 import { getCachedTowerScene } from "./towerScenePrep";
@@ -48,18 +43,6 @@ function ProductTowerContactShadow({ productId }: { productId: ProductId }) {
 
   return (
     <group ref={groupRef}>
-      {SHADOWS_ENABLED ? (
-        /* Shadow catcher at the tower footprint — the group origin sits at
-           baseLift (mid-height), so drop by -baseLift to reach the pedestal. */
-        <mesh
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -baseLift - 0.02, 0]}
-          receiveShadow
-        >
-          <planeGeometry args={[48, 48]} />
-          <shadowMaterial transparent opacity={0.3} />
-        </mesh>
-      ) : null}
       <TowerContactShadow
         position={[0, 0, 0]}
         getOpacityBlend={() => getScrollBlend(scroll.offset)}
@@ -84,11 +67,7 @@ export function ProductScrollScene({ productId }: { productId: ProductId }) {
       <TowerCanvasInvalidateBridge slot={productId} />
       <ScrollStatsBridge />
       <ScrollInvalidate alwaysActive />
-      {/* Own boundary — its useGLTF suspension must not block the lod2
-          stand-in rendered by ProductTowerModel below. */}
-      <Suspense fallback={null}>
-        <ProductScenePreloader productId={productId} />
-      </Suspense>
+      <ProductScenePreloader productId={productId} />
       <TowerSceneEnvironment
         environmentIntensity={sceneConfig.environmentIntensity}
         environmentResolution={128}

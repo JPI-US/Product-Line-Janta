@@ -1,6 +1,5 @@
-import { Component, ReactNode, useEffect, useRef, useState } from "react";
+import { Component, ReactNode, useEffect, useRef } from "react";
 import { HubSkyBackground } from "../../components/HubSkyBackground";
-import { WebsiteHeroBoot } from "./WebsiteHeroBoot";
 import { useHubPreview } from "../../context/HubPreviewContext";
 import { WebsiteExperience } from "./WebsiteExperience";
 import { WebsiteHeroLayer } from "./WebsiteHeroLayer";
@@ -12,6 +11,8 @@ import { mountWebsiteHeroCanvasGate } from "./websiteHeroCanvasGate";
 import { WEBSITE_HUB_TOWER } from "./websiteHubTowerConfig";
 import { WebsiteTowerDragSurface } from "./WebsiteTowerDragSurface";
 import { WebsitePartnersSection } from "./WebsitePartnersSection";
+import { WebsiteHeroChips } from "./WebsiteHeroChips";
+import { WEBSITE_HERO_STATIC_DAY } from "./websiteHeroMode";
 
 /** Isolate WebGL context creation failures so the marketing page still renders. */
 class WebGLErrorBoundary extends Component<
@@ -36,7 +37,6 @@ export function WebsiteHeroProductLine() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroCanvasActive = useWebsiteHeroCanvasActive();
   const webglSupported = useWebGLSupported();
-  const [booting, setBooting] = useState(true);
   const { coords } = useWebsiteHubHero();
   const { previewDate } = useHubPreview();
 
@@ -46,12 +46,16 @@ export function WebsiteHeroProductLine() {
     return mountWebsiteHeroCanvasGate(el);
   }, []);
 
-  const classNames = ["web-hero-product-line"];
-  if (!heroCanvasActive) classNames.push("web-hero-product-line--canvas-paused");
-  if (booting && webglSupported) classNames.push("web-hero-product-line--booting");
+  const rootClassName = [
+    "web-hero-product-line",
+    heroCanvasActive ? null : "web-hero-product-line--canvas-paused",
+    WEBSITE_HERO_STATIC_DAY ? "web-hero-product-line--static-day" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div ref={heroRef} className={classNames.join(" ")}>
+    <div ref={heroRef} className={rootClassName}>
       <HubSkyBackground
         weather={WEBSITE_HERO_WEATHER}
         coords={coords}
@@ -72,9 +76,7 @@ export function WebsiteHeroProductLine() {
         ) : null}
         {webglSupported && heroCanvasActive ? <WebsiteTowerDragSurface /> : null}
         <WebsiteHeroLayer />
-        {webglSupported ? (
-          <WebsiteHeroBoot onDone={() => setBooting(false)} />
-        ) : null}
+        {WEBSITE_HERO_STATIC_DAY ? <WebsiteHeroChips /> : null}
       </div>
       <WebsitePartnersSection className="web-partners--hero-band" />
     </div>

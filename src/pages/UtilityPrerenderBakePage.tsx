@@ -1,4 +1,4 @@
-import { useGLTF } from "../three/useGLTF";
+import { useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
 import { UTILITY_MODEL_URL } from "../components/three/towerModelUrls";

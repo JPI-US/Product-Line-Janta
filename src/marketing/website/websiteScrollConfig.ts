@@ -1,13 +1,13 @@
 import * as THREE from "three";
 
-/** Viewport-tall spacers consumed by the tower / sky intro */
-export const WEBSITE_INTRO_PAGE_COUNT = 3;
+/** No intro buffer — static hero should respond immediately */
+export const WEBSITE_INTRO_PAGE_COUNT = 0;
 
-/** Full-day hold after choreography — no page lift until this scrolls through */
-export const WEBSITE_HOLD_PAGE_COUNT = 1;
+/** Full-day hold after choreography — not used on the static hero */
+export const WEBSITE_HOLD_PAGE_COUNT = 0;
 
-/** Total drei scroll pages — intro + hold + page-lift + below-content */
-export const WEBSITE_SCROLL_PAGES = 9;
+/** Total scroll pages — intro + page-lift + below-content */
+export const WEBSITE_SCROLL_PAGES = 5;
 
 /** Extra yaw past one full lap at orbit end — tower finishes slightly past 360° before handoff */
 export const WEBSITE_ORBIT_OVERSHOOT = 0.025;
