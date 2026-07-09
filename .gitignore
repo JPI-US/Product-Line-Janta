@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+docs
 node_modules
 dist
 dist-ssr
@@ -46,6 +46,7 @@ playwright-report/
 
 # Local archives / exports
 *.zip
+tmp-*
 
 # Original uncompressed GLB sources — backups auto-created by scripts/compress-models.mjs
 models-src/
