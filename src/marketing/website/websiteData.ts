@@ -25,7 +25,6 @@ export const JANTA_BRAND_SKY = "#64A2D8";
 
 export const NAV_COPY = {
   brand: "Janta Power",
-  logoMark: "/marketing/janta-logo-mark-mask.png",
   home: "Home",
   roots: "Janta",
   rootsHref: "/roots",

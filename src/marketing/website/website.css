@@ -416,15 +416,6 @@ body.website-active {
   background-image: url("/marketing/janta-wordmark-white.png");
 }
 
-.web-nav__logo-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: left center;
-  pointer-events: none;
-}
-
 .web-nav__menu-toggle {
   display: none;
   align-items: center;
@@ -3426,7 +3417,8 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .web-panel--software-showcase {
+  .web-panel--software-showcase,
+  .web-software-showcase__screen-shine {
     animation: none;
   }
 }
@@ -5079,11 +5071,23 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: 5.5rem;
 }
 
+.web-footer__input:hover,
+.web-footer__textarea:hover {
+  border-color: rgba(26, 35, 50, 0.24);
+}
+
 .web-footer__input:focus-visible,
 .web-footer__textarea:focus-visible {
   outline: none;
-  border-color: rgba(91, 143, 196, 0.55);
-  box-shadow: 0 0 0 3px rgba(91, 143, 196, 0.18);
+  border-color: var(--web-brand-blue, #3a84dc);
+  box-shadow: 0 0 0 3px rgba(58, 132, 220, 0.2);
+}
+
+/* Inline validation — only flags a field once the user has interacted. */
+.web-footer__input:user-invalid,
+.web-footer__textarea:user-invalid {
+  border-color: #dc5a4d;
+  box-shadow: 0 0 0 3px rgba(220, 90, 77, 0.16);
 }
 
 .web-footer__submit {
@@ -5098,11 +5102,21 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .web-footer__submit:hover {
   background: var(--web-cta-hover, #d9a612);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(217, 166, 18, 0.28);
+}
+
+.web-footer__submit:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .web-footer__contact-success {

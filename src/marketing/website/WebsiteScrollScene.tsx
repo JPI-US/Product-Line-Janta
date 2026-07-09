@@ -49,7 +49,7 @@ export function WebsiteScrollScene() {
     WEBSITE_SCROLL_PAGES - WEBSITE_INTRO_PAGE_COUNT - WEBSITE_HOLD_PAGE_COUNT;
 
   return (
-    <ScrollControls pages={WEBSITE_SCROLL_PAGES} damping={0.17} distance={1} eps={0.0005}>
+    <ScrollControls pages={WEBSITE_SCROLL_PAGES} damping={0.13} distance={1} eps={0.0005}>
       <WebsiteScrollBridge />
       <WebsiteScrollSync />
       <Suspense fallback={null}>
