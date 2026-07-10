@@ -58,6 +58,26 @@ export const HERO_COPY = {
   ],
 } as const;
 
+/** Photo comparison — Janta tower vs traditional fixed-tilt solar (500 kW · Dallas). */
+export const YIELD_COMPARE_COPY = {
+  title: "Traditional Solar vs. Janta Towers",
+  description: "500 kW · Dallas, TX",
+  janta: {
+    image: "/marketing/yield-janta-tower.png",
+    imageAlt: "Janta Power solar tower render against a blue sky",
+    imagePosition: "center center",
+  },
+  fixed: {
+    image: "/marketing/yield-traditional-solar.png",
+    imageAlt: "Traditional fixed-tilt solar panels at golden hour",
+    imagePosition: "center 42%",
+  },
+  metrics: {
+    annual: "Annual output",
+    land: "Site footprint",
+  },
+} as const;
+
 export const VISION_EYEBROW = "Our Vision";
 
 export const VISION_STATEMENT_LINES = [

@@ -840,3 +840,49 @@
     height: 2.5rem;
   }
 }
+
+/* ── Address autocomplete dropdown (ported) — uses the quiz sv-* tokens ── */
+.savings-address {
+  position: relative;
+  width: 100%;
+}
+.savings-address__status {
+  margin: 0.45rem 0 0 1.1rem;
+  font-size: 0.82rem;
+  color: var(--sv-muted);
+}
+.savings-address__list {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border: 1px solid var(--sv-tile-border);
+  border-radius: var(--radius-lg, 20px);
+  background: var(--warm-surface, #ffffff);
+  box-shadow: 0 12px 32px rgba(26, 51, 74, 0.12);
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.savings-address__option {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-radius: calc(var(--radius-lg, 20px) - 6px);
+  background: transparent;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--sv-body);
+  cursor: pointer;
+}
+.savings-address__option:hover,
+.savings-address__option--active {
+  background: color-mix(in srgb, var(--sv-selected) 8%, var(--warm-surface, #fff));
+  color: var(--sv-heading);
+}

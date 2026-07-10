@@ -46,3 +46,21 @@ export function formatLandAcres(acres: number): { value: string; unit: string } 
   const unit = acres === 1 ? "acre" : "acres";
   return { value, unit };
 }
+
+/** Annual kWh formatted with thousands separators — for the yield comparison. */
+export function formatAnnualKwh(value: number): string {
+  return formatKwh(value);
+}
+
+/** Bar widths (0–100) for the Janta-vs-fixed annual output + land comparison. */
+export function yieldCompareBarWidths() {
+  const { janta, fixed } = YIELD_500KW_DALLAS;
+  const maxAnnual = Math.max(janta.annualKwh, fixed.annualKwh);
+  const maxLand = Math.max(janta.landAcres, fixed.landAcres);
+  return {
+    jantaAnnual: (janta.annualKwh / maxAnnual) * 100,
+    fixedAnnual: (fixed.annualKwh / maxAnnual) * 100,
+    jantaLand: (janta.landAcres / maxLand) * 100,
+    fixedLand: (fixed.landAcres / maxLand) * 100,
+  };
+}

@@ -12,6 +12,11 @@ const WebsiteYieldSection = lazy(() =>
     default: m.WebsiteYieldSection,
   })),
 );
+const WebsiteYieldComparisonSection = lazy(() =>
+  import("./WebsiteYieldComparisonSection").then((m) => ({
+    default: m.WebsiteYieldComparisonSection,
+  })),
+);
 const WebsitePowerProfileSection = lazy(() =>
   import("./WebsitePowerProfileSection").then((m) => ({
     default: m.WebsitePowerProfileSection,
@@ -76,6 +81,11 @@ export function WebsiteContent() {
         <WebsiteDeferredSection minHeight="min(70vh, 620px)">
           <LazySection>
             <WebsiteYieldSection />
+          </LazySection>
+        </WebsiteDeferredSection>
+        <WebsiteDeferredSection minHeight="min(70vh, 620px)">
+          <LazySection>
+            <WebsiteYieldComparisonSection />
           </LazySection>
         </WebsiteDeferredSection>
         <WebsiteDeferredSection minHeight="min(52vh, 480px)">
