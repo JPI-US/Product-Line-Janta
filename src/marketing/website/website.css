@@ -6599,5 +6599,14 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
     transform: none;
     padding-bottom: 0;
   }
+
+  /* Insurance against edge-cut media on phones. (Don't set overflow-x on the
+     page root — it forces overflow-y:auto and turns .web-page into an internal
+     scroll container, which breaks native document scrolling.) */
+  .web-page--mobile-native img,
+  .web-page--mobile-native svg,
+  .web-page--mobile-native canvas {
+    max-width: 100%;
+  }
 }
 
