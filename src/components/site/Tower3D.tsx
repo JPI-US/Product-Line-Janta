@@ -94,6 +94,7 @@ function TowerModel({
   autoRotateSpeed,
   modelScale = 1,
   initialRotationY = 0,
+  sweepDeg,
 }: {
   url: string;
   progressRef: React.MutableRefObject<number>;
@@ -103,6 +104,7 @@ function TowerModel({
   autoRotateSpeed: number;
   modelScale?: number;
   initialRotationY?: number;
+  sweepDeg?: number;
 }) {
   const { scene } = useGLTF(url);
   const groupRef = useRef<THREE.Group>(null!);
@@ -110,6 +112,7 @@ function TowerModel({
   const driveRef = useRef(0);
   const idleRef = useRef(0);
   const spinRef = useRef(0);
+  const sweepRef = useRef(0);
 
   if (!cloned.current) {
     cloned.current = scene.clone(true);
@@ -147,6 +150,14 @@ function TowerModel({
       idleRef.current += dt * 0.12;
       const idle = reducedMotion ? 0 : Math.sin(idleRef.current) * 0.03;
       groupRef.current.rotation.y = initialRotationY + driveRef.current + idle;
+    } else if (!reducedMotion && sweepDeg) {
+      // One graceful eased swing from the load pose to +sweepDeg, then settle.
+      const duration = 6;
+      sweepRef.current = Math.min(sweepRef.current + dt, duration);
+      const p = sweepRef.current / duration;
+      const eased = p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2;
+      const targetRad = (sweepDeg * Math.PI) / 180;
+      groupRef.current.rotation.y = initialRotationY + targetRad * eased;
     } else if (!reducedMotion) {
       spinRef.current += dt * autoRotateSpeed;
       groupRef.current.rotation.y = initialRotationY + spinRef.current;
@@ -249,6 +260,7 @@ export function Tower3D({
   autoRotateSpeed = 0.3,
   modelScale = 1,
   initialRotationY = 0,
+  sweepDeg,
   cameraPosition = [6.5, 4.2, 9.5],
   cameraTarget = [0, 1, 0],
   cameraFov = 35,
@@ -265,6 +277,7 @@ export function Tower3D({
   autoRotateSpeed?: number;
   modelScale?: number;
   initialRotationY?: number;
+  sweepDeg?: number;
   cameraPosition?: [number, number, number];
   cameraTarget?: [number, number, number];
   cameraFov?: number;
@@ -403,6 +416,7 @@ export function Tower3D({
             autoRotateSpeed={autoRotateSpeed}
             modelScale={modelScale}
             initialRotationY={initialRotationY}
+            sweepDeg={sweepDeg}
           />
           <ProceduralTowerEnvironment environmentIntensity={0.35} environmentResolution={128} />
           <Preload all />

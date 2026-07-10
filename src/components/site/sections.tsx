@@ -54,6 +54,7 @@ export function Hero() {
             variant="designer"
             interactive
             autoRotateSpeed={0.32}
+            sweepDeg={90}
             modelScale={0.85}
             initialRotationY={HERO_TOWER_POSE.initialRotationY}
             cameraPosition={[...HERO_TOWER_POSE.cameraPosition]}

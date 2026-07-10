@@ -93,7 +93,17 @@ function Icon({ type }: { type: Site["icon"] }) {
 
 export function PremiumGlobe() {
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const [active, setActive] = useState<Site | null>(null);
+  // Detail card follows the hovered/selected site; default to the first so the
+  // right-hand panel is never empty on load.
+  const [active, setActive] = useState<Site>(SITES[0]);
+  // Index of the site the globe should rotate to face (set from the list);
+  // null = free auto-rotation. Read inside the three.js loop.
+  const focusRef = useRef<number | null>(null);
+
+  const selectSite = (i: number) => {
+    setActive(SITES[i]);
+    focusRef.current = i;
+  };
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -313,6 +323,30 @@ export function PremiumGlobe() {
     let manualRot = 0;
     const siteDirs = SITES.map((s) => latLonToVec3(s.lat, s.lon, 1).normalize());
     const tmpDir = new THREE.Vector3();
+    const tmpEuler = new THREE.Euler(earthGroup.rotation.x, 0, 0);
+
+    // The y-rotation that brings a site's marker closest to facing the viewer
+    // (max +z after the group's fixed x-tilt). Found by a coarse-then-fine sweep.
+    function facingZ(dir: THREE.Vector3, y: number) {
+      tmpEuler.set(earthGroup.rotation.x, y, 0);
+      return tmpDir.copy(dir).applyEuler(tmpEuler).z;
+    }
+    function targetRotFor(idx: number) {
+      const d = siteDirs[idx];
+      let best = 0;
+      let bestZ = -Infinity;
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 45) {
+        const z = facingZ(d, a);
+        if (z > bestZ) { bestZ = z; best = a; }
+      }
+      for (let a = best - 0.08; a <= best + 0.08; a += 0.004) {
+        const z = facingZ(d, a);
+        if (z > bestZ) { bestZ = z; best = a; }
+      }
+      return best;
+    }
+    let lastFocus: number | null | undefined = undefined;
+    let focusTarget: number | null = null;
 
     function checkHover(e: PointerEvent) {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -323,14 +357,14 @@ export function PremiumGlobe() {
       if (hits.length > 0) {
         const hit = markers.find((m) => m.mesh === hits[0].object);
         if (hit) setActive(hit.site);
-      } else {
-        setActive(null);
       }
+      // No hit → keep the last site shown so the detail card stays populated.
     }
 
     function onPointerDown(e: PointerEvent) {
       dragging = true;
       lastX = e.clientX;
+      focusRef.current = null; // dragging hands control back to the user
     }
     function onPointerMove(e: PointerEvent) {
       if (dragging) {
@@ -353,15 +387,29 @@ export function PremiumGlobe() {
     let frame = 0;
     function animate() {
       frame = requestAnimationFrame(animate);
+
+      // Recompute the focus target only when the selected site changes.
+      if (focusRef.current !== lastFocus) {
+        lastFocus = focusRef.current;
+        focusTarget = focusRef.current == null ? null : targetRotFor(focusRef.current);
+      }
+
       if (!dragging) {
-        // Slow down when a deployment is rotating toward the viewer.
-        let maxFacing = -1;
-        for (const d of siteDirs) {
-          tmpDir.copy(d).applyEuler(earthGroup.rotation);
-          if (tmpDir.z > maxFacing) maxFacing = tmpDir.z;
+        if (focusTarget != null) {
+          // Ease toward the selected site along the shortest arc, then hold.
+          let diff = focusTarget - manualRot;
+          diff = ((diff + Math.PI) % (Math.PI * 2)) - Math.PI;
+          manualRot += diff * 0.09;
+        } else {
+          // Slow down when a deployment is rotating toward the viewer.
+          let maxFacing = -1;
+          for (const d of siteDirs) {
+            tmpDir.copy(d).applyEuler(earthGroup.rotation);
+            if (tmpDir.z > maxFacing) maxFacing = tmpDir.z;
+          }
+          const proximity = THREE.MathUtils.smoothstep(maxFacing, 0.2, 0.9);
+          manualRot += fastVel + (slowVel - fastVel) * proximity;
         }
-        const proximity = THREE.MathUtils.smoothstep(maxFacing, 0.2, 0.9);
-        manualRot += fastVel + (slowVel - fastVel) * proximity;
       }
       earthGroup.rotation.y = manualRot;
       clouds.rotation.y += 0.0004;
@@ -401,25 +449,56 @@ export function PremiumGlobe() {
       </div>
 
       <div className="janta-globe__stage">
+        <ul className="janta-globe__sites" aria-label="Deployment sites">
+          {SITES.map((site, i) => (
+            <li key={site.name}>
+              <button
+                type="button"
+                className={
+                  "janta-globe__site" +
+                  (active.name === site.name ? " is-active" : "")
+                }
+                onClick={() => selectSite(i)}
+                onMouseEnter={() => setActive(site)}
+              >
+                <span className="janta-globe__site-icon">
+                  <Icon type={site.icon} />
+                </span>
+                <span className="janta-globe__site-main">
+                  <span className="janta-globe__site-name">
+                    {site.name} <em>{site.country}</em>
+                  </span>
+                  <span
+                    className="janta-globe__site-status"
+                    data-status={site.status}
+                  >
+                    {site.status}
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
         <div className="janta-globe__canvas" ref={mountRef} />
 
-        {active && (
-          <div className="janta-globe__panel">
-            <div className="janta-globe__panel-icon">
-              <Icon type={active.icon} />
-            </div>
-            <span className="janta-globe__panel-loc">
-              {active.name} · {active.country}
-            </span>
-            <span className="janta-globe__panel-status" data-status={active.status}>
-              {active.status}
-            </span>
-            <p className="janta-globe__panel-text">{active.text}</p>
+        <div className="janta-globe__panel" key={active.name}>
+          <div className="janta-globe__panel-icon">
+            <Icon type={active.icon} />
           </div>
-        )}
+          <span className="janta-globe__panel-loc">
+            {active.name} · {active.country}
+          </span>
+          <span className="janta-globe__panel-status" data-status={active.status}>
+            {active.status}
+          </span>
+          <p className="janta-globe__panel-text">{active.text}</p>
+        </div>
       </div>
 
-      <p className="janta-globe__hint">Drag to rotate · hover a point to explore</p>
+      <p className="janta-globe__hint">
+        Select a site or drag the globe to explore
+      </p>
 
       <style>{`
         .janta-globe {
@@ -458,9 +537,13 @@ export function PremiumGlobe() {
         }
         .janta-globe__stage {
           position: relative;
-          max-width: 100%;
+          max-width: 1180px;
           margin: 0 auto;
           z-index: 1;
+          display: grid;
+          grid-template-columns: minmax(190px, 230px) minmax(0, 1fr) minmax(200px, 260px);
+          align-items: center;
+          gap: clamp(0.75rem, 2vw, 1.75rem);
         }
         .janta-globe__canvas {
           position: relative;
@@ -470,22 +553,124 @@ export function PremiumGlobe() {
           cursor: default;
           filter: drop-shadow(0 18px 36px rgba(42, 96, 175, 0.12));
         }
+        .janta-globe__sites {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          z-index: 2;
+        }
+        .janta-globe__site {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          width: 100%;
+          text-align: left;
+          padding: 0.7rem 0.8rem;
+          border-radius: 12px;
+          border: 1px solid rgba(30, 82, 158, 0.14);
+          background: rgba(255, 255, 255, 0.55);
+          color: inherit;
+          cursor: pointer;
+          transition: background 0.18s ease, border-color 0.18s ease,
+            transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .janta-globe__site:hover {
+          background: rgba(255, 255, 255, 0.88);
+          border-color: rgba(30, 82, 158, 0.28);
+        }
+        .janta-globe__site.is-active {
+          background: #ffffff;
+          border-color: rgba(30, 82, 158, 0.4);
+          box-shadow: 0 10px 26px rgba(42, 108, 190, 0.14);
+          transform: translateX(3px);
+        }
+        .janta-globe__site-icon {
+          color: #c8930a;
+          display: flex;
+          flex: none;
+        }
+        .janta-globe__site-main {
+          display: flex;
+          flex-direction: column;
+          gap: 0.22rem;
+          min-width: 0;
+        }
+        .janta-globe__site-name {
+          font-weight: 700;
+          font-size: 0.95rem;
+          color: var(--web-slate-ink, #1a2332);
+        }
+        .janta-globe__site-name em {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 0.68rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(30, 30, 35, 0.5);
+          margin-left: 0.2rem;
+        }
+        .janta-globe__site-status {
+          font-size: 0.62rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+        .janta-globe__site-status[data-status="Live"] {
+          color: #1f8a4c;
+        }
+        .janta-globe__site-status[data-status="Coming soon"] {
+          color: #a6790a;
+        }
         .janta-globe__panel {
-          position: absolute;
-          left: 5%;
-          bottom: 5%;
-          width: min(320px, 80%);
+          width: 100%;
           background: rgba(255, 255, 255, 0.96);
           border: 1px solid rgba(30, 82, 158, 0.24);
           border-radius: 16px;
           padding: 1.5rem;
           text-align: left;
           backdrop-filter: blur(10px);
-          pointer-events: none;
           z-index: 2;
           box-shadow:
             0 16px 40px rgba(42, 108, 190, 0.12),
             0 8px 24px rgba(168, 118, 8, 0.08);
+          animation: janta-globe-panel-in 0.28s ease both;
+        }
+        @keyframes janta-globe-panel-in {
+          from {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+        @media (max-width: 920px) {
+          .janta-globe__stage {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          .janta-globe__sites {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 0.35rem;
+          }
+          .janta-globe__site {
+            min-width: 190px;
+            flex: 0 0 auto;
+          }
+          .janta-globe__panel {
+            max-width: 560px;
+            margin: 0 auto;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .janta-globe__panel {
+            animation: none;
+          }
         }
         .janta-globe__panel-icon {
           color: #c8930a;
