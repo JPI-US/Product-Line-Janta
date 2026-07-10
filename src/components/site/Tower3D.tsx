@@ -151,13 +151,15 @@ function TowerModel({
       const idle = reducedMotion ? 0 : Math.sin(idleRef.current) * 0.03;
       groupRef.current.rotation.y = initialRotationY + driveRef.current + idle;
     } else if (!reducedMotion && sweepDeg) {
-      // Pendulum: ease from the load pose out to +sweepDeg and back, forever.
-      // Cosine gives zero velocity at both ends so the reversals feel smooth.
-      const halfPeriod = 6; // seconds to reach +sweepDeg (and to return)
+      // Pendulum centered on the load pose: swing equally to +half and -half
+      // and back, forever. sin() gives zero velocity at both extremes so the
+      // reversals feel smooth, and centering it keeps the throw symmetric
+      // left↔right (and never as far as the old one-sided +sweepDeg).
+      const halfPeriod = 6; // seconds from center to each extreme
       sweepRef.current += dt;
-      const osc = 0.5 - 0.5 * Math.cos((Math.PI / halfPeriod) * sweepRef.current);
-      const targetRad = (sweepDeg * Math.PI) / 180;
-      groupRef.current.rotation.y = initialRotationY + targetRad * osc;
+      const amplitude = (sweepDeg * Math.PI) / 180 / 2; // half each side
+      const osc = Math.sin((Math.PI / (2 * halfPeriod)) * sweepRef.current);
+      groupRef.current.rotation.y = initialRotationY + amplitude * osc;
     } else if (!reducedMotion) {
       spinRef.current += dt * autoRotateSpeed;
       groupRef.current.rotation.y = initialRotationY + spinRef.current;
@@ -430,9 +432,11 @@ export function Tower3D({
             // Lock horizontal drag to a tight front arc so users can't rotate
             // around to the tower's back/truss side or expose the base/slew
             // bearing at either extreme (auto-sweep rotates the model, not the
-            // camera, so it's unaffected). Both limits held in tight.
+            // camera, so it's unaffected). Symmetric around the ~0.053 rad rest
+            // azimuth so the drag travels an equal distance left↔right; the left
+            // limit stays at the known base-hiding -0.15.
             minAzimuthAngle={-0.15}
-            maxAzimuthAngle={0.45}
+            maxAzimuthAngle={0.255}
             autoRotate={false}
             target={cameraTarget}
             onStart={() => {
