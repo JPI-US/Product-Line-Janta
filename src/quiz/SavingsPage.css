@@ -38,7 +38,12 @@
   box-sizing: border-box;
   font-family: var(--font, "DM Sans", system-ui, sans-serif);
   color: var(--sv-body);
-  background: transparent;
+  /* On-brand blue/gold wash over a soft blue-tinted base — matches the hero/theme. */
+  background:
+    radial-gradient(58% 52% at 10% 2%, rgba(58, 132, 220, 0.3), transparent 56%),
+    radial-gradient(52% 46% at 94% 6%, rgba(255, 191, 20, 0.22), transparent 54%),
+    radial-gradient(72% 60% at 50% 114%, rgba(58, 132, 220, 0.26), transparent 60%),
+    linear-gradient(180deg, #e6f0fb 0%, var(--warm-page, #faf8f5) 46%);
 }
 
 .savings__inner {
@@ -212,6 +217,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--sv-selected);
+  transition: color 0.2s ease;
+}
+
+.savings-tile--selected .savings-tile__icon {
+  color: var(--sv-selected);
 }
 
 .savings-tile__icon svg {

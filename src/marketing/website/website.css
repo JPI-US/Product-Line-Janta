@@ -185,6 +185,7 @@ body.website-active {
 }
 
 .web-contact-page {
+  position: relative;
   box-sizing: border-box;
   width: min(72rem, 100%);
   margin: 0 auto;
@@ -192,6 +193,26 @@ body.website-active {
     calc(var(--app-nav-h) + clamp(2.5rem, 8vh, 4.5rem))
     var(--web-rail-x, clamp(1.25rem, 5vw, 4.5rem))
     clamp(3rem, 10vh, 5rem);
+}
+
+/* Full-bleed soft on-brand wash behind the contact content — matches quiz + theme. */
+.web-contact-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 52% at 10% 2%, rgba(58, 132, 220, 0.3), transparent 56%),
+    radial-gradient(52% 46% at 94% 8%, rgba(255, 191, 20, 0.22), transparent 54%),
+    radial-gradient(72% 60% at 50% 114%, rgba(58, 132, 220, 0.26), transparent 60%),
+    linear-gradient(180deg, rgba(230, 240, 251, 0.9) 0%, transparent 46%);
+}
+
+/* Keep the contact content above the wash */
+.web-contact-page > * {
+  position: relative;
+  z-index: 1;
 }
 
 .web-contact-page__intro {
@@ -238,11 +259,16 @@ body.website-active {
 
 .web-contact-page__quiz {
   padding: clamp(1.5rem, 4vw, 2rem);
+  border-color: rgba(58, 132, 220, 0.28);
   background: linear-gradient(
-    165deg,
-    rgba(58, 132, 220, 0.1) 0%,
-    rgba(255, 191, 20, 0.08) 100%
+    160deg,
+    rgba(58, 132, 220, 0.16) 0%,
+    rgba(106, 172, 240, 0.1) 45%,
+    rgba(255, 191, 20, 0.14) 100%
   );
+  box-shadow:
+    0 16px 40px rgba(42, 108, 190, 0.1),
+    0 6px 18px rgba(168, 118, 8, 0.06);
 }
 
 .web-contact-page__quiz-title {
