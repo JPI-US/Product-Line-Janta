@@ -6534,11 +6534,14 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 .web-yield-compare__lane--janta .web-yield-compare__summary-value {
   color: #ffe6a8;
 }
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .web-yield-compare__split {
     grid-template-columns: 1fr;
   }
+  /* Keep the "vs" badge in DOM order — between the two stacked photos — instead
+     of the base mobile rule's order:-1, which floated it above the first image. */
   .web-yield-compare__split-rule {
+    order: 0;
     padding-block: 0.35rem;
   }
 }
