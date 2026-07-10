@@ -104,7 +104,7 @@ export function PremiumGlobe() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 3.5;
+    camera.position.z = 3.2;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor(0x000000, 0);
@@ -123,23 +123,40 @@ export function PremiumGlobe() {
 
     const dayTex = loader.load("/earth.jpg");
     dayTex.colorSpace = THREE.SRGBColorSpace;
+    const nightTex = loader.load("/earth_night.jpg");
+    nightTex.colorSpace = THREE.SRGBColorSpace;
+
+    // Sun fixed in view space (upper-left, toward camera) so the side facing the
+    // viewer stays well lit, with a soft terminator + city lights on the limb.
+    const sunDirection = new THREE.Vector3(-0.55, 0.35, 0.75).normalize();
 
     const geometry = new THREE.SphereGeometry(RADIUS, 64, 64);
     const material = new THREE.ShaderMaterial({
       uniforms: {
         dayTexture: { value: dayTex },
+        nightTexture: { value: nightTex },
+        sunDirection: { value: sunDirection },
         warmth: { value: 1.05 },
       },
       vertexShader: `
         varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPos;
         void main() {
           vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vNormal = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vViewPos = mv.xyz;
+          gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
         uniform sampler2D dayTexture;
+        uniform sampler2D nightTexture;
+        uniform vec3 sunDirection;
         uniform float warmth;
         varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPos;
         void main() {
           vec3 tex = texture2D(dayTexture, vUv).rgb;
 
@@ -172,37 +189,116 @@ export function PremiumGlobe() {
           dayColor = mix(dayColor, vec3(min(tex.r * 1.06, 1.0), min(tex.g * 1.06, 1.0), min(tex.b * 1.02, 1.0)), isIce);
           dayColor = min(dayColor * vec3(1.05 * warmth, 1.08 * warmth, 1.06 * warmth), vec3(1.0));
 
-          gl_FragColor = vec4(dayColor, 1.0);
+          // —— lighting: view-space sun terminator ——
+          vec3 N = normalize(vNormal);
+          float sun = dot(N, normalize(sunDirection));
+          float dayAmount = smoothstep(-0.16, 0.24, sun);
+
+          // shade the lit side by sun angle for real dimensionality
+          vec3 lit = dayColor * (0.42 + 0.72 * clamp(sun, 0.0, 1.0));
+
+          // warm city lights on the night side (earth_night.jpg)
+          vec3 nightSample = texture2D(nightTexture, vUv).rgb;
+          vec3 cityLights = nightSample * vec3(1.3, 1.02, 0.6) * 2.3;
+
+          vec3 color = mix(cityLights, lit, dayAmount);
+
+          // atmospheric rim (fresnel), stronger on the lit limb
+          vec3 V = normalize(-vViewPos);
+          float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
+          color += vec3(0.34, 0.6, 1.0) * fresnel * (0.35 + 0.65 * dayAmount) * 0.9;
+
+          gl_FragColor = vec4(color, 1.0);
         }`,
     });
     const earth = new THREE.Mesh(geometry, material);
     earthGroup.add(earth);
 
+    // Clouds, shaded by the same sun so they darken on the night side.
     const cloudTex = loader.load("/clouds.jpg");
-    const cloudGeo = new THREE.SphereGeometry(RADIUS * 1.01, 64, 64);
-    const cloudMat = new THREE.MeshBasicMaterial({
-      map: cloudTex,
-      alphaMap: cloudTex,
+    const cloudGeo = new THREE.SphereGeometry(RADIUS * 1.012, 64, 64);
+    const cloudMat = new THREE.ShaderMaterial({
       transparent: true,
-      opacity: 0.62,
       depthWrite: false,
+      uniforms: {
+        cloudTexture: { value: cloudTex },
+        sunDirection: { value: sunDirection },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        void main() {
+          vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }`,
+      fragmentShader: `
+        uniform sampler2D cloudTexture;
+        uniform vec3 sunDirection;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        void main() {
+          float c = texture2D(cloudTexture, vUv).r;
+          float sun = dot(normalize(vNormal), normalize(sunDirection));
+          float dayAmount = smoothstep(-0.1, 0.32, sun);
+          vec3 col = vec3(1.0) * (0.16 + 0.84 * dayAmount);
+          float a = c * 0.5 * (0.22 + 0.78 * dayAmount);
+          gl_FragColor = vec4(col, a);
+        }`,
     });
     const clouds = new THREE.Mesh(cloudGeo, cloudMat);
     earthGroup.add(clouds);
 
+    // (No outer halo — an additive atmosphere glow needs a dark backdrop; on
+    // this light section the earth's own rim-fresnel provides the blue edge.)
+
+    const up = new THREE.Vector3(0, 1, 0);
     const markers: { mesh: THREE.Mesh; site: Site }[] = [];
     SITES.forEach((site) => {
-      const pos = latLonToVec3(site.lat, site.lon, RADIUS * 1.02);
-      const mGeo = new THREE.SphereGeometry(0.024, 16, 16);
+      const normal = latLonToVec3(site.lat, site.lon, 1).normalize();
+      const pos = normal.clone().multiplyScalar(RADIUS * 1.02);
+      const live = site.status === "Live";
+
+      // Marker dot at the surface.
+      const mGeo = new THREE.SphereGeometry(0.022, 16, 16);
       const mMat = new THREE.MeshBasicMaterial({
-        color: 0xa67a0e,
-        transparent: site.status === "Coming soon",
-        opacity: site.status === "Coming soon" ? 0.55 : 1,
+        color: 0xffbf14,
+        transparent: !live,
+        opacity: live ? 1 : 0.55,
       });
       const marker = new THREE.Mesh(mGeo, mMat);
       marker.position.copy(pos);
       earthGroup.add(marker);
       markers.push({ mesh: marker, site });
+
+      // Beam of light rising radially out of the deployment.
+      const beamH = live ? 0.36 : 0.22;
+      const beamGeo = new THREE.CylinderGeometry(0.005, 0.02, beamH, 16, 1, true);
+      beamGeo.translate(0, beamH / 2, 0); // base at origin
+      const beamMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: { intensity: { value: live ? 1.0 : 0.5 } },
+        vertexShader: `
+          varying float vY;
+          void main() {
+            vY = uv.y;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+        fragmentShader: `
+          uniform float intensity;
+          varying float vY;
+          void main() {
+            float a = pow(1.0 - vY, 1.6) * intensity;
+            vec3 col = vec3(1.0, 0.78, 0.2);
+            gl_FragColor = vec4(col, a * 0.8);
+          }`,
+      });
+      const beam = new THREE.Mesh(beamGeo, beamMat);
+      beam.position.copy(pos);
+      beam.quaternion.setFromUnitVectors(up, normal);
+      earthGroup.add(beam);
     });
 
     const ambient = new THREE.AmbientLight(0xffffff, 1.1);
@@ -212,8 +308,11 @@ export function PremiumGlobe() {
     const mouse = new THREE.Vector2();
     let dragging = false;
     let lastX = 0;
-    const velocity = 0.0015;
+    const slowVel = 0.0006; // near a deployment — lingers
+    const fastVel = 0.0042; // empty ocean stretches — glides
     let manualRot = 0;
+    const siteDirs = SITES.map((s) => latLonToVec3(s.lat, s.lon, 1).normalize());
+    const tmpDir = new THREE.Vector3();
 
     function checkHover(e: PointerEvent) {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -254,7 +353,16 @@ export function PremiumGlobe() {
     let frame = 0;
     function animate() {
       frame = requestAnimationFrame(animate);
-      if (!dragging) manualRot += velocity;
+      if (!dragging) {
+        // Slow down when a deployment is rotating toward the viewer.
+        let maxFacing = -1;
+        for (const d of siteDirs) {
+          tmpDir.copy(d).applyEuler(earthGroup.rotation);
+          if (tmpDir.z > maxFacing) maxFacing = tmpDir.z;
+        }
+        const proximity = THREE.MathUtils.smoothstep(maxFacing, 0.2, 0.9);
+        manualRot += fastVel + (slowVel - fastVel) * proximity;
+      }
       earthGroup.rotation.y = manualRot;
       clouds.rotation.y += 0.0004;
       renderer.render(scene, camera);
@@ -317,7 +425,7 @@ export function PremiumGlobe() {
         .janta-globe {
           position: relative;
           color: var(--web-ink, #1a1a1f);
-          padding: clamp(3rem, 7vh, 4.5rem) 1.5rem clamp(3.5rem, 7vh, 4.5rem);
+          padding: clamp(2rem, 4.5vh, 3rem) 1.5rem clamp(2.25rem, 5vh, 3.25rem);
           overflow: visible;
           background: transparent;
         }
@@ -334,7 +442,7 @@ export function PremiumGlobe() {
           font-weight: 700;
           letter-spacing: 0.3em;
           text-transform: uppercase;
-          color: #8a6208;
+          color: #c8930a;
         }
         .janta-globe__title {
           margin: 0 auto;
@@ -343,7 +451,7 @@ export function PremiumGlobe() {
           font-weight: 800;
           letter-spacing: -0.03em;
           line-height: 1.1;
-          color: var(--web-ink, #1a1a1f);
+          color: var(--web-slate-ink, #1a2332);
         }
         .janta-globe__title-accent {
           color: #1e5a9e;
@@ -358,9 +466,9 @@ export function PremiumGlobe() {
           position: relative;
           z-index: 1;
           width: 100%;
-          height: 620px;
+          height: clamp(480px, 62vh, 640px);
           cursor: default;
-          filter: drop-shadow(0 18px 36px rgba(42, 96, 175, 0.1));
+          filter: drop-shadow(0 18px 36px rgba(42, 96, 175, 0.12));
         }
         .janta-globe__panel {
           position: absolute;
@@ -380,7 +488,7 @@ export function PremiumGlobe() {
             0 8px 24px rgba(168, 118, 8, 0.08);
         }
         .janta-globe__panel-icon {
-          color: #7a5606;
+          color: #c8930a;
           margin-bottom: 0.85rem;
         }
         .janta-globe__panel-loc {
@@ -389,7 +497,7 @@ export function PremiumGlobe() {
           font-weight: 700;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #1e5a9e;
+          color: var(--web-brand-blue, #3a84dc);
           margin-bottom: 0.6rem;
         }
         .janta-globe__panel-status {
@@ -400,9 +508,9 @@ export function PremiumGlobe() {
           text-transform: uppercase;
           padding: 0.25rem 0.7rem;
           border-radius: 999px;
-          border: 1px solid rgba(138, 98, 8, 0.5);
-          color: #7a5606;
-          background: rgba(176, 124, 6, 0.14);
+          border: 1px solid rgba(200, 147, 10, 0.5);
+          color: #a6790a;
+          background: rgba(200, 147, 10, 0.14);
           margin-bottom: 0.85rem;
         }
         .janta-globe__panel-text {

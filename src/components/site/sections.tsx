@@ -1,33 +1,18 @@
 import { partnerLogos } from "@/lib/assets";
 import { HERO_TOWER_POSE } from "@/lib/heroTowerPose";
 import { HERO_COPY } from "@/marketing/website/websiteData";
-import { useWebsiteReducedMotion } from "@/marketing/website/useWebsiteReducedMotion";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Tower3D } from "./Tower3D";
 
 const HERO_HEADING_LINES = ["More power.", "Less land."] as const;
 
+/** Static heading — renders instantly (no slide-in) so the copy never lags. */
 function HeroHeading() {
-  const reducedMotion = useWebsiteReducedMotion();
-  const [ready, setReady] = useState(reducedMotion);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-
-    const frame1 = window.requestAnimationFrame(() => setReady(true));
-    return () => window.cancelAnimationFrame(frame1);
-  }, [reducedMotion]);
-
-  const className =
-    "hero-heading hero-heading--slide" +
-    (ready ? " is-ready" : "") +
-    (reducedMotion ? " is-static" : "");
-
   return (
-    <h1 className={className}>
+    <h1 className="hero-heading">
       {HERO_HEADING_LINES.map((line) => (
-        <span key={line} className="hero-heading__clip">
-          <span className="hero-heading__line">{line}</span>
+        <span key={line} className="hero-heading__line">
+          {line}
         </span>
       ))}
     </h1>
@@ -40,11 +25,11 @@ export function Hero() {
       <div className="container-page hero-grid">
         <div className="hero-copy">
           <HeroHeading />
-          <p className="hero-lead anim-fade-up-delayed">
+          <p className="hero-lead">
             Janta Power builds vertical 3D photovoltaic towers engineered for
             airports, utilities, and developers who can't afford to waste an acre.
           </p>
-          <div className="hero-stats-wrap anim-fade-up-delayed">
+          <div className="hero-stats-wrap">
             <div className="hero-stats">
               {HERO_COPY.stats.map((stat, index) => (
                 <Fragment key={stat.label}>
@@ -69,7 +54,7 @@ export function Hero() {
             variant="designer"
             interactive
             autoRotateSpeed={0.32}
-            modelScale={1}
+            modelScale={0.85}
             initialRotationY={HERO_TOWER_POSE.initialRotationY}
             cameraPosition={[...HERO_TOWER_POSE.cameraPosition]}
             cameraTarget={[...HERO_TOWER_POSE.cameraTarget]}
