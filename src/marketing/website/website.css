@@ -6614,8 +6614,10 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
   /* Tighter vertical rhythm between stacked sections. The panels carry generous
      block padding (clamp(2rem,7vh,5rem)) + the chart 67px built for the desktop
-     full-screen choreography; stacked natively that reads as big empty gaps. */
-  .web-page--mobile-native .web-panel {
+     full-screen choreography; stacked natively that reads as big empty gaps.
+     Exclude the full-bleed ROI band — it's intentionally padding:0 over a dark
+     background, so adding block padding exposes that bg as black bars. */
+  .web-page--mobile-native .web-panel:not(.web-panel--ps-roi) {
     padding-block: clamp(1.75rem, 5vh, 2.75rem);
   }
   .web-page--mobile-native .web-landing-sky-band--continuous .web-home-chart {
