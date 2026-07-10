@@ -6608,5 +6608,15 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   .web-page--mobile-native canvas {
     max-width: 100%;
   }
+
+  /* Tighter vertical rhythm between stacked sections. The panels carry generous
+     block padding (clamp(2rem,7vh,5rem)) + the chart 67px built for the desktop
+     full-screen choreography; stacked natively that reads as big empty gaps. */
+  .web-page--mobile-native .web-panel {
+    padding-block: clamp(1.75rem, 5vh, 2.75rem);
+  }
+  .web-page--mobile-native .web-landing-sky-band--continuous .web-home-chart {
+    padding-block: clamp(1.75rem, 5vh, 2.75rem);
+  }
 }
 
