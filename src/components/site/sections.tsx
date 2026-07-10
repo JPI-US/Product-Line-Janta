@@ -42,10 +42,11 @@ function HeroTowerPoster({ decorative = false }: { decorative?: boolean }) {
   );
 }
 
-/** Phones: static poster (no three.js). Desktop: live 3D, poster as fallback. */
+/** Phones: no tower visual for now (removed per mobile polish). Desktop: live
+ * 3D, poster as the Suspense fallback. */
 function HeroTower() {
   const isMobile = useIsMobile();
-  if (isMobile) return <HeroTowerPoster />;
+  if (isMobile) return null;
   return (
     <Suspense fallback={<HeroTowerPoster decorative />}>
       <Tower3D
