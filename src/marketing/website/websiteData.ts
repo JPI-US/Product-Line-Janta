@@ -78,6 +78,15 @@ export const YIELD_COMPARE_COPY = {
   },
 } as const;
 
+/** "Built for real-world sites" — photo + specs panel. */
+export const SPECS_LITE_COPY = {
+  title: "Built for real-world sites",
+  lead: "Structural ratings and power flexibility at a glance.",
+  image: "/marketing/specs-real-world-sites.png",
+  imageAlt: "Janta solar towers on an urban plaza with a city skyline behind",
+  imagePosition: "center 42%",
+} as const;
+
 export const VISION_EYEBROW = "Our Vision";
 
 export const VISION_STATEMENT_LINES = [

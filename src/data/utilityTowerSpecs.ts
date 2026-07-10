@@ -3,28 +3,31 @@ import type { DesignerTowerSpec } from "./designerTowerSpecs";
 export const utilityTowerSpecs: DesignerTowerSpec[] = [
   {
     id: "wind",
-    value: "110",
+    value: "110–180",
     unit: "mph",
     title: "Wind rating",
     detail: "Rated for demanding coastal and open-field installs",
   },
   {
     id: "snow",
-    value: "20",
+    value: "60–80",
     unit: "psf",
     title: "Snow load",
     detail: "Design snow load for year-round structural margin",
   },
   {
-    id: "power",
-    value: "Plug & play",
-    title: "Backup power",
-    detail: "Battery or generator compatible. Connect and go",
+    id: "solar",
+    value: "620–750",
+    unit: "watt",
+    title: "Bifacial panels",
+    detail:
+      "Bifacial cells capture direct sun and reflected light for higher yield per tower.",
   },
   {
-    id: "solar",
-    value: "8 × 720 W",
-    title: "Solar panels",
-    detail: "5.6 kW field-ready array tuned for utility-scale output",
+    id: "lifespan",
+    value: "25+",
+    unit: "year",
+    title: "System lifespan",
+    detail: "25+ year design life for real-world site deployments",
   },
 ];

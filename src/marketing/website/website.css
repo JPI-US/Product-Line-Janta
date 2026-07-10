@@ -3158,6 +3158,32 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   min-height: clamp(240px, 32vw, 390px);
   border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
   overflow: hidden;
+  transition:
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Shared photo hover (value + specs) — Ken Burns zoom + lift, mouse-only.
+   Matches the ported yield-comparison photos. */
+@media (hover: hover) {
+  .web-value__img-shell:hover,
+  .web-specs-lite__photo:hover {
+    transform: translateY(-5px);
+    box-shadow:
+      0 22px 52px rgba(26, 35, 50, 0.14),
+      0 6px 16px rgba(26, 35, 50, 0.07);
+  }
+  .web-value__img-shell:hover .web-value__img.is-active,
+  .web-specs-lite__photo:hover .web-specs-lite__photo-img {
+    transform: scale(1.045);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .web-value__img-shell,
+  .web-value__img-shell:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
 .web-value__img {
@@ -3171,7 +3197,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   opacity: 0;
   transition:
     opacity 0.45s ease,
-    transform 0.45s ease;
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .web-value__img.is-active {
@@ -6134,5 +6160,109 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   .web-yield-compare__photo:hover {
     transition: none;
     transform: none;
+  }
+}
+
+/* ── "Built for real-world sites" — photo + spec datasheet (ported layout,
+   styled to the site tokens). Overrides the old grid value/unit/label. ── */
+.web-specs-lite__header {
+  margin: 0 auto clamp(1.85rem, 4.5vh, 2.75rem);
+  max-width: 44ch;
+}
+.web-specs-lite__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12.5rem, 15rem);
+  gap: clamp(1.75rem, 3.5vw, 2.75rem);
+  align-items: stretch;
+  width: 100%;
+  margin-inline: auto;
+  text-align: left;
+}
+.web-specs-lite__photo {
+  margin: 0;
+  min-height: clamp(420px, 52vh, 560px);
+  overflow: hidden;
+  border-radius: var(--web-radius-photo, var(--radius-photo, 20px));
+  box-shadow:
+    0 10px 28px rgba(26, 35, 50, 0.08),
+    0 2px 8px rgba(26, 35, 50, 0.04);
+  transition:
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.web-specs-lite__photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.web-specs-lite__panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(1.75rem, 3.5vh, 2.5rem);
+  min-width: 0;
+}
+.web-specs-lite__specs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(51, 60, 78, 0.12);
+}
+.web-specs-lite__spec {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  width: 100%;
+  padding: clamp(1rem, 2.2vh, 1.35rem) 0;
+  border-bottom: 1px solid rgba(51, 60, 78, 0.1);
+}
+.web-specs-lite__spec:last-child {
+  border-bottom: none;
+}
+.web-specs-lite__value {
+  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--web-ink, #1a2332);
+}
+.web-specs-lite__unit {
+  font-size: 0.45em;
+  font-weight: 600;
+  color: var(--web-brand-blue, #3a84dc);
+}
+.web-specs-lite__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--web-ink, #1a2332);
+}
+@media (max-width: 720px) {
+  .web-specs-lite__layout {
+    grid-template-columns: 1fr;
+  }
+  .web-specs-lite__photo {
+    min-height: clamp(280px, 56vw, 420px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .web-specs-lite__photo,
+  .web-specs-lite__photo:hover {
+    transition: none;
+    transform: none;
+  }
+  .web-specs-lite__photo-img {
+    transition: none;
   }
 }
