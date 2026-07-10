@@ -11,22 +11,6 @@ export function AppNav() {
       >
         Website
       </NavLink>
-      <NavLink
-        to="/products/designer"
-        className={({ isActive }) =>
-          isActive ? "app-nav__link app-nav__link--active" : "app-nav__link"
-        }
-      >
-        DSR Tower
-      </NavLink>
-      <NavLink
-        to="/products/utility"
-        className={({ isActive }) =>
-          isActive ? "app-nav__link app-nav__link--active" : "app-nav__link"
-        }
-      >
-        LFM Tower
-      </NavLink>
     </nav>
   );
 }

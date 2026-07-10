@@ -1,7 +1,7 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
 import { HERO_COPY } from "./websiteData";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
-import { useReactBitActive, useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
+import { useReactBitActive } from "./useWebsiteReducedMotion";
 
 const TextType = lazy(() => import("./react-bits/TextType/TextType"));
 
@@ -9,30 +9,16 @@ const TextType = lazy(() => import("./react-bits/TextType/TextType"));
 export function WebsiteHeroLayer() {
   const textTypeActive = useReactBitActive("heroTextType");
   const typeCfg = WEBSITE_REACT_BITS.heroTextType;
-  const reducedMotion = useWebsiteReducedMotion();
-  const [titleReady, setTitleReady] = useState(reducedMotion);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const id = window.requestAnimationFrame(() => setTitleReady(true));
-    return () => window.cancelAnimationFrame(id);
-  }, [reducedMotion]);
-
-  const titleClassName =
-    "web-display web-hero-title" +
-    (titleReady ? " web-hero-title--ready" : "") +
-    (reducedMotion ? " web-hero-title--static" : "");
 
   return (
     <div className="web-hero-layer" aria-labelledby="web-hero-title">
       <section className="web-panel web-panel--hero">
         <div className="web-panel__vignette" aria-hidden />
         <div className="web-panel__content web-panel__content--hero">
-          <h1 id="web-hero-title" className={titleClassName}>
-            <span className="web-hero-title__line">{HERO_COPY.title[0]}</span>
-            <span className="web-hero-title__line web-display__accent">
-              {HERO_COPY.title[1]}
-            </span>
+          <h1 id="web-hero-title" className="web-display">
+            {HERO_COPY.title[0]}
+            <br />
+            <span className="web-display__accent">{HERO_COPY.title[1]}</span>
           </h1>
           {textTypeActive ? (
             <Suspense fallback={<p className="web-lead">{HERO_COPY.sub}</p>}>

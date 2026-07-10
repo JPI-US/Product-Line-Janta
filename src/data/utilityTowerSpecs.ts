@@ -20,8 +20,7 @@ export const utilityTowerSpecs: DesignerTowerSpec[] = [
     value: "620–750",
     unit: "watt",
     title: "Bifacial panels",
-    detail:
-      "Bifacial cells capture direct sun and reflected light for higher yield per tower.",
+    detail: "Bifacial cells capture direct sun and reflected light for higher yield per tower.",
   },
   {
     id: "lifespan",

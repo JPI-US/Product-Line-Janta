@@ -1,6 +1,8 @@
 import {
   bellCurvePath,
   CHART_Y_MAX,
+  JANTA_SUMMER_HOUR_MAX,
+  JANTA_SUMMER_HOUR_MIN,
   jantaSummerKw,
   jantaSummerPath,
   jantaWinterKw,
@@ -68,20 +70,22 @@ export const designerPowerCharts: Record<PowerSeason, PowerCurveChart> = {
   summer: {
     id: "summer",
     title: "Summer",
-    hourMin: 7,
-    hourMax: 22,
+    hourMin: JANTA_SUMMER_HOUR_MIN,
+    hourMax: JANTA_SUMMER_HOUR_MAX,
     yMax: CHART_Y_MAX,
     series: [
       {
         id: "traditional",
         label: "Traditional solar",
-        buildPath: (geom) => traditionalSummerPath(geom, 7, 22),
+        buildPath: (geom) =>
+          traditionalSummerPath(geom, JANTA_SUMMER_HOUR_MIN, JANTA_SUMMER_HOUR_MAX),
         kwAtHour: (h, min, max) => tradBellKw(h, min, max, REF_TRAD_SUMMER_PEAK_KW),
       },
       {
         id: "janta",
         label: "Janta",
-        buildPath: (geom) => jantaSummerPath(geom, 7, 22),
+        buildPath: (geom) =>
+          jantaSummerPath(geom, JANTA_SUMMER_HOUR_MIN, JANTA_SUMMER_HOUR_MAX),
         kwAtHour: (h, min, max) => jantaSummerKw(h, min, max),
       },
     ],

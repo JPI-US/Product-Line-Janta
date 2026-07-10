@@ -2,7 +2,7 @@ import { CountUp } from "../../components/CountUp";
 import { utilityTowerSpecs } from "../../data/utilityTowerSpecs";
 import { SPECS_LITE_COPY } from "./websiteData";
 
-/** Built for real-world sites — photo + vertical spec datasheet. */
+/** Built for real-world sites — tall photo + vertical spec datasheet. */
 export function WebsiteSpecsHighlight() {
   const copy = SPECS_LITE_COPY;
 

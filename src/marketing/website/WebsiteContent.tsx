@@ -1,4 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
+import { SHOW_GLOBE } from "../../config/featureFlags";
 import { useIsMobile } from "../../lib/useIsMobile";
 import { WebsiteDeferredSection } from "./WebsiteDeferredSection";
 
@@ -10,11 +11,6 @@ const WebsiteApplicationsSection = lazy(() =>
 const WebsiteYieldSection = lazy(() =>
   import("./WebsiteYieldSection").then((m) => ({
     default: m.WebsiteYieldSection,
-  })),
-);
-const WebsiteYieldComparisonSection = lazy(() =>
-  import("./WebsiteYieldComparisonSection").then((m) => ({
-    default: m.WebsiteYieldComparisonSection,
   })),
 );
 const WebsitePowerProfileSection = lazy(() =>
@@ -42,20 +38,21 @@ const WebsiteRoiSection = lazy(() =>
     default: m.WebsiteRoiSection,
   })),
 );
+const WebsiteFooter = lazy(() =>
+  import("./WebsiteFooter").then((m) => ({
+    default: m.WebsiteFooter,
+  })),
+);
+// Deferred-launch globe (behind SHOW_GLOBE). Interactive on desktop, static on
+// mobile. Lazy so it stays out of the bundle until the flag is turned on.
 const PremiumGlobe = lazy(() =>
   import("../../components/PremiumGlobe").then((m) => ({
     default: m.PremiumGlobe,
   })),
 );
-// Static, three-free globe section for phones — keeps three.js off mobile.
 const WebsiteGlobeMobile = lazy(() =>
   import("./WebsiteGlobeMobile").then((m) => ({
     default: m.WebsiteGlobeMobile,
-  })),
-);
-const WebsiteFooter = lazy(() =>
-  import("./WebsiteFooter").then((m) => ({
-    default: m.WebsiteFooter,
   })),
 );
 
@@ -67,7 +64,7 @@ export function WebsiteContent() {
   const isMobile = useIsMobile();
   return (
     <>
-      <div className="web-landing-sky-band">
+      <div className="web-landing-sky-band web-landing-sky-band--continuous">
         <WebsiteDeferredSection minHeight="min(90vh, 820px)">
           <LazySection>
             <WebsiteValueSection />
@@ -83,40 +80,35 @@ export function WebsiteContent() {
             <WebsiteYieldSection />
           </LazySection>
         </WebsiteDeferredSection>
-        <WebsiteDeferredSection minHeight="min(70vh, 620px)">
+        <WebsiteDeferredSection minHeight="min(80vh, 720px)">
           <LazySection>
-            <WebsiteYieldComparisonSection />
+            <WebsiteSoftwareShowcaseSection />
           </LazySection>
         </WebsiteDeferredSection>
-        <WebsiteDeferredSection minHeight="min(52vh, 480px)">
+        <WebsiteDeferredSection minHeight="min(68vh, 640px)">
           <LazySection>
             <WebsiteSpecsHighlight />
           </LazySection>
         </WebsiteDeferredSection>
-      </div>
-      <WebsiteDeferredSection minHeight="min(80vh, 720px)">
-        <LazySection>
-          <WebsiteSoftwareShowcaseSection />
-        </LazySection>
-      </WebsiteDeferredSection>
-      <div className="web-landing-sky-band web-landing-sky-band--solutions-media">
         <WebsiteDeferredSection minHeight="min(80vh, 700px)">
           <LazySection>
             <WebsitePowerProfileSection />
           </LazySection>
         </WebsiteDeferredSection>
-        <WebsiteDeferredSection minHeight="min(90vh, 820px)">
-          <LazySection>
-            {isMobile ? <WebsiteGlobeMobile /> : <PremiumGlobe />}
-          </LazySection>
-        </WebsiteDeferredSection>
+        {SHOW_GLOBE && (
+          <WebsiteDeferredSection minHeight="min(90vh, 820px)">
+            <LazySection>
+              {isMobile ? <WebsiteGlobeMobile /> : <PremiumGlobe />}
+            </LazySection>
+          </WebsiteDeferredSection>
+        )}
       </div>
       <WebsiteDeferredSection>
         <LazySection>
           <WebsiteRoiSection />
         </LazySection>
       </WebsiteDeferredSection>
-      <WebsiteDeferredSection mountImmediately>
+      <WebsiteDeferredSection minHeight="min(48vh, 420px)">
         <LazySection>
           <WebsiteFooter />
         </LazySection>

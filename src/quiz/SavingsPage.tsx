@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { AddressAutocomplete } from "./components/AddressAutocomplete";
 import { SavingsSummaryStep } from "./components/SavingsSummaryStep";
+import { AddressAutocomplete } from "./components/AddressAutocomplete";
 import type { SavingsProjectType as ProjectType } from "./lib/roiSpreadsheet";
 import "./SavingsPage.css";
 
@@ -225,7 +225,6 @@ export function SavingsPage() {
                   <AddressAutocomplete
                     value={location}
                     onChange={setLocation}
-                    placeholder="Street & city, state, or ZIP"
                   />
                 </label>
               )}

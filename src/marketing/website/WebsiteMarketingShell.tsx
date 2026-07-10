@@ -1,8 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { WebsiteFooter } from "./WebsiteFooter";
 import { WebsiteNav } from "./WebsiteNav";
-import "./website.css";
-import "./websiteReactBits.css";
 
 type WebsiteMarketingShellProps = {
   /** Hub homepage — transparent nav over sky; scroll sync surfaces the bar */

@@ -1,4 +1,4 @@
-import { clamp, smootherstep } from "@/lib/mathx";
+import * as THREE from "three";
 
 /** No intro buffer — static hero should respond immediately */
 export const WEBSITE_INTRO_PAGE_COUNT = 0;
@@ -45,7 +45,7 @@ export const WEBSITE_SKY_ANIMATION_END = WEBSITE_SKY_DAY_END;
 const PAGE_SLIDE_SHARE = 0.38;
 
 function clamp01(t: number) {
-  return clamp(t, 0, 1);
+  return THREE.MathUtils.clamp(t, 0, 1);
 }
 
 export function getWebsiteIntroScrollOffset(scrollOffset: number) {
@@ -61,7 +61,7 @@ export function getWebsiteAnimationBlend(scrollOffset: number): number {
 }
 
 function flowEase(t: number): number {
-  return smootherstep(clamp01(t), 0, 1);
+  return THREE.MathUtils.smootherstep(clamp01(t), 0, 1);
 }
 
 /** 0→1 night → day — locked to the same smooth orbit curve */
@@ -134,7 +134,7 @@ export function getWebsiteOffsetFromBelowScrollProgress(belowScroll: number) {
 /** 0→1 — hero copy motion (opacity stays 1; drives translate + blur only) */
 export function getWebsiteHeroReveal(scrollOffset: number) {
   const t = getWebsiteSkySolarBlend(scrollOffset);
-  return smootherstep(t, 0.02, 0.78);
+  return THREE.MathUtils.smootherstep(t, 0.02, 0.78);
 }
 
 /** 0→1 — frosted bar after orbit completes; full shortly after page lift */
@@ -146,7 +146,7 @@ export function getWebsiteNavSurface(scrollOffset: number): number {
   const fullAt = start + rampSpan;
   if (scrollOffset >= fullAt) return 1;
 
-  return smootherstep(
+  return THREE.MathUtils.smootherstep(
     (scrollOffset - start) / (fullAt - start),
     0,
     1

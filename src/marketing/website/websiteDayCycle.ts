@@ -1,5 +1,4 @@
-import { clamp, lerp, radToDeg, smoothstep, smootherstep } from "@/lib/mathx";
-import { lerpHexHsl } from "@/lib/colorx";
+import * as THREE from "three";
 import { solarAzimuthDegFromDirection } from "../../lib/solarTowerYaw";
 import { WEBSITE_SCENE } from "./websiteSceneConfig";
 import {
@@ -7,26 +6,6 @@ import {
   getWebsiteSkyChoreographyBlend,
 } from "./websiteScrollConfig";
 import { WEBSITE_PAGE_BG } from "./websiteData";
-
-/** Minimal 3-vector the sun helpers write into. THREE.Vector3 satisfies this,
- *  so the desktop rig can still pass its own Vector3 as the target. */
-type SunVec = {
-  x: number;
-  y: number;
-  z: number;
-  set(x: number, y: number, z: number): SunVec;
-};
-const makeSunVec = (): SunVec => ({
-  x: 0,
-  y: 0,
-  z: 0,
-  set(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    return this;
-  },
-});
 
 /** Hero / sky anchor — dark slate blue-gray */
 export const WEBSITE_SKY_BG = "#243341";
@@ -162,6 +141,27 @@ const NIGHT: WebsiteSkyState = {
   sunGlowColor: "#88b8e0",
 };
 
+function lerpHexHsl(a: string, b: string, t: number): string {
+  const out = new THREE.Color();
+  const ca = new THREE.Color(a);
+  const cb = new THREE.Color(b);
+  const ha = { h: 0, s: 0, l: 0 };
+  const hb = { h: 0, s: 0, l: 0 };
+  ca.getHSL(ha);
+  cb.getHSL(hb);
+
+  let dh = hb.h - ha.h;
+  if (dh > 0.5) dh -= 1;
+  if (dh < -0.5) dh += 1;
+
+  out.setHSL(
+    (ha.h + dh * t + 1) % 1,
+    ha.s + (hb.s - ha.s) * t,
+    ha.l + (hb.l - ha.l) * t
+  );
+  return `#${out.getHexString()}`;
+}
+
 function lerpHex(a: string, b: string, t: number): string {
   const parse = (h: string) => {
     const n = parseInt(h.slice(1), 16);
@@ -192,32 +192,32 @@ function lerpSky(a: WebsiteSkyState, b: WebsiteSkyState, t: number): WebsiteSkyS
     fog: mix("fog"),
     hemiSky: lerpHex(a.hemiSky, b.hemiSky, t),
     hemiGround: lerpHex(a.hemiGround, b.hemiGround, t),
-    hemiIntensity: lerp(a.hemiIntensity, b.hemiIntensity, t),
-    turbidity: lerp(a.turbidity, b.turbidity, t),
-    rayleigh: lerp(a.rayleigh, b.rayleigh, t),
-    sunVisualScale: lerp(a.sunVisualScale, b.sunVisualScale, t),
-    ambientScale: lerp(a.ambientScale, b.ambientScale, t),
+    hemiIntensity: THREE.MathUtils.lerp(a.hemiIntensity, b.hemiIntensity, t),
+    turbidity: THREE.MathUtils.lerp(a.turbidity, b.turbidity, t),
+    rayleigh: THREE.MathUtils.lerp(a.rayleigh, b.rayleigh, t),
+    sunVisualScale: THREE.MathUtils.lerp(a.sunVisualScale, b.sunVisualScale, t),
+    ambientScale: THREE.MathUtils.lerp(a.ambientScale, b.ambientScale, t),
     keyColor: lerpHex(a.keyColor, b.keyColor, t),
     rimColor: lerpHex(a.rimColor, b.rimColor, t),
     fillColor: lerpHex(a.fillColor, b.fillColor, t),
-    keyIntensity: lerp(a.keyIntensity, b.keyIntensity, t),
-    rimIntensity: lerp(a.rimIntensity, b.rimIntensity, t),
-    fillIntensity: lerp(a.fillIntensity, b.fillIntensity, t),
-    accentIntensity: lerp(a.accentIntensity, b.accentIntensity, t),
+    keyIntensity: THREE.MathUtils.lerp(a.keyIntensity, b.keyIntensity, t),
+    rimIntensity: THREE.MathUtils.lerp(a.rimIntensity, b.rimIntensity, t),
+    fillIntensity: THREE.MathUtils.lerp(a.fillIntensity, b.fillIntensity, t),
+    accentIntensity: THREE.MathUtils.lerp(a.accentIntensity, b.accentIntensity, t),
     accentColor: lerpHex(a.accentColor, b.accentColor, t),
-    yellowIntensity: lerp(a.yellowIntensity, b.yellowIntensity, t),
+    yellowIntensity: THREE.MathUtils.lerp(a.yellowIntensity, b.yellowIntensity, t),
     yellowColor: lerpHex(a.yellowColor, b.yellowColor, t),
-    ambientIntensity: lerp(a.ambientIntensity, b.ambientIntensity, t),
-    exposure: lerp(a.exposure, b.exposure, t),
-    envIntensity: lerp(a.envIntensity, b.envIntensity, t),
-    sunGlowOpacity: lerp(a.sunGlowOpacity, b.sunGlowOpacity, t),
+    ambientIntensity: THREE.MathUtils.lerp(a.ambientIntensity, b.ambientIntensity, t),
+    exposure: THREE.MathUtils.lerp(a.exposure, b.exposure, t),
+    envIntensity: THREE.MathUtils.lerp(a.envIntensity, b.envIntensity, t),
+    sunGlowOpacity: THREE.MathUtils.lerp(a.sunGlowOpacity, b.sunGlowOpacity, t),
     sunCoreColor: lerpHex(a.sunCoreColor, b.sunCoreColor, t),
     sunGlowColor: lerpHex(a.sunGlowColor, b.sunGlowColor, t),
   };
 }
 
 function flowEase(t: number): number {
-  const x = clamp(t, 0, 1);
+  const x = THREE.MathUtils.clamp(t, 0, 1);
   return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
@@ -246,7 +246,7 @@ export function getWebsiteDayPhase(scrollOffset: number): number {
 export function getWebsiteSunVisibility(scrollOffset: number): number {
   const dayT = getWebsiteSkyChoreographyBlend(scrollOffset);
   const elev = getSunElevation(getWebsiteTowerBlend(scrollOffset));
-  const aboveHorizon = smoothstep(elev, -6, 0.35);
+  const aboveHorizon = THREE.MathUtils.smoothstep(elev, -6, 0.35);
   return aboveHorizon * dayT;
 }
 
@@ -257,8 +257,8 @@ export function getWebsiteLightVisibility(scrollOffset: number): number {
 
 function getSunElevation(blend: number): number {
   const { elevationStart, elevationEnd } = WEBSITE_SCENE.sun;
-  const t = smootherstep(clamp(blend, 0, 1), 0, 1);
-  return lerp(elevationStart, elevationEnd, t);
+  const t = THREE.MathUtils.smootherstep(THREE.MathUtils.clamp(blend, 0, 1), 0, 1);
+  return THREE.MathUtils.lerp(elevationStart, elevationEnd, t);
 }
 
 /** 0→1 tower + scene lighting — same curve as sky */
@@ -269,11 +269,11 @@ export function getWebsiteGoldenHourBlend(scrollOffset: number): number {
 export function getWebsiteSunPosition(
   scrollOffset: number,
   towerX: number = WEBSITE_SCENE.tower.offsetX,
-  target: SunVec = makeSunVec()
-): SunVec {
+  target = new THREE.Vector3()
+): THREE.Vector3 {
   const blend = getWebsiteTowerBlend(scrollOffset);
   const { orbitRadius, azimuthStart, azimuthEnd } = WEBSITE_SCENE.sun;
-  const az = lerp(azimuthStart, azimuthEnd, blend);
+  const az = THREE.MathUtils.lerp(azimuthStart, azimuthEnd, blend);
   const elev = getSunElevation(blend);
 
   target.set(
@@ -298,7 +298,7 @@ export function getWebsiteSkySolar(
   const focusY = WEBSITE_SCENE.camera.lookAt.y;
   const horizontal = Math.hypot(dx, dz);
   const azimuthDeg = solarAzimuthDegFromDirection(dx, dz);
-  const altitudeDeg = radToDeg(
+  const altitudeDeg = THREE.MathUtils.radToDeg(
     Math.atan2(sun.y - focusY, horizontal)
   );
   return { azimuthDeg, altitudeDeg };
@@ -307,16 +307,11 @@ export function getWebsiteSkySolar(
 export function getWebsiteSunDirection(
   scrollOffset: number,
   towerX: number = WEBSITE_SCENE.tower.offsetX,
-  target: SunVec = makeSunVec()
-): SunVec {
+  target = new THREE.Vector3()
+): THREE.Vector3 {
   const sun = getWebsiteSunPosition(scrollOffset, towerX, target);
   const { x: focusX, y: focusY } = WEBSITE_SCENE.towerFocus;
-  // normalize(sun - focus); sun === target, so read coords before writing.
-  const dx = sun.x - focusX;
-  const dy = sun.y - focusY;
-  const dz = sun.z;
-  const len = Math.hypot(dx, dy, dz) || 1;
-  return target.set(dx / len, dy / len, dz / len);
+  return target.copy(sun).sub(new THREE.Vector3(focusX, focusY, 0)).normalize();
 }
 
 /** Cool blue sunlight on the tower — single night → day lerp */

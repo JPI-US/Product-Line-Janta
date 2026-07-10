@@ -23,12 +23,12 @@ const CHART = {
   pad: { top: 28, right: 26, bottom: 46, left: 50 },
 } as const;
 
-const SEASONS: { id: PowerSeason; label: string }[] = [
-  { id: "summer", label: "Summer" },
-  { id: "winter", label: "Winter" },
-];
+const SEASON_HOLD_MS = 4000;
+const SEASON_TRANSITION_MS = 1600;
 
-const SEASON_CYCLE_MS = 4000;
+function easeInOutQuint(t: number): number {
+  return t < 0.5 ? 16 * t ** 5 : 1 - (-2 * t + 2) ** 5 / 2;
+}
 
 type Geom = ChartGeom & { plotRight: number };
 
@@ -84,7 +84,15 @@ function yTickStep(yMax: number): number {
   return 50;
 }
 
-function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
+function PowerProfileChart({
+  chart,
+  opacity = 1,
+  interactive = true,
+}: {
+  chart: PowerCurveChart;
+  opacity?: number;
+  interactive?: boolean;
+}) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hover, setHover] = useState<HoverState | null>(null);
   const geom = useMemo(() => chartGeometry(chart), [chart]);
@@ -118,6 +126,7 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
 
   const handleMove = useCallback(
     (event: PointerEvent<SVGSVGElement>) => {
+      if (!interactive) return;
       const svg = svgRef.current;
       if (!svg) return;
       const rect = svg.getBoundingClientRect();
@@ -136,144 +145,218 @@ function PowerProfileChart({ chart }: { chart: PowerCurveChart }) {
         tradKw: trad.kwAtHour(hour, chart.hourMin, chart.hourMax),
       });
     },
-    [chart, geom, janta, trad],
+    [chart, geom, interactive, janta, trad],
   );
 
   return (
-    <svg
-      ref={svgRef}
-      className="tower-3d__power-profile__svg"
-      viewBox={`0 0 ${CHART.width} ${CHART.height}`}
-      preserveAspectRatio="xMidYMid meet"
-      role="img"
-      aria-label={`${chart.title} daily output — Janta tracking versus fixed solar, kilowatts by hour.`}
-      onPointerMove={handleMove}
-      onPointerLeave={() => setHover(null)}
+    <div
+      className="tower-3d__power-profile__chart-layer"
+      style={{
+        opacity,
+        pointerEvents: interactive && opacity > 0.2 ? "auto" : "none",
+      }}
+      aria-hidden={opacity < 0.05}
     >
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--web-brand-blue, #3a84dc)" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="var(--web-brand-blue, #3a84dc)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
+      <svg
+        ref={svgRef}
+        className="tower-3d__power-profile__svg"
+        viewBox={`0 0 ${CHART.width} ${CHART.height}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label={`${chart.title} daily output — Janta tracking versus fixed solar, kilowatts by hour.`}
+        onPointerMove={handleMove}
+        onPointerLeave={() => setHover(null)}
+      >
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--web-brand-blue, #3a84dc)" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="var(--web-brand-blue, #3a84dc)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
 
-      {yTicks.map((kw) => (
+        {yTicks.map((kw) => (
+          <line
+            key={kw}
+            x1={CHART.pad.left}
+            x2={geom.plotRight}
+            y1={geom.y(kw)}
+            y2={geom.y(kw)}
+            className="tower-3d__power-profile__grid"
+          />
+        ))}
+
         <line
-          key={kw}
           x1={CHART.pad.left}
           x2={geom.plotRight}
-          y1={geom.y(kw)}
-          y2={geom.y(kw)}
-          className="tower-3d__power-profile__grid"
+          y1={plotBottom}
+          y2={plotBottom}
+          className="tower-3d__power-profile__axis"
         />
-      ))}
 
-      <line
-        x1={CHART.pad.left}
-        x2={geom.plotRight}
-        y1={plotBottom}
-        y2={plotBottom}
-        className="tower-3d__power-profile__axis"
-      />
-
-      {yTicks.map((kw) => (
-        <text
-          key={kw}
-          x={CHART.pad.left - 10}
-          y={geom.y(kw) + 4}
-          className="tower-3d__power-profile__tick"
-          textAnchor="end"
-        >
-          {kw}
-        </text>
-      ))}
-
-      {xTicks.map((h) => (
-        <text
-          key={h}
-          x={geom.x(h)}
-          y={plotBottom + 24}
-          className="tower-3d__power-profile__tick"
-          textAnchor="middle"
-        >
-          {fmtHour(h)}
-        </text>
-      ))}
-
-      <text
-        x={CHART.pad.left - 34}
-        y={midY}
-        className="tower-3d__power-profile__axis-label"
-        textAnchor="middle"
-        transform={`rotate(-90 ${CHART.pad.left - 34} ${midY})`}
-      >
-        kW output
-      </text>
-
-      <path
-        d={tradPath}
-        className="tower-3d__power-profile__line tower-3d__power-profile__line--trad"
-        fill="none"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      <path
-        d={areaPath(jantaPath, geom, chart.hourMin, chart.hourMax)}
-        className="tower-3d__power-profile__area"
-        fill={`url(#${gradId})`}
-        stroke="none"
-      />
-      <path
-        d={jantaPath}
-        className="tower-3d__power-profile__line tower-3d__power-profile__line--janta"
-        fill="none"
-        pathLength={1}
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {hover ? (
-        <g className="tower-3d__power-profile__hover" pointerEvents="none">
-          <line
-            x1={hover.x}
-            x2={hover.x}
-            y1={CHART.pad.top}
-            y2={plotBottom}
-            className="tower-3d__power-profile__crosshair"
-          />
-          <circle
-            cx={hover.x}
-            cy={geom.y(hover.tradKw)}
-            r={3.5}
-            className="tower-3d__power-profile__dot tower-3d__power-profile__dot--trad"
-          />
-          <circle
-            cx={hover.x}
-            cy={geom.y(hover.jantaKw)}
-            r={4}
-            className="tower-3d__power-profile__dot tower-3d__power-profile__dot--janta"
-          />
-          <foreignObject
-            x={tooltipX}
-            y={CHART.pad.top - 6}
-            width={tooltipW}
-            height={82}
-            className="tower-3d__power-profile__tt-host"
+        {yTicks.map((kw) => (
+          <text
+            key={kw}
+            x={CHART.pad.left - 10}
+            y={geom.y(kw) + 4}
+            className="tower-3d__power-profile__tick"
+            textAnchor="end"
           >
-            <div className="tower-3d__power-profile__tt">
-              <p className="tower-3d__power-profile__tt-time">{fmtHour(hover.hour)}</p>
-              <p className="tower-3d__power-profile__tt-row tower-3d__power-profile__tt-row--janta">
-                <span>Janta</span>
-                <span>{fmtKw(hover.jantaKw)}</span>
-              </p>
-              <p className="tower-3d__power-profile__tt-row tower-3d__power-profile__tt-row--trad">
-                <span>Fixed</span>
-                <span>{fmtKw(hover.tradKw)}</span>
-              </p>
-            </div>
-          </foreignObject>
-        </g>
-      ) : null}
-    </svg>
+            {kw}
+          </text>
+        ))}
+
+        {xTicks.map((h) => (
+          <text
+            key={h}
+            x={geom.x(h)}
+            y={plotBottom + 24}
+            className="tower-3d__power-profile__tick"
+            textAnchor="middle"
+          >
+            {fmtHour(h)}
+          </text>
+        ))}
+
+        <text
+          x={CHART.pad.left - 34}
+          y={midY}
+          className="tower-3d__power-profile__axis-label"
+          textAnchor="middle"
+          transform={`rotate(-90 ${CHART.pad.left - 34} ${midY})`}
+        >
+          kW output
+        </text>
+
+        <path
+          d={tradPath}
+          className="tower-3d__power-profile__line tower-3d__power-profile__line--trad"
+          fill="none"
+          vectorEffect="non-scaling-stroke"
+        />
+
+        <path
+          d={areaPath(jantaPath, geom, chart.hourMin, chart.hourMax)}
+          className="tower-3d__power-profile__area"
+          fill={`url(#${gradId})`}
+          stroke="none"
+        />
+        <path
+          d={jantaPath}
+          className="tower-3d__power-profile__line tower-3d__power-profile__line--janta"
+          fill="none"
+          pathLength={1}
+          vectorEffect="non-scaling-stroke"
+        />
+
+        {hover ? (
+          <g className="tower-3d__power-profile__hover" pointerEvents="none">
+            <line
+              x1={hover.x}
+              x2={hover.x}
+              y1={CHART.pad.top}
+              y2={plotBottom}
+              className="tower-3d__power-profile__crosshair"
+            />
+            <circle
+              cx={hover.x}
+              cy={geom.y(hover.tradKw)}
+              r={3.5}
+              className="tower-3d__power-profile__dot tower-3d__power-profile__dot--trad"
+            />
+            <circle
+              cx={hover.x}
+              cy={geom.y(hover.jantaKw)}
+              r={4}
+              className="tower-3d__power-profile__dot tower-3d__power-profile__dot--janta"
+            />
+            <foreignObject
+              x={tooltipX}
+              y={CHART.pad.top - 6}
+              width={tooltipW}
+              height={82}
+              className="tower-3d__power-profile__tt-host"
+            >
+              <div className="tower-3d__power-profile__tt">
+                <p className="tower-3d__power-profile__tt-time">{fmtHour(hover.hour)}</p>
+                <p className="tower-3d__power-profile__tt-row tower-3d__power-profile__tt-row--janta">
+                  <span>Janta</span>
+                  <span>{fmtKw(hover.jantaKw)}</span>
+                </p>
+                <p className="tower-3d__power-profile__tt-row tower-3d__power-profile__tt-row--trad">
+                  <span>Fixed</span>
+                  <span>{fmtKw(hover.tradKw)}</span>
+                </p>
+              </div>
+            </foreignObject>
+          </g>
+        ) : null}
+      </svg>
+    </div>
+  );
+}
+
+type SeasonTransition = {
+  from: PowerSeason;
+  to: PowerSeason;
+  t: number;
+};
+
+function seasonOpacity(
+  target: PowerSeason,
+  season: PowerSeason,
+  transition: SeasonTransition | null,
+): number {
+  if (transition) {
+    return transition.from === target ? 1 - transition.t : transition.t;
+  }
+  return season === target ? 1 : 0;
+}
+
+function PowerProfileTitle({
+  season,
+  transition,
+}: {
+  season: PowerSeason;
+  transition: SeasonTransition | null;
+}) {
+  const summerOpacity = seasonOpacity("summer", season, transition);
+  const winterOpacity = seasonOpacity("winter", season, transition);
+
+  return (
+    <h2
+      id="tower-power-profile-title"
+      className="tower-3d__below-title tower-3d__power-profile__title-stack"
+      aria-live="polite"
+    >
+      <span className="tower-3d__power-profile__title-sizer" aria-hidden>
+        Power output across a Winter day
+      </span>
+      <span className="tower-3d__power-profile__title-sizer" aria-hidden>
+        Power output across a Summer day
+      </span>
+      <span
+        className="tower-3d__power-profile__title-line"
+        style={{ opacity: summerOpacity }}
+        aria-hidden={summerOpacity < 0.5}
+      >
+        Power output across a{" "}
+        <span className="tower-3d__power-profile__season-word tower-3d__power-profile__season-word--summer">
+          Summer
+        </span>{" "}
+        day
+      </span>
+      <span
+        className="tower-3d__power-profile__title-line"
+        style={{ opacity: winterOpacity }}
+        aria-hidden={winterOpacity < 0.5}
+      >
+        Power output across a{" "}
+        <span className="tower-3d__power-profile__season-word tower-3d__power-profile__season-word--winter">
+          Winter
+        </span>{" "}
+        day
+      </span>
+    </h2>
   );
 }
 
@@ -289,59 +372,124 @@ export function ProductPowerProfileSection({
 }) {
   const reducedMotion = useWebsiteReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const settledSeasonRef = useRef<PowerSeason>("summer");
+  const transitionRef = useRef(0);
   const [drawn, setDrawn] = useState(false);
+  const [drawComplete, setDrawComplete] = useState(false);
   const [season, setSeason] = useState<PowerSeason>("summer");
-  const [cycleKey, setCycleKey] = useState(0);
+  const [transition, setTransition] = useState<SeasonTransition | null>(null);
   const charts = scenario === "500kw-dallas" ? powerCurves500kw : designerPowerCharts;
-  const chart = charts[season];
 
-  const selectSeason = (id: PowerSeason) => {
-    setSeason(id);
-    setCycleKey((key) => key + 1);
-  };
+  const animateToSeason = useCallback(
+    (target: PowerSeason, onComplete?: () => void) => {
+      cancelAnimationFrame(transitionRef.current);
+      const from = settledSeasonRef.current;
+      if (from === target) {
+        onComplete?.();
+        return;
+      }
+
+      if (reducedMotion) {
+        settledSeasonRef.current = target;
+        setSeason(target);
+        setTransition(null);
+        onComplete?.();
+        return;
+      }
+
+      const startAt = performance.now();
+      setTransition({ from, to: target, t: 0 });
+
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - startAt) / SEASON_TRANSITION_MS);
+        const eased = easeInOutQuint(progress);
+        setTransition({ from, to: target, t: eased });
+        if (progress < 1) {
+          transitionRef.current = requestAnimationFrame(tick);
+          return;
+        }
+        settledSeasonRef.current = target;
+        setSeason(target);
+        setTransition(null);
+        onComplete?.();
+      };
+      transitionRef.current = requestAnimationFrame(tick);
+    },
+    [reducedMotion],
+  );
 
   useEffect(() => {
-    if (!autoCycleSeason || reducedMotion) return;
+    if (!autoCycleSeason || !drawn) return;
 
-    const id = window.setInterval(() => {
-      setSeason((current) => (current === "summer" ? "winter" : "summer"));
-    }, SEASON_CYCLE_MS);
+    let cancelled = false;
+    let holdTimer = 0;
 
-    return () => window.clearInterval(id);
-  }, [autoCycleSeason, reducedMotion, cycleKey]);
+    const queueNext = () => {
+      holdTimer = window.setTimeout(() => {
+        if (cancelled) return;
+        const next = settledSeasonRef.current === "summer" ? "winter" : "summer";
+        animateToSeason(next, () => {
+          if (!cancelled) queueNext();
+        });
+      }, SEASON_HOLD_MS);
+    };
 
-  // Draw the chart in whenever it scrolls into view — toggling `drawn` off when
-  // it leaves means the animation replays each time it re-enters. (A season
-  // auto-cycle remounts the chart while in view, which just renders at the
-  // final state, so it doesn't re-trigger mid-view.)
+    queueNext();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(holdTimer);
+      cancelAnimationFrame(transitionRef.current);
+    };
+  }, [animateToSeason, autoCycleSeason, drawn]);
+
   useEffect(() => {
     if (reducedMotion) {
       setDrawn(true);
+      setDrawComplete(true);
       return;
     }
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setDrawn(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setDrawn(true);
+          observer.disconnect();
+        }
+      },
       { threshold: 0.35, rootMargin: "0px 0px -10% 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [reducedMotion]);
 
+  useEffect(() => {
+    if (!drawn) {
+      setDrawComplete(false);
+      return;
+    }
+    if (reducedMotion) {
+      setDrawComplete(true);
+      return;
+    }
+    const id = window.setTimeout(() => setDrawComplete(true), 1100);
+    return () => window.clearTimeout(id);
+  }, [drawn, reducedMotion]);
+
+  const summerOpacity = seasonOpacity("summer", season, transition);
+  const winterOpacity = seasonOpacity("winter", season, transition);
+
   return (
     <section
       ref={sectionRef}
       className={`tower-3d__power-profile tower-3d__designer-band${
         drawn ? " is-drawn" : ""
-      }`}
+      }${drawComplete ? " is-draw-complete" : ""}`}
       aria-labelledby="tower-power-profile-title"
     >
       <div className="tower-3d__power-profile__inner">
         <header className="tower-3d__power-profile__header">
-          <h2 id="tower-power-profile-title" className="tower-3d__below-title">
-            Output across the day
-          </h2>
+          <PowerProfileTitle season={season} transition={transition} />
           <p className="tower-3d__below-lede">{lede}</p>
         </header>
 
@@ -355,26 +503,16 @@ export function ProductPowerProfileSection({
         </div>
 
         <div className="tower-3d__power-profile__stage">
-          <PowerProfileChart key={season} chart={chart} />
-        </div>
-
-        <div className="tower-3d__power-profile__switch">
-          <div className="tower-3d__power-profile__season" role="tablist" aria-label="Season">
-            {SEASONS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                aria-selected={season === item.id}
-                className={`tower-3d__power-profile__season-btn${
-                  season === item.id ? " is-active" : ""
-                }`}
-                onClick={() => selectSeason(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
+          <PowerProfileChart
+            chart={charts.summer}
+            opacity={summerOpacity}
+            interactive={summerOpacity >= winterOpacity}
+          />
+          <PowerProfileChart
+            chart={charts.winter}
+            opacity={winterOpacity}
+            interactive={winterOpacity > summerOpacity}
+          />
         </div>
       </div>
     </section>

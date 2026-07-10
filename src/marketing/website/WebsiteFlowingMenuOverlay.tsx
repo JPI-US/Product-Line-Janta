@@ -4,7 +4,6 @@ import FlowingMenu from "./react-bits/FlowingMenu/FlowingMenu";
 import { NAV_COPY } from "./websiteData";
 
 const MENU_ITEMS = [
-  { link: "/website", text: NAV_COPY.home, image: "/marketing/janta-logo-mark.png" },
   { link: NAV_COPY.contactHref, text: NAV_COPY.contact, image: "/marketing/energy-cta.png" },
 ];
 

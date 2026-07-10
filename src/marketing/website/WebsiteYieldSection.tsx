@@ -1,11 +1,6 @@
-import "../../styles/tower-3d.css";
-import { ProductYieldSection } from "../../components/ProductYieldSection";
+import { WebsiteYieldComparisonSection } from "./WebsiteYieldComparisonSection";
 
-/** Home-page embed of the LFM "Fixed solar vs Janta" yield comparison table. */
+/** Home-page Janta vs fixed solar yield comparison. */
 export function WebsiteYieldSection() {
-  return (
-    <div className="web-home-yield">
-      <ProductYieldSection productId="utility" scenario="500kw-dallas" />
-    </div>
-  );
+  return <WebsiteYieldComparisonSection />;
 }

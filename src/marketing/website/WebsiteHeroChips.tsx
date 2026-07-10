@@ -34,8 +34,8 @@ export function WebsiteHeroChips() {
     <div className="web-hero-chips" aria-hidden>
       {HERO_CHIPS.map((chip) => (
         <div key={chip.id} className={`web-hero-chip ${chip.className}`}>
-          <span className="web-hero-chip__label">{chip.label}</span>
           <span className="web-hero-chip__value">{chip.value}</span>
+          <span className="web-hero-chip__label">{chip.label}</span>
           <span className="web-hero-chip__hint">{chip.hint}</span>
         </div>
       ))}

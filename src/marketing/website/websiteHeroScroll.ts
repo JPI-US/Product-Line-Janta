@@ -1,11 +1,4 @@
-import {
-  clamp,
-  euclideanModulo,
-  lerp,
-  radToDeg,
-  smoothstep,
-  smootherstep,
-} from "@/lib/mathx";
+import * as THREE from "three";
 import {
   solarAzimuthDegFromDirection,
   solarAzimuthDegFromTowerYaw,
@@ -14,24 +7,7 @@ import { SCENE } from "../../components/three/sceneConfig";
 import { WEBSITE_ORBIT_OVERSHOOT } from "./websiteScrollConfig";
 import { WEBSITE_SCENE } from "./websiteSceneConfig";
 
-/** Minimal 3-vector written by the sun-position helper (internal use only). */
-type Vec3 = {
-  x: number;
-  y: number;
-  z: number;
-  set(x: number, y: number, z: number): Vec3;
-};
-const sunPosScratch: Vec3 = {
-  x: 0,
-  y: 0,
-  z: 0,
-  set(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    return this;
-  },
-};
+const sunPosScratch = new THREE.Vector3();
 
 const TRACKING_LUT_SAMPLES = 256;
 let trackingYawLut: Float64Array | null = null;
@@ -83,7 +59,7 @@ function getTrackingYawLut(): Float64Array {
 
 /** Interpolate along the pre-unwrapped yaw path — no ±π snaps */
 export function getWebsiteHeroTrackingYaw(cycleBlend: number): number {
-  const t = clamp(cycleBlend, 0, 1);
+  const t = THREE.MathUtils.clamp(cycleBlend, 0, 1);
   if (t <= 0) return WEBSITE_HERO_IDLE_YAW;
 
   const lut = getTrackingYawLut();
@@ -91,7 +67,7 @@ export function getWebsiteHeroTrackingYaw(cycleBlend: number): number {
   const i0 = Math.floor(f);
   const i1 = Math.min(i0 + 1, TRACKING_LUT_SAMPLES);
   const frac = f - i0;
-  return lerp(lut[i0], lut[i1], frac);
+  return THREE.MathUtils.lerp(lut[i0], lut[i1], frac);
 }
 
 /** Lerp rotation.y toward a target without taking the long way around */
@@ -101,7 +77,7 @@ export function lerpTowerYaw(
   alpha: number
 ): number {
   const delta =
-    euclideanModulo(target - current + Math.PI, Math.PI * 2) -
+    THREE.MathUtils.euclideanModulo(target - current + Math.PI, Math.PI * 2) -
     Math.PI;
   return current + delta * alpha;
 }
@@ -110,7 +86,7 @@ export function lerpTowerYaw(
 function getSunAzimuthRad(cycleBlend: number): number {
   const { azimuthStart } = WEBSITE_SCENE.sun;
   const lap = Math.PI * 2 * (1 + WEBSITE_ORBIT_OVERSHOOT);
-  return azimuthStart + clamp(cycleBlend, 0, 1) * lap;
+  return azimuthStart + THREE.MathUtils.clamp(cycleBlend, 0, 1) * lap;
 }
 
 /**
@@ -118,15 +94,15 @@ function getSunAzimuthRad(cycleBlend: number): number {
  */
 export function getWebsiteHeroSunElevation(cycleBlend: number): number {
   const { elevationStart, elevationEnd } = WEBSITE_SCENE.sun;
-  const t = smootherstep(clamp(cycleBlend, 0, 1), 0, 1);
-  return lerp(elevationStart, elevationEnd, t);
+  const t = THREE.MathUtils.smootherstep(THREE.MathUtils.clamp(cycleBlend, 0, 1), 0, 1);
+  return THREE.MathUtils.lerp(elevationStart, elevationEnd, t);
 }
 
 export function getWebsiteHeroSunPosition(
   cycleBlend: number,
   towerX: number = WEBSITE_SCENE.tower.offsetX,
   target = sunPosScratch
-): Vec3 {
+): THREE.Vector3 {
   const az = getSunAzimuthRad(cycleBlend);
   const { orbitRadius } = WEBSITE_SCENE.sun;
   const elev = getWebsiteHeroSunElevation(cycleBlend);
@@ -148,7 +124,7 @@ export function getWebsiteHeroSunAngles(
   const dz = sun.z;
   const horizontal = Math.hypot(dx, dz);
   const azimuthDeg = solarAzimuthDegFromDirection(dx, dz);
-  const altitudeDeg = radToDeg(
+  const altitudeDeg = THREE.MathUtils.radToDeg(
     Math.atan2(sun.y - focusY, Math.max(horizontal, 0.001))
   );
   return { azimuthDeg, altitudeDeg };
@@ -172,11 +148,11 @@ export function getWebsiteDisplaySunAngles(
     towerYaw,
     SCENE.tower.yawOffset
   );
-  const altitudeDeg = clamp(baseAltitudeDeg, -6, 68);
-  const skyFloor = lerp(
+  const altitudeDeg = THREE.MathUtils.clamp(baseAltitudeDeg, -6, 68);
+  const skyFloor = THREE.MathUtils.lerp(
     18,
     10,
-    smoothstep(cycleBlend, 0, 0.5)
+    THREE.MathUtils.smoothstep(cycleBlend, 0, 0.5)
   );
   const skyAltitudeDeg = Math.max(altitudeDeg, skyFloor);
 
@@ -192,6 +168,6 @@ export function getWebsiteDisplaySunAngles(
 export function getWebsiteHeroSkyPeriod(
   cycleBlend: number
 ): "night" | "dawn" | "golden" | "day" {
-  const t = clamp(cycleBlend, 0, 1);
+  const t = THREE.MathUtils.clamp(cycleBlend, 0, 1);
   return t < 0.5 ? "night" : "day";
 }

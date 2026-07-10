@@ -25,6 +25,10 @@ function formatKwh(value: number): string {
   return Math.round(value).toLocaleString("en-US");
 }
 
+export function formatAnnualKwh(value: number): string {
+  return formatKwh(value);
+}
+
 export function yield500kwOutput(values: {
   annualKwh: number;
   monthlyKwh: number;
@@ -47,12 +51,7 @@ export function formatLandAcres(acres: number): { value: string; unit: string } 
   return { value, unit };
 }
 
-/** Annual kWh formatted with thousands separators — for the yield comparison. */
-export function formatAnnualKwh(value: number): string {
-  return formatKwh(value);
-}
-
-/** Bar widths (0–100) for the Janta-vs-fixed annual output + land comparison. */
+/** Relative bar widths for the marketing yield comparison cards. */
 export function yieldCompareBarWidths() {
   const { janta, fixed } = YIELD_500KW_DALLAS;
   const maxAnnual = Math.max(janta.annualKwh, fixed.annualKwh);

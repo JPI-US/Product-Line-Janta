@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { WebsiteJantaOsDashboardEmbed } from "./WebsiteJantaOsDashboardEmbed";
 import { SOFTWARE_SHOWCASE_COPY } from "./websiteData";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
@@ -76,6 +77,8 @@ export function WebsiteSoftwareShowcaseSection() {
           {SOFTWARE_SHOWCASE_COPY.title}
         </h2>
 
+        <p className="web-software-showcase__body">{SOFTWARE_SHOWCASE_COPY.body}</p>
+
         <div className="web-software-showcase__tablet">
           <div ref={viewportRef} className="web-software-showcase__screen-viewport">
             {showLiveDashboard ? (
@@ -95,13 +98,12 @@ export function WebsiteSoftwareShowcaseSection() {
           </div>
         </div>
 
-        <p className="web-software-showcase__body">{SOFTWARE_SHOWCASE_COPY.body}</p>
-        <a
+        <Link
           className="web-ps-roi__btn web-ps-roi__btn--primary web-software-showcase__btn"
-          href={SOFTWARE_SHOWCASE_COPY.ctaHref}
+          to={SOFTWARE_SHOWCASE_COPY.ctaHref}
         >
           {SOFTWARE_SHOWCASE_COPY.cta}
-        </a>
+        </Link>
       </div>
     </section>
   );

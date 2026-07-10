@@ -38,77 +38,7 @@
   box-sizing: border-box;
   font-family: var(--font, "DM Sans", system-ui, sans-serif);
   color: var(--sv-body);
-  position: relative;
-  /* Living "wavy" blue like the hero, kept in a light range so the dark quiz
-     text and white tiles stay perfectly legible. */
-  background-color: #e6f0fc;
-  background-image: linear-gradient(
-    120deg,
-    #d3e6fb 0%,
-    #bcd6f3 22%,
-    #e2eefc 44%,
-    #c6ddf6 66%,
-    #d6e7fb 82%,
-    #bfd8f2 100%
-  );
-  background-size: 300% 300%;
-  animation: sv-wave-drift 48s ease-in-out infinite;
-}
-
-/* Drifting glows over the waves for extra life — a blue bloom and a warm gold
-   one, both very soft so text stays clean. */
-.savings::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(38% 42% at 22% 26%, rgba(58, 132, 220, 0.2), transparent 62%),
-    radial-gradient(34% 38% at 82% 72%, rgba(255, 191, 20, 0.12), transparent 60%),
-    radial-gradient(30% 34% at 60% 12%, rgba(120, 180, 235, 0.16), transparent 64%);
-  animation: sv-glow-drift 26s ease-in-out infinite alternate;
-}
-
-.savings > * {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes sv-glow-drift {
-  0% {
-    transform: translate3d(-2%, -1.5%, 0) scale(1);
-    opacity: 0.85;
-  }
-  100% {
-    transform: translate3d(2.5%, 2%, 0) scale(1.08);
-    opacity: 1;
-  }
-}
-
-@keyframes sv-wave-drift {
-  0% {
-    background-position: 12% 20%;
-  }
-  25% {
-    background-position: 88% 60%;
-  }
-  50% {
-    background-position: 30% 90%;
-  }
-  75% {
-    background-position: 70% 30%;
-  }
-  100% {
-    background-position: 12% 20%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .savings,
-  .savings::before {
-    animation: none;
-  }
+  background: transparent;
 }
 
 .savings__inner {
@@ -282,34 +212,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(4.4rem, 11vw, 5.3rem);
-  height: clamp(4.4rem, 11vw, 5.3rem);
-  border-radius: 18px;
-  /* Brand-blue icon on a soft tinted chip so the tiles carry some colour. */
-  color: var(--sv-selected, #3a84dc);
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--sv-selected) 17%, #ffffff),
-    color-mix(in srgb, var(--sv-selected) 7%, #ffffff)
-  );
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
 }
 
 .savings-tile__icon svg {
   display: block;
-  width: clamp(2.4rem, 6vw, 2.95rem);
-  height: clamp(2.4rem, 6vw, 2.95rem);
-}
-
-.savings-tile--selected .savings-tile__icon {
-  color: #ffffff;
-  background: linear-gradient(
-    155deg,
-    var(--sv-selected),
-    color-mix(in srgb, var(--sv-selected) 78%, #12294a)
-  );
+  width: clamp(3.1rem, 8.5vw, 3.9rem);
+  height: clamp(3.1rem, 8.5vw, 3.9rem);
 }
 
 .savings-tile__label {
@@ -317,6 +225,57 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.25;
+}
+
+/* Address autocomplete */
+
+.savings-address {
+  position: relative;
+  width: 100%;
+}
+
+.savings-address__status {
+  margin: 0.45rem 0 0 1.1rem;
+  font-size: 0.82rem;
+  color: var(--sv-muted);
+}
+
+.savings-address__list {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border: 1px solid var(--sv-tile-border);
+  border-radius: var(--radius-lg, 20px);
+  background: var(--warm-surface, #ffffff);
+  box-shadow: 0 12px 32px rgba(26, 51, 74, 0.12);
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.savings-address__option {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-radius: calc(var(--radius-lg, 20px) - 6px);
+  background: transparent;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--sv-body);
+  cursor: pointer;
+}
+
+.savings-address__option:hover,
+.savings-address__option--active {
+  background: color-mix(in srgb, var(--sv-selected) 8%, var(--warm-surface, #fff));
+  color: var(--sv-heading);
 }
 
 /* Inputs */
@@ -839,50 +798,4 @@
     width: 2.5rem;
     height: 2.5rem;
   }
-}
-
-/* ── Address autocomplete dropdown (ported) — uses the quiz sv-* tokens ── */
-.savings-address {
-  position: relative;
-  width: 100%;
-}
-.savings-address__status {
-  margin: 0.45rem 0 0 1.1rem;
-  font-size: 0.82rem;
-  color: var(--sv-muted);
-}
-.savings-address__list {
-  position: absolute;
-  top: calc(100% + 0.45rem);
-  left: 0;
-  right: 0;
-  z-index: 20;
-  margin: 0;
-  padding: 0.35rem;
-  list-style: none;
-  border: 1px solid var(--sv-tile-border);
-  border-radius: var(--radius-lg, 20px);
-  background: var(--warm-surface, #ffffff);
-  box-shadow: 0 12px 32px rgba(26, 51, 74, 0.12);
-  max-height: 14rem;
-  overflow-y: auto;
-}
-.savings-address__option {
-  display: block;
-  width: 100%;
-  padding: 0.7rem 0.9rem;
-  border: none;
-  border-radius: calc(var(--radius-lg, 20px) - 6px);
-  background: transparent;
-  font: inherit;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  text-align: left;
-  color: var(--sv-body);
-  cursor: pointer;
-}
-.savings-address__option:hover,
-.savings-address__option--active {
-  background: color-mix(in srgb, var(--sv-selected) 8%, var(--warm-surface, #fff));
-  color: var(--sv-heading);
 }

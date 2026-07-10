@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { WebsiteContactForm } from "./WebsiteContactForm";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
-import { CONTACT_PAGE_COPY, FOOTER_COPY } from "./websiteData";
+import { CONTACT_PAGE_COPY } from "./websiteData";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
 
 export default function WebsiteContactPage() {
   useDocumentMeta({
     title: "Contact",
     description:
-      "Get in touch with Janta Power about three-dimensional solar for your project — or take the savings quiz to estimate land use and lifetime savings.",
+      "Get in touch with Janta Power about three-dimensional solar for your project — or take the savings quiz to estimate project size, land usage, and lifetime savings.",
   });
 
   return (
@@ -28,11 +28,6 @@ export default function WebsiteContactPage() {
               Send a message
             </h2>
             <WebsiteContactForm showTitle={false} labelledBy="web-contact-form-title" />
-            <div className="web-contact-page__details">
-              <a href={`mailto:${FOOTER_COPY.contactEmail}`}>{FOOTER_COPY.contactEmail}</a>
-              <a href={`tel:${FOOTER_COPY.contactPhoneTel}`}>{FOOTER_COPY.contactPhone}</a>
-              <span>{FOOTER_COPY.location}</span>
-            </div>
           </section>
 
           <aside
@@ -40,7 +35,6 @@ export default function WebsiteContactPage() {
             className="web-contact-page__quiz"
             aria-labelledby="web-contact-quiz-title"
           >
-            <p className="web-contact-page__quiz-eyebrow">{CONTACT_PAGE_COPY.quizEyebrow}</p>
             <h2 id="web-contact-quiz-title" className="web-contact-page__quiz-title">
               {CONTACT_PAGE_COPY.quizTitle}
             </h2>

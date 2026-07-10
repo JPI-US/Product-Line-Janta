@@ -9,7 +9,7 @@ export type DesignerTowerSpec = {
 export const designerTowerSpecs: DesignerTowerSpec[] = [
   {
     id: "wind",
-    value: "110",
+    value: "110–180",
     unit: "mph",
     title: "Wind rating",
     detail: "Rated for demanding coastal and open-field installs",
@@ -23,8 +23,8 @@ export const designerTowerSpecs: DesignerTowerSpec[] = [
   },
   {
     id: "power",
-    value: "Plug & play",
-    title: "Backup power",
+    value: "Plug & Play",
+    title: "4-Tier Resilience",
     detail: "Battery or generator compatible. Connect and go",
   },
   {
@@ -32,5 +32,12 @@ export const designerTowerSpecs: DesignerTowerSpec[] = [
     value: "12 × 440 W",
     title: "Solar array",
     detail: "Buyer’s panel choice within ±2″ of standard height",
+  },
+  {
+    id: "lifespan",
+    value: "25",
+    unit: "year",
+    title: "Lifespan & warranty",
+    detail: "25-year design life for real-world site deployments",
   },
 ];

@@ -7,6 +7,10 @@ const PEAK_KW = GENERIC_SOLAR_KW * 0.9;
 /** Midday dip depth: 4.0 kW / 4.5 kW on the reference summer chart. */
 const JANTA_MIDDAY_DIP = 0.111;
 
+/** Daylight window for marketing dashboard charts — ends at 8 PM. */
+export const MARKETING_DAY_START_H = 7;
+export const MARKETING_DAY_END_H = 20;
+
 function stableNoise(a: number, b = 0) {
   const x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
   return 0.98 + (x - Math.floor(x)) * 0.02;
@@ -18,24 +22,35 @@ function plateauNoise(h: number, m: number, factor: number) {
   return stableNoise(h, m);
 }
 
-/** Summer Janta Power profile — steep 7–8 / 21–22 ramps, flat plateaus, smooth midday saddle. */
+/**
+ * Summer Janta power profile for the dashboard.
+ * Mirrored ramps at sunrise/sunset (same shape both ends); centered midday saddle;
+ * production ends at 8 PM.
+ */
 export function jantaPowerFactor(hourDecimal: number) {
   const t = hourDecimal;
-  if (t < 7 || t > 22) return 0;
+  const start = MARKETING_DAY_START_H;
+  const end = MARKETING_DAY_END_H;
+  if (t <= start || t >= end) return 0;
 
-  if (t < 8) {
-    const p = (t - 7) / 1;
-    return 1 - (1 - p) ** 2.5;
+  const rampH = 2;
+  const riseEnd = start + rampH; // 9
+  const fallStart = end - rampH; // 18
+
+  if (t < riseEnd) {
+    const p = (t - start) / rampH;
+    return 1 - (1 - p) ** 2.2;
   }
 
-  if (t > 21) {
-    const p = (22 - t) / 1;
-    return p ** 2.5;
+  if (t > fallStart) {
+    const p = (end - t) / rampH;
+    return 1 - (1 - p) ** 2.2;
   }
 
-  if (t >= 10 && t <= 18) {
-    const mid = 14.5;
-    const half = 4.5;
+  // Centered on midday of the 7→20 window ((7+20)/2 = 13.5)
+  if (t >= 10 && t <= 17) {
+    const mid = 13.5;
+    const half = 3.5;
     const x = Math.max(-1, Math.min(1, (t - mid) / half));
     return 1 - JANTA_MIDDAY_DIP * (0.5 + 0.5 * Math.cos(x * Math.PI));
   }
@@ -66,7 +81,10 @@ function buildIntradayProduction() {
 export type EnergyChartPoint = { hour: number; y: number };
 
 /** Smooth energy-curve samples for the glance chart (hourly kWh from analytical profile). */
-export function buildMarketingEnergyChartPoints(padStart = 5, padEnd = 23): EnergyChartPoint[] {
+export function buildMarketingEnergyChartPoints(
+  padStart = MARKETING_DAY_START_H - 1,
+  padEnd = MARKETING_DAY_END_H,
+): EnergyChartPoint[] {
   const points: EnergyChartPoint[] = [];
   const from = Math.max(0, Math.min(23, padStart));
   const to = Math.max(0, Math.min(23, padEnd));

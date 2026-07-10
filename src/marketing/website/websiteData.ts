@@ -25,9 +25,8 @@ export const JANTA_BRAND_SKY = "#64A2D8";
 
 export const NAV_COPY = {
   brand: "Janta Power",
-  home: "Home",
-  roots: "Janta",
-  rootsHref: "/roots",
+  brandAria: "Janta Power — home",
+  brandHref: "/website",
   careers: "Careers",
   careersHref: "/careers",
   products: "Products",
@@ -40,7 +39,8 @@ export const NAV_COPY = {
 export const HERO_COPY = {
   eyebrow: "Janta Power",
   title: ["More MW.", "Less Land."],
-  sub: "Three-dimensional solar that doesn't\nspare acres or energy.",
+  sub:
+    "Janta Power builds 3D, sun-tracking solar towers for commercial, industrial, and utility projects where land is at a premium.",
   statsContext: "Compared to traditional solar",
   stats: [
     {
@@ -56,35 +56,6 @@ export const HERO_COPY = {
       label: "Capacity Factor",
     },
   ],
-} as const;
-
-/** Photo comparison — Janta tower vs traditional fixed-tilt solar (500 kW · Dallas). */
-export const YIELD_COMPARE_COPY = {
-  title: "Traditional Solar vs. Janta Towers",
-  description: "500 kW · Dallas, TX",
-  janta: {
-    image: "/marketing/yield-janta-tower.png",
-    imageAlt: "Janta Power solar tower render against a blue sky",
-    imagePosition: "center center",
-  },
-  fixed: {
-    image: "/marketing/yield-traditional-solar.png",
-    imageAlt: "Traditional fixed-tilt solar panels at golden hour",
-    imagePosition: "center 42%",
-  },
-  metrics: {
-    annual: "Annual output",
-    land: "Site footprint",
-  },
-} as const;
-
-/** "Built for real-world sites" — photo + specs panel. */
-export const SPECS_LITE_COPY = {
-  title: "Built for real-world sites",
-  lead: "Structural ratings and power flexibility at a glance.",
-  image: "/marketing/specs-real-world-sites.png",
-  imageAlt: "Janta solar towers on an urban plaza with a city skyline behind",
-  imagePosition: "center 42%",
 } as const;
 
 export const VISION_EYEBROW = "Our Vision";
@@ -107,7 +78,7 @@ export const WEBSITE_SKY_GRADIENT = {
 
 export const ROI_COPY = {
   title: "Save Millions Annually",
-  body: "Answer a few quick questions and we'll estimate tower count, land use, and lifetime savings for your project.",
+  body: "Answer a few quick questions and we'll estimate project size, land usage, and lifetime savings for your project.",
   savingsCta: "Contact us",
   savingsHref: "/contact",
   image: "/marketing/roi-hero.png",
@@ -119,10 +90,9 @@ export const CONTACT_PAGE_COPY = {
   title: "Contact us",
   lede:
     "Tell us about your site or project. We'll follow up by email within one business day.",
-  quizEyebrow: "Savings estimate",
   quizTitle: "See your savings",
   quizBody:
-    "Answer a few quick questions and we'll estimate tower count, land use, and lifetime savings for your project.",
+    "Answer a few quick questions and we'll estimate project size, land usage, and lifetime savings for your project.",
   quizCta: "Start savings quiz",
   quizHref: "/quiz",
 } as const;
@@ -149,6 +119,38 @@ export const ROI_COMPARE = {
   },
 } as const;
 
+export const YIELD_COMPARE_COPY = {
+  title: "Traditional Solar vs. Janta Towers",
+  description: "500 kW · Dallas, TX",
+  janta: {
+    image: "/marketing/value-aerial-solar.png",
+    imageAlt: "Aerial view of Janta solar arrays in a green field",
+    imagePosition: "50% center",
+    imageScale: 1.2,
+  },
+  fixed: {
+    image: "/marketing/yield-traditional-solar.jpg",
+    imageAlt: "Aerial view of traditional fixed-tilt solar panels in a green field",
+    imagePosition: "center center",
+  },
+  metrics: {
+    annual: "Annual output",
+    land: "Site footprint",
+  },
+} as const;
+
+export const POWER_PROFILE_COPY = {
+  lede: "Single 5.6 kW tower. Dual peak power output curve.",
+} as const;
+
+export const SPECS_LITE_COPY = {
+  title: "Built for real-world sites",
+  lead: "Structural ratings and power flexibility at a glance.",
+  image: "/marketing/specs-real-world-sites.png",
+  imageAlt: "Janta solar towers on an urban plaza with a city skyline behind",
+  imagePosition: "center 42%",
+} as const;
+
 export const PARTNERS_COPY = {
   items: [
     {
@@ -172,9 +174,9 @@ export const PARTNERS_COPY = {
       logo: "/marketing/partners/pv-magazine-white.png",
     },
     {
-      id: "fifa",
-      name: "FIFA",
-      logo: "/marketing/partners/fifa-white.png",
+      id: "c3",
+      name: "C3",
+      logo: "/marketing/partners/c3-white.png",
     },
     {
       id: "dfw",
@@ -231,7 +233,7 @@ export const VALUE_COPY = {
     "Land Savings",
   ] as const,
   body:
-    "Janta's solar technology delivers the lowest energy cost in the market, alongside 4-tier resilience, and energy density.",
+    "Janta's 3D solar technology delivers the lowest energy cost on the market, alongside 4-tier resilience, cutting edge software, and uncomparable energy density.",
   items: [
     {
       id: "density",
@@ -241,35 +243,56 @@ export const VALUE_COPY = {
       title: "Power density per acre",
       detail:
         "More power from the same footprint, without giving up operational land.",
-      image: "/marketing/value-dsr-campus.png",
-      imageAlt: "Janta DSR solar tower on a commercial campus",
-      imagePosition: "52% center",
-      imageScale: 1.32,
+      image: "/marketing/value-field-towers.jpg",
+      imageAlt: "Three Janta solar towers on a grassy hillside under a cloudy sky",
+      imagePosition: "center 48%",
+      imageScale: 1.2,
     },
     {
       id: "lcoe",
       tag: "Economics",
       metric: "$0.05",
       metricUnit: "/ kWh",
-      title: "Levelized cost of energy",
+      title: "Average U.S. LCOE",
       detail:
         "Project-lifetime energy that undercuts flat arrays, with costs that stay predictable.",
-      image: "/marketing/value-aerial-solar.png",
-      imageAlt: "Aerial view of Janta solar arrays in a green field",
-      imagePosition: "50% center",
-      imageScale: 1.18,
+      image: "/marketing/value-dsr-campus.png",
+      imageAlt: "Janta DSR solar tower on a commercial campus",
+      imagePosition: "52% center",
+      imageScale: 1.32,
     },
     {
-      id: "uptime",
-      tag: "Reliability",
-      metric: "99%",
-      metricUnit: "uptime",
-      title: "Target fleet availability",
+      id: "resilience",
+      tag: "Resilience",
+      metric: "4-Tier",
+      metricUnit: "Resilience",
+      title: "Plug & play backup power",
       detail:
-        "Azimuthal tracking and live monitoring keep output steady when the load cannot wait.",
-      image: "/marketing/vision-banner.png",
-      imageAlt: "Three Janta solar towers in a green field",
-      imagePosition: "center 42%",
+        "Layered backup power that installs fast and keeps critical loads running when the grid drops.",
+      image: "/marketing/roi-hero.png",
+      imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
+      imagePosition: "28% 42%",
+      imageScale: 1.12,
+    },
+  ],
+  stats: [
+    {
+      id: "density",
+      metric: "500",
+      metricUnit: "kW / acre",
+      title: "Power density per acre",
+    },
+    {
+      id: "lcoe",
+      metric: "$0.05",
+      metricUnit: "/ kWh",
+      title: "Average U.S. LCOE",
+    },
+    {
+      id: "resilience",
+      metric: "4-Tier",
+      metricUnit: "Resilience",
+      title: "Plug & play backup power",
     },
   ],
 } as const;
@@ -277,8 +300,8 @@ export const VALUE_COPY = {
 export const SOFTWARE_SHOWCASE_COPY = {
   title: "One Dashboard, Every Tower",
   body: "Monitor output, health, and performance across your fleet in real time.",
-  cta: "Learn More",
-  ctaHref: "#web-cta-band",
+  cta: "Contact us",
+  ctaHref: "/contact",
   poster: "/marketing/software-dashboard-hero.png",
   imageAlt:
     "Janta Power dashboard showing system status, energy output, climate, and environmental impact",
@@ -349,6 +372,8 @@ function applicationsPhoto(id: string) {
 export const APPLICATIONS_COPY = {
   title: "Where Janta",
   titleAccent: "Shines",
+  description:
+    "Industries and sites where land, uptime, and power density matter most.",
   panels: [
     {
       id: "manufacturing",
@@ -409,7 +434,7 @@ export const SOLUTIONS_COPY = {
       acronym: "DSR",
       title: "Tower",
       tags: ["5.4 kW", "Azimuthal tracking", "Custom body"],
-      hoverCta: "Visit the 3D experience",
+      hoverCta: "Get in touch",
       bannerHeadline: "The DSR Tower.",
       bannerLines: [
         "5.4 kW azimuthal tracking.",
@@ -420,14 +445,14 @@ export const SOLUTIONS_COPY = {
       imagePosition: "center 58%",
       navImage: "/marketing/nav-renders/lfm-tower.png",
       navRenderAlt: "Janta DSR Tower",
-      href: "/products/designer",
+      href: "/contact",
     },
     {
       id: "utility",
       acronym: "LFM",
       title: "Tower",
       tags: ["5.6 kW", "Azimuthal tracking", "Utility-scale"],
-      hoverCta: "Visit the 3D experience",
+      hoverCta: "Get in touch",
       bannerHeadline: "The LFM Tower.",
       bannerLines: [
         "5.6 kW utility-scale output.",
@@ -438,7 +463,7 @@ export const SOLUTIONS_COPY = {
       imagePosition: "center 58%",
       navImage: "/marketing/nav-renders/dsr-tower.png",
       navRenderAlt: "Janta LFM Tower",
-      href: "/products/utility",
+      href: "/contact",
     },
   ],
 } as const;
@@ -450,12 +475,9 @@ export const FOOTER_COPY = {
   exploreTitle: "Explore",
   exploreLinks: [
     { label: "Home", href: "/website" },
-    { label: "Janta", href: "/roots" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
     { label: "Savings quiz", href: "/quiz" },
-    { label: "DSR Tower", href: "/products/designer", acronym: "DSR", towerTitle: "Tower" },
-    { label: "LFM Tower", href: "/products/utility", acronym: "LFM", towerTitle: "Tower" },
   ],
   pressTitle: "In the press",
   pressLinks: [
@@ -478,7 +500,7 @@ export const FOOTER_COPY = {
   contactFormCta: "Send message",
   contactFormSuccess:
     "Thanks! Your email app should open with your message ready to send.",
-  contactEmail: "hello@jantapower.com",
+  contactEmail: "info@jantaus.com",
   contactPhone: "(469) 694-3818",
   contactPhoneTel: "+14696943818",
   copyright: "© 2026 Janta Power, Inc. All rights reserved.",

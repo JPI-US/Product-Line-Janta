@@ -14,10 +14,15 @@ export const CHART_Y_MAX = 5;
 /** Reference nameplate values (5 kW baseline), not scaled to tower kW */
 export const REF_TRAD_SUMMER_PEAK_KW = 4.5;
 export const REF_JANTA_SUMMER_PEAK_KW = 4.5;
-export const REF_JANTA_SUMMER_TROUGH_KW = 3.4;
+/** Matches dashboard midday dip (~11% below peak → ~4.0 on a 4.5 scale) */
+export const REF_JANTA_SUMMER_TROUGH_KW = 4.0;
 /** Just under 4 kW on the 0–5 axis */
 export const REF_TRAD_WINTER_PEAK_KW = 3.98;
 export const REF_JANTA_WINTER_PEAK_KW = 4.6;
+
+/** Summer daylight window — aligned with dashboard charts (ends 8 PM) */
+export const JANTA_SUMMER_HOUR_MIN = 7;
+export const JANTA_SUMMER_HOUR_MAX = 20;
 
 function fmt(n: number): string {
   return n.toFixed(2);
@@ -47,37 +52,35 @@ export function bellCurvePath(
 /** Summer traditional — smooth bell across the full plotted day */
 export function traditionalSummerPath(
   geom: ChartGeom,
-  hourMin = 7,
-  hourMax = 22,
+  hourMin = JANTA_SUMMER_HOUR_MIN,
+  hourMax = JANTA_SUMMER_HOUR_MAX,
   peakKw: number = REF_TRAD_SUMMER_PEAK_KW
 ): string {
   const peakHour = hourMin + (hourMax - hourMin) * 0.5;
   return bellCurvePath(geom, hourMin, hourMax, peakHour, peakKw);
 }
 
-/** Summer Janta — M-curve: morning peak, midday trough, evening peak. */
+/**
+ * Summer Janta — same profile as the dashboard power chart:
+ * mirrored 2h ramps, flat shoulders, centered midday saddle, ends at 8 PM.
+ */
 export function jantaSummerPath(
   geom: ChartGeom,
-  hourMin = 7,
-  hourMax = 22,
+  hourMin = JANTA_SUMMER_HOUR_MIN,
+  hourMax = JANTA_SUMMER_HOUR_MAX,
   peakKw: number = REF_JANTA_SUMMER_PEAK_KW,
   troughKw: number = REF_JANTA_SUMMER_TROUGH_KW
 ): string {
-  const span = hourMax - hourMin;
-  const at = (fraction: number) => hourMin + span * fraction;
-  const y0 = geom.y(0);
-  const yPeak = geom.y(peakKw);
-  const yTrough = geom.y(troughKw);
-
-  return [
-    `M ${fmt(geom.x(hourMin))} ${fmt(y0)}`,
-    `L ${fmt(geom.x(at(0.067)))} ${fmt(yPeak * 0.96)}`,
-    `L ${fmt(geom.x(at(0.2)))} ${fmt(yPeak)}`,
-    `Q ${fmt(geom.x(at(0.5)))} ${fmt(yTrough)} ${fmt(geom.x(at(0.733)))} ${fmt(yPeak)}`,
-    `L ${fmt(geom.x(at(0.867)))} ${fmt(yPeak)}`,
-    `L ${fmt(geom.x(at(0.933)))} ${fmt(yPeak)}`,
-    `L ${fmt(geom.x(hourMax))} ${fmt(y0)}`,
-  ].join(" ");
+  const steps = 56;
+  const parts: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const hour = hourMin + ((hourMax - hourMin) * i) / steps;
+    const kw = jantaSummerKw(hour, hourMin, hourMax, peakKw, troughKw);
+    parts.push(
+      `${i === 0 ? "M" : "L"} ${fmt(geom.x(hour))} ${fmt(geom.y(kw))}`,
+    );
+  }
+  return parts.join(" ");
 }
 
 /** Winter Janta — plateau across daylight, anchored to chart edges */
@@ -119,35 +122,42 @@ export function tradBellKw(
   return Math.max(0, peakKw * (1 - t * t));
 }
 
-/** kW at hour — summer Janta M-curve */
+/** kW at hour — summer Janta (matches dashboard jantaPowerFactor shape) */
 export function jantaSummerKw(
   hour: number,
-  hourMin = 7,
-  hourMax = 22,
+  hourMin = JANTA_SUMMER_HOUR_MIN,
+  hourMax = JANTA_SUMMER_HOUR_MAX,
   peakKw: number = REF_JANTA_SUMMER_PEAK_KW,
   troughKw: number = REF_JANTA_SUMMER_TROUGH_KW,
 ): number {
   if (hour <= hourMin || hour >= hourMax) return 0;
-  const span = hourMax - hourMin;
-  const at = (f: number) => hourMin + span * f;
-  const h1 = at(0.067);
-  const h2 = at(0.2);
-  const hMid = at(0.5);
-  const h3 = at(0.733);
-  const h5 = at(0.933);
 
-  if (hour <= h1) return lerp(0, peakKw * 0.96, (hour - hourMin) / (h1 - hourMin));
-  if (hour <= h2) return lerp(peakKw * 0.96, peakKw, (hour - h1) / (h2 - h1));
-  if (hour <= hMid) {
-    const t = (hour - h2) / (hMid - h2);
-    return lerp(peakKw, troughKw, t);
+  const rampH = 2;
+  const riseEnd = hourMin + rampH;
+  const fallStart = hourMax - rampH;
+  const dip = Math.max(0, Math.min(1, 1 - troughKw / Math.max(peakKw, 0.001)));
+
+  let factor: number;
+  if (hour < riseEnd) {
+    const p = (hour - hourMin) / rampH;
+    factor = 1 - (1 - p) ** 2.2;
+  } else if (hour > fallStart) {
+    const p = (hourMax - hour) / rampH;
+    factor = 1 - (1 - p) ** 2.2;
+  } else {
+    const dipStart = hourMin + 3;
+    const dipEnd = hourMax - 3;
+    const mid = (hourMin + hourMax) / 2;
+    if (hour >= dipStart && hour <= dipEnd) {
+      const half = (dipEnd - dipStart) / 2;
+      const x = Math.max(-1, Math.min(1, (hour - mid) / half));
+      factor = 1 - dip * (0.5 + 0.5 * Math.cos(x * Math.PI));
+    } else {
+      factor = 1;
+    }
   }
-  if (hour <= h3) {
-    const t = (hour - hMid) / (h3 - hMid);
-    return lerp(troughKw, peakKw, t);
-  }
-  if (hour <= h5) return peakKw;
-  return lerp(peakKw, 0, (hour - h5) / (hourMax - h5));
+
+  return peakKw * factor;
 }
 
 /** kW at hour — winter Janta plateau */

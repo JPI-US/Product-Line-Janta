@@ -1,11 +1,12 @@
 import "../../styles/tower-3d.css";
 import { ProductPowerProfileSection } from "../../components/ProductPowerProfileSection";
+import { POWER_PROFILE_COPY } from "./websiteData";
 
-/** Home-page embed of the LFM "Output across the day" chart. */
+/** Home-page embed of the daily output chart. */
 export function WebsitePowerProfileSection() {
   return (
     <div className="web-home-chart">
-      <ProductPowerProfileSection lede="Single 5.6 kW tower. Tracking holds output from morning to evening, instead of a single midday peak." />
+      <ProductPowerProfileSection lede={POWER_PROFILE_COPY.lede} />
     </div>
   );
 }

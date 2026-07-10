@@ -29,7 +29,7 @@ export const HEALTH_COMPONENTS = [
   "Relay",
 ] as const;
 
-const GLANCE_TIME_PAD_HOURS = 2;
+const GLANCE_TIME_PAD_HOURS = 1;
 
 export function formatHourLong(h: number) {
   if (h === 0) return "12 AM";
@@ -50,8 +50,9 @@ export function chartYScale(maxVal: number) {
   return { max, step };
 }
 
+/** Daylight glance window — padded start, hard stop at 8 PM so labels read cleanly. */
 export function productionHourRange(labels: string[] | undefined, values: number[] | undefined) {
-  if (!labels?.length) return { start: 6, end: 22 };
+  if (!labels?.length) return { start: 6, end: 20 };
   let minH = 24;
   let maxH = 0;
   labels.forEach((label, i) => {
@@ -62,10 +63,10 @@ export function productionHourRange(labels: string[] | undefined, values: number
       if (hh > maxH) maxH = hh;
     }
   });
-  if (minH > maxH) return { start: 6, end: 22 };
+  if (minH > maxH) return { start: 6, end: 20 };
   return {
     start: Math.max(0, minH - GLANCE_TIME_PAD_HOURS),
-    end: Math.min(23, maxH + GLANCE_TIME_PAD_HOURS),
+    end: 20, // 8 PM — hard stop so energy + power charts share a sensible day window
   };
 }
 
@@ -91,17 +92,20 @@ export const WEATHER_UI: Record<string, { icon: string; title: string }> = {
   default: { icon: "🌡️", title: "Weather Update" },
 };
 
+/** Average kW per clock hour — max() hid the evening drop-off that energy already showed. */
 export function hourlyPowerKwByHour(hourlyProduction: {
   labels: string[];
   values: number[];
 }) {
-  const byHour = Array(24).fill(0);
+  const sums = Array(24).fill(0);
+  const counts = Array(24).fill(0);
   hourlyProduction.labels.forEach((timeLabel, i) => {
     const [hh] = timeLabel.split(":").map(Number);
-    const powerW = hourlyProduction.values[i] || 0;
-    byHour[hh] = Math.max(byHour[hh], powerW);
+    const powerW = Number(hourlyProduction.values[i]) || 0;
+    sums[hh] += powerW;
+    counts[hh] += 1;
   });
-  return byHour.map((w) => w / 1000);
+  return sums.map((sum, h) => (counts[h] ? sum / counts[h] / 1000 : 0));
 }
 
 export function avgPowerKw(hourlyProduction: { values: number[] }) {

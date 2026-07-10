@@ -68,7 +68,7 @@ export function WebsiteRoiSection() {
             <p className="web-ps-roi__body">{ROI_COPY.body}</p>
             <div className="web-ps-roi__actions">
               <Link
-                className="web-ps-roi__btn web-ps-roi__btn--accent"
+                className="web-ps-roi__btn web-ps-roi__btn--primary"
                 to={ROI_COPY.savingsHref}
               >
                 {ROI_COPY.savingsCta}
