@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { clamp } from "@/lib/mathx";
 
 import { WEBSITE_HERO_IDLE_YAW } from "./websiteHeroScroll";
 
@@ -20,12 +20,12 @@ export const websiteTowerOrbit = {
 
 export function clampWebsiteDragYaw(offset: number): number {
   const half = WEBSITE_DRAG_YAW_RANGE / 2;
-  return THREE.MathUtils.clamp(offset, -half, half);
+  return clamp(offset, -half, half);
 }
 
 /** Camera pitch offset — 0 at rest, positive = look from higher angle only */
 export function clampWebsiteCameraPitch(offset: number): number {
-  return THREE.MathUtils.clamp(offset, 0, WEBSITE_DRAG_CAMERA_PITCH_HALF);
+  return clamp(offset, 0, WEBSITE_DRAG_CAMERA_PITCH_HALF);
 }
 
 /** @deprecated Use clampWebsiteCameraPitch */

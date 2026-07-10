@@ -1,4 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
+import { useIsMobile } from "../../lib/useIsMobile";
 import { WebsiteDeferredSection } from "./WebsiteDeferredSection";
 
 const WebsiteApplicationsSection = lazy(() =>
@@ -41,6 +42,12 @@ const PremiumGlobe = lazy(() =>
     default: m.PremiumGlobe,
   })),
 );
+// Static, three-free globe section for phones — keeps three.js off mobile.
+const WebsiteGlobeMobile = lazy(() =>
+  import("./WebsiteGlobeMobile").then((m) => ({
+    default: m.WebsiteGlobeMobile,
+  })),
+);
 const WebsiteFooter = lazy(() =>
   import("./WebsiteFooter").then((m) => ({
     default: m.WebsiteFooter,
@@ -52,6 +59,7 @@ function LazySection({ children }: { children: ReactNode }) {
 }
 
 export function WebsiteContent() {
+  const isMobile = useIsMobile();
   return (
     <>
       <div className="web-landing-sky-band">
@@ -89,7 +97,7 @@ export function WebsiteContent() {
         </WebsiteDeferredSection>
         <WebsiteDeferredSection minHeight="min(90vh, 820px)">
           <LazySection>
-            <PremiumGlobe />
+            {isMobile ? <WebsiteGlobeMobile /> : <PremiumGlobe />}
           </LazySection>
         </WebsiteDeferredSection>
       </div>

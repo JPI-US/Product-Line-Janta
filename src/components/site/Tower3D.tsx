@@ -151,13 +151,13 @@ function TowerModel({
       const idle = reducedMotion ? 0 : Math.sin(idleRef.current) * 0.03;
       groupRef.current.rotation.y = initialRotationY + driveRef.current + idle;
     } else if (!reducedMotion && sweepDeg) {
-      // One graceful eased swing from the load pose to +sweepDeg, then settle.
-      const duration = 6;
-      sweepRef.current = Math.min(sweepRef.current + dt, duration);
-      const p = sweepRef.current / duration;
-      const eased = p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2;
+      // Pendulum: ease from the load pose out to +sweepDeg and back, forever.
+      // Cosine gives zero velocity at both ends so the reversals feel smooth.
+      const halfPeriod = 6; // seconds to reach +sweepDeg (and to return)
+      sweepRef.current += dt;
+      const osc = 0.5 - 0.5 * Math.cos((Math.PI / halfPeriod) * sweepRef.current);
       const targetRad = (sweepDeg * Math.PI) / 180;
-      groupRef.current.rotation.y = initialRotationY + targetRad * eased;
+      groupRef.current.rotation.y = initialRotationY + targetRad * osc;
     } else if (!reducedMotion) {
       spinRef.current += dt * autoRotateSpeed;
       groupRef.current.rotation.y = initialRotationY + spinRef.current;

@@ -1,10 +1,71 @@
 import { partnerLogos } from "@/lib/assets";
 import { HERO_TOWER_POSE } from "@/lib/heroTowerPose";
 import { HERO_COPY } from "@/marketing/website/websiteData";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Tower3D } from "./Tower3D";
+import { Fragment, Suspense, lazy, useEffect, useRef, useState } from "react";
+
+// Lazy so the ~1.25 MB three.js bundle is only fetched when the live tower
+// actually renders — i.e. on desktop. Phones get the static poster instead and
+// never download it.
+const Tower3D = lazy(() =>
+  import("./Tower3D").then((m) => ({ default: m.Tower3D })),
+);
 
 const HERO_HEADING_LINES = ["More power.", "Less land."] as const;
+
+/** True on phone-sized screens — kept in sync so a resize swaps poster ↔ 3D. */
+function useIsMobile() {
+  const query = "(max-width: 820px)";
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isMobile;
+}
+
+/** Pre-rendered tower — instant paint, and the only tower phones ever load. */
+function HeroTowerPoster({ decorative = false }: { decorative?: boolean }) {
+  return (
+    <img
+      className="hero-tower-poster"
+      src="/hero-tower.png"
+      width={760}
+      height={962}
+      alt={decorative ? "" : "Janta Power vertical 3D solar tower"}
+      aria-hidden={decorative || undefined}
+      decoding="async"
+    />
+  );
+}
+
+/** Phones: static poster (no three.js). Desktop: live 3D, poster as fallback. */
+function HeroTower() {
+  const isMobile = useIsMobile();
+  if (isMobile) return <HeroTowerPoster />;
+  return (
+    <Suspense fallback={<HeroTowerPoster decorative />}>
+      <Tower3D
+        variant="designer"
+        interactive
+        autoRotateSpeed={0.32}
+        sweepDeg={90}
+        modelScale={0.85}
+        initialRotationY={HERO_TOWER_POSE.initialRotationY}
+        cameraPosition={[...HERO_TOWER_POSE.cameraPosition]}
+        cameraTarget={[...HERO_TOWER_POSE.cameraTarget]}
+        cameraFov={HERO_TOWER_POSE.cameraFov}
+        showSky={false}
+        showHint={false}
+        className="hero-tower-canvas"
+        height="100%"
+      />
+    </Suspense>
+  );
+}
 
 /** Static heading — renders instantly (no slide-in) so the copy never lags. */
 function HeroHeading() {
@@ -50,21 +111,7 @@ export function Hero() {
                 "radial-gradient(55% 50% at 50% 55%, rgba(var(--sky-rgb), 0.16), transparent 72%)",
             }}
           />
-          <Tower3D
-            variant="designer"
-            interactive
-            autoRotateSpeed={0.32}
-            sweepDeg={90}
-            modelScale={0.85}
-            initialRotationY={HERO_TOWER_POSE.initialRotationY}
-            cameraPosition={[...HERO_TOWER_POSE.cameraPosition]}
-            cameraTarget={[...HERO_TOWER_POSE.cameraTarget]}
-            cameraFov={HERO_TOWER_POSE.cameraFov}
-            showSky={false}
-            showHint={false}
-            className="hero-tower-canvas"
-            height="100%"
-          />
+          <HeroTower />
         </div>
       </div>
     </section>

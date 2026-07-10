@@ -1,7 +1,12 @@
-import * as THREE from "three";
+import type { ToneMapping } from "three";
 
 /** Shared tuning for scroll-driven product hero */
 export const PAGE_BG = "#f5f5f7";
+
+// Inlined so this eagerly-loaded config doesn't import three at runtime (keeps
+// the three bundle off the mobile initial load). Value is THREE.ACESFilmicToneMapping,
+// a stable public enum (4); the `import type` above keeps it type-checked.
+const ACES_FILMIC_TONE_MAPPING = 4 as ToneMapping;
 
 /** Identical WebGL / tone-mapping settings for every product canvas */
 export const TOWER_CANVAS_GL = {
@@ -9,7 +14,7 @@ export const TOWER_CANVAS_GL = {
   alpha: false,
   powerPreference: "default" as WebGLPowerPreference,
   failIfMajorPerformanceCaveat: false,
-  toneMapping: THREE.ACESFilmicToneMapping,
+  toneMapping: ACES_FILMIC_TONE_MAPPING,
   toneMappingExposure: 1.18,
 } as const;
 

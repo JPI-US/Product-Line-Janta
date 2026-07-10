@@ -20,9 +20,21 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Stable 3D vendor chunk — better long-term caching, no behavior change
-          "three-vendor": ["three", "@react-three/fiber", "@react-three/drei"],
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          // Isolate React for long-term caching. Do NOT force a three chunk —
+          // a manual three-vendor chunk makes Rollup park a shared helper in it
+          // that the entry then imports, dragging the whole 1.25 MB three bundle
+          // into the initial (mobile) load. Left alone, three lands only in the
+          // lazy 3D chunks (hero tower on desktop, globe on scroll) and is never
+          // fetched on the mobile hero.
+          if (
+            /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(
+              id,
+            )
+          ) {
+            return "react-vendor";
+          }
         },
       },
     },
