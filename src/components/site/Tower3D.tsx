@@ -427,6 +427,10 @@ export function Tower3D({
             enableZoom={false}
             minPolarAngle={Math.PI / 3.4}
             maxPolarAngle={Math.PI / 2.05}
+            // Lock horizontal drag to the front arc so users can't rotate around
+            // to the tower's back/truss side (the auto-sweep already stays front).
+            minAzimuthAngle={-0.6}
+            maxAzimuthAngle={0.75}
             autoRotate={false}
             target={cameraTarget}
             onStart={() => {
