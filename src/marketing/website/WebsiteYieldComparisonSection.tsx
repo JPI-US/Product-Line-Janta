@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   YIELD_500KW_DALLAS,
   formatAnnualKwh,
@@ -16,67 +12,67 @@ import { useIsMobile } from "../../lib/useIsMobile";
 
 const { janta, fixed } = YIELD_500KW_DALLAS;
 
-type CompareLaneProps = {
+type CompareHalfProps = {
   variant: "janta" | "traditional";
   image: string;
   imageAlt: string;
   imagePosition: string;
+  name: string;
+  spec: string;
   annualLabel: string;
   annualKwh: number;
   landLabel: string;
   landValue: string;
 };
 
-function CompareLane({
+/** One side of the combined 1:1 comparison panel — photo + dark info plate. */
+function CompareHalf({
   variant,
   image,
   imageAlt,
   imagePosition,
+  name,
+  spec,
   annualLabel,
   annualKwh,
   landLabel,
   landValue,
-}: CompareLaneProps) {
+}: CompareHalfProps) {
   const annualDisplay = `${formatAnnualKwh(annualKwh)} kWh`;
-  const summary = `${annualLabel} · ${annualDisplay} · ${landLabel} · ${landValue}`;
 
   return (
-    <article className={`web-yield-compare__lane web-yield-compare__lane--${variant}`}>
-      <figure className="web-yield-compare__photo">
-        <img
-          className="web-yield-compare__photo-img"
-          src={image}
-          alt={imageAlt}
-          loading="lazy"
-          decoding="async"
-          style={{ objectPosition: imagePosition }}
-        />
-        <figcaption className="web-yield-compare__caption" aria-label={summary}>
-          <span className="web-yield-compare__summary-line">
-            <span className="web-yield-compare__summary-label">{annualLabel}</span>
-            <span className="web-yield-compare__summary-sep" aria-hidden>
-              {" "}
-              ·{" "}
-            </span>
-            <span className="web-yield-compare__summary-value">
+    <div className={`web-yield-compare__half web-yield-compare__half--${variant}`}>
+      <img
+        className="web-yield-compare__photo-img"
+        src={image}
+        alt={imageAlt}
+        loading="lazy"
+        decoding="async"
+        style={{ objectPosition: imagePosition }}
+      />
+      <div className="web-yield-compare__scrim" aria-hidden />
+
+      <div className="web-yield-compare__plate">
+        <p className="web-yield-compare__plate-name">{name}</p>
+        <p className="web-yield-compare__plate-spec">{spec}</p>
+        <dl className="web-yield-compare__plate-stats">
+          <div className="web-yield-compare__plate-row">
+            <dt>{annualLabel}</dt>
+            <dd>
               <CountUp value={annualDisplay} />
-            </span>
-          </span>
-          <span className="web-yield-compare__summary-line">
-            <span className="web-yield-compare__summary-label">{landLabel}</span>
-            <span className="web-yield-compare__summary-sep" aria-hidden>
-              {" "}
-              ·{" "}
-            </span>
-            <span className="web-yield-compare__summary-value">{landValue}</span>
-          </span>
-        </figcaption>
-      </figure>
-    </article>
+            </dd>
+          </div>
+          <div className="web-yield-compare__plate-row">
+            <dt>{landLabel}</dt>
+            <dd>{landValue}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
   );
 }
 
-/** Home-page Janta vs traditional solar — photo split on the shared sky gradient. */
+/** Home-page Janta vs traditional solar — scale story + combined 1:1 photo panel. */
 export function WebsiteYieldComparisonSection() {
   const copy = YIELD_COMPARE_COPY;
   const sectionRef = useRef<HTMLElement>(null);
@@ -84,7 +80,7 @@ export function WebsiteYieldComparisonSection() {
   const reducedMotion = useWebsiteReducedMotion();
   const jantaLand = formatLandAcres(janta.landAcres);
   const fixedLand = formatLandAcres(fixed.landAcres);
-  // Phones show the scale tool only — the aerial photo split is desktop-only.
+  // Phones show the scale tool only — the photo panel is desktop-only.
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -111,47 +107,44 @@ export function WebsiteYieldComparisonSection() {
       aria-labelledby="web-yield-compare-title"
     >
       <div className="web-panel__content web-yield-compare__inner">
-        <header className="web-yield-compare__header">
-          <h2 id="web-yield-compare-title" className="web-yield-compare__title">
-            {copy.title}
-          </h2>
-          <p className="web-yield-compare__description">{copy.description}</p>
-        </header>
-
         <WebsiteYieldScaleStory visible={visible} />
 
         {!isMobile ? (
-          <div
-            className="web-yield-compare__split"
+          <figure
+            className="web-yield-compare__combined"
             role="group"
-            aria-label={`${copy.description} comparison`}
+            aria-label={`${copy.plates.spec} — traditional solar versus Janta towers`}
           >
-            <CompareLane
+            <CompareHalf
               variant="traditional"
               image={copy.fixed.image}
               imageAlt={copy.fixed.imageAlt}
               imagePosition={copy.fixed.imagePosition}
+              name={copy.plates.traditionalName}
+              spec={copy.plates.spec}
               annualLabel={copy.metrics.annual}
               annualKwh={fixed.annualKwh}
               landLabel={copy.metrics.land}
               landValue={`${fixedLand.value} ${fixedLand.unit}`}
             />
 
-            <div className="web-yield-compare__split-rule" aria-hidden>
-              <span>vs</span>
-            </div>
-
-            <CompareLane
+            <CompareHalf
               variant="janta"
               image={copy.janta.image}
               imageAlt={copy.janta.imageAlt}
               imagePosition={copy.janta.imagePosition}
+              name={copy.plates.jantaName}
+              spec={copy.plates.spec}
               annualLabel={copy.metrics.annual}
               annualKwh={janta.annualKwh}
               landLabel={copy.metrics.land}
               landValue={`${jantaLand.value} ${jantaLand.unit}`}
             />
-          </div>
+
+            <div className="web-yield-compare__seam" aria-hidden>
+              <span>vs</span>
+            </div>
+          </figure>
         ) : null}
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   acresAt,
@@ -15,6 +15,86 @@ import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 
 const copy = YIELD_COMPARE_COPY.scale;
 const AUTOPLAY_STEP_MS = 1500;
+const PHRASE_CYCLE_MS = 3400;
+const PHRASE_TRANSITION_MS = 480;
+
+/** Renders a phrase, giving the `*starred*` words the gradient highlight. */
+function renderPhrase(phrase: string) {
+  return phrase
+    .split(/(\*[^*]+\*)/g)
+    .filter(Boolean)
+    .map((part, i) =>
+      part.startsWith("*") && part.endsWith("*") ? (
+        <span key={i} className="web-yield-scale__cycle-em">
+          {part.slice(1, -1)}
+        </span>
+      ) : (
+        <Fragment key={i}>{part}</Fragment>
+      ),
+    );
+}
+
+/**
+ * Cycles the emphasised second line of the heading ("A fraction of the land." →
+ * "More energy."). Hidden sizers reserve the tallest phrase so the heading never
+ * reflows mid-swap. Only the starred words carry the "Where Janta Shines" gradient.
+ */
+function CyclingHeadline({ phrases }: { phrases: readonly string[] }) {
+  const reducedMotion = useWebsiteReducedMotion();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => setReady(true));
+    return () => window.cancelAnimationFrame(id);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion || phrases.length <= 1) return;
+    const id = window.setInterval(() => {
+      setActiveIndex((current) => {
+        setPrevIndex(current);
+        return (current + 1) % phrases.length;
+      });
+    }, PHRASE_CYCLE_MS);
+    return () => window.clearInterval(id);
+  }, [reducedMotion, phrases.length]);
+
+  useEffect(() => {
+    if (prevIndex === null) return;
+    const id = window.setTimeout(() => setPrevIndex(null), PHRASE_TRANSITION_MS);
+    return () => window.clearTimeout(id);
+  }, [prevIndex, activeIndex]);
+
+  const activePhrase = phrases[activeIndex] ?? phrases[0];
+  const prevPhrase = prevIndex !== null ? phrases[prevIndex] : null;
+
+  return (
+    <span className="web-yield-scale__heading-accent">
+      <span className="web-yield-scale__cycle-track">
+        {phrases.map((phrase) => (
+          <span key={`sizer-${phrase}`} className="web-yield-scale__cycle-sizer" aria-hidden>
+            {renderPhrase(phrase)}
+          </span>
+        ))}
+        {prevPhrase && ready ? (
+          <span className="web-yield-scale__cycle-word is-exit" aria-hidden>
+            {renderPhrase(prevPhrase)}
+          </span>
+        ) : null}
+        <span
+          key={activeIndex}
+          className={`web-yield-scale__cycle-word is-active${
+            ready && prevPhrase ? " is-entering" : ""
+          }`}
+        >
+          {renderPhrase(activePhrase)}
+        </span>
+      </span>
+    </span>
+  );
+}
 
 /**
  * Eased follow: the acres readouts count toward their target on preset jumps and
@@ -102,7 +182,10 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
   return (
     <div className="web-yield-scale">
       <div className="web-yield-scale__head">
-        <h3 className="web-yield-scale__heading">{copy.heading}</h3>
+        <h2 id="web-yield-compare-title" className="web-yield-scale__heading">
+          {copy.heading}
+          <CyclingHeadline phrases={copy.headingAccentPhrases} />
+        </h2>
         <p className="web-yield-scale__lede">{copy.lede}</p>
       </div>
 

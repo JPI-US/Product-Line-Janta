@@ -138,12 +138,24 @@ export const YIELD_COMPARE_COPY = {
     land: "Site footprint",
   },
   scale: {
-    heading: "The same power. A fraction of the land.",
+    heading: "The same power.",
+    /* Cycles under the static line — same nameplate power, but less land AND more
+       yield. `*word*` marks the words that get the gradient highlight. */
+    headingAccentPhrases: [
+      "A *fraction* of the *land*.",
+      "*More energy*.",
+    ],
     lede: "Slide up the project size and watch the footprint diverge — traditional solar sprawls while Janta stays compact.",
     traditionalLabel: "Traditional",
     jantaLabel: "Janta",
     acresUnit: "acres",
     ctaLabel: "See what your site could save",
+  },
+  /* 1:1 comparison plates — same project on both sides, so the spec repeats. */
+  plates: {
+    spec: "500 kW · Dallas, TX",
+    traditionalName: "Traditional Solar Array",
+    jantaName: "Janta Power Towers",
   },
 } as const;
 
