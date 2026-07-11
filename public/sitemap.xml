@@ -2,7 +2,7 @@
 <!-- Static sitemap for jantaus.com. Update <lastmod> when a route's content changes. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jantaus.com/website</loc>
+    <loc>https://jantaus.com/</loc>
     <lastmod>2026-07-09</lastmod>
     <priority>1.0</priority>
   </url>

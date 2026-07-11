@@ -4,7 +4,7 @@ export function AppNav() {
   return (
     <nav className="app-nav" aria-label="Site sections">
       <NavLink
-        to="/website"
+        to="/"
         className={({ isActive }) =>
           isActive ? "app-nav__link app-nav__link--active" : "app-nav__link"
         }

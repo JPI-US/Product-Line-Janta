@@ -26,7 +26,7 @@ export const JANTA_BRAND_SKY = "#64A2D8";
 export const NAV_COPY = {
   brand: "Janta Power",
   brandAria: "Janta Power — home",
-  brandHref: "/website",
+  brandHref: "/",
   careers: "Careers",
   careersHref: "/careers",
   products: "Products",
@@ -496,7 +496,7 @@ export const FOOTER_COPY = {
     "Three-dimensional solar for campuses, commercial sites, and utility-scale deployments.",
   exploreTitle: "Explore",
   exploreLinks: [
-    { label: "Home", href: "/website" },
+    { label: "Home", href: "/" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
     { label: "Savings quiz", href: "/quiz" },

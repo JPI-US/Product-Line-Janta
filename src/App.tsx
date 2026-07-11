@@ -34,6 +34,7 @@ const DesignerTowerPage = lazy(() => import("./pages/DesignerTowerPage"));
 const UtilityTowerPage = lazy(() => import("./pages/UtilityTowerPage"));
 
 const MARKETING_PATHS = new Set([
+  "/",
   "/website",
   "/careers",
   "/contact",
@@ -113,7 +114,11 @@ function AppRoutes() {
       <RouteErrorBoundary>
         <Suspense fallback={<RouteSuspenseFallback />}>
           <Routes>
-            <Route path="/website" element={<WebsitePage />} />
+            {/* "/" is the canonical home. "/website" is a legacy alias that
+                redirects to it — previously the root redirected INTO /website,
+                which is why jantaus.com kept bouncing to /website on load. */}
+            <Route path="/" element={<WebsitePage />} />
+            <Route path="/website" element={<Navigate to="/" replace />} />
             <Route path="/careers" element={<WebsiteCareersPage />} />
             <Route path="/contact" element={<WebsiteContactPage />} />
             <Route
@@ -124,12 +129,11 @@ function AppRoutes() {
             />
             <Route path="/products/designer" element={<DesignerTowerPage />} />
             <Route path="/products/utility" element={<UtilityTowerPage />} />
-            <Route path="/" element={<Navigate to="/website" replace />} />
             <Route
               path="/utility-prerender-bake"
               element={<UtilityPrerenderBakePage />}
             />
-            <Route path="*" element={<Navigate to="/website" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </RouteErrorBoundary>
