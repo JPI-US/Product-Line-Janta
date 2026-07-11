@@ -329,6 +329,34 @@ body.website-active {
   grid-area: cta;
 }
 
+/* Mobile contact icon — replaces the hamburger; hidden on desktop (CTA pill
+   shows there instead). Same circular treatment as the old toggle. */
+.web-nav__contact-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  grid-area: cta;
+  justify-self: end;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(51, 60, 78, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--web-ink, var(--ink));
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.web-nav__contact-icon:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Transparent hero state: match the light-on-sky treatment of the pill. */
+.web-page--hub-hero:not(.web-nav--surfaced) .web-nav__contact-icon {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
 .web-nav__menu-toggle {
   display: none;
   align-items: center;
@@ -772,15 +800,19 @@ body.website-active {
 @media (max-width: 860px) {
   .web-nav__inner {
     grid-template-columns: auto 1fr auto;
-    grid-template-areas: "brand . toggle";
+    grid-template-areas: "brand . cta";
   }
 
   .web-nav__cta--bar {
     display: none;
   }
 
-  .web-nav__menu-toggle {
+  .web-nav__contact-icon {
     display: inline-flex;
+  }
+
+  .web-nav__menu-toggle {
+    display: none;
     grid-area: toggle;
   }
 

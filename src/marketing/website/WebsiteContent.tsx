@@ -28,11 +28,6 @@ const WebsiteSoftwareShowcaseSection = lazy(() =>
     default: m.WebsiteSoftwareShowcaseSection,
   })),
 );
-const WebsiteSpecsHighlight = lazy(() =>
-  import("./WebsiteSpecsHighlight").then((m) => ({
-    default: m.WebsiteSpecsHighlight,
-  })),
-);
 const WebsiteRoiSection = lazy(() =>
   import("./WebsiteProofBand").then((m) => ({
     default: m.WebsiteRoiSection,
@@ -83,11 +78,6 @@ export function WebsiteContent() {
         <WebsiteDeferredSection minHeight="min(80vh, 720px)">
           <LazySection>
             <WebsiteSoftwareShowcaseSection />
-          </LazySection>
-        </WebsiteDeferredSection>
-        <WebsiteDeferredSection minHeight="min(68vh, 640px)">
-          <LazySection>
-            <WebsiteSpecsHighlight />
           </LazySection>
         </WebsiteDeferredSection>
         <WebsiteDeferredSection minHeight="min(80vh, 700px)">

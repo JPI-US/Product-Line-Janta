@@ -142,24 +142,6 @@ export function WebsiteValueSection() {
               </div>
             </figure>
           </div>
-
-          <aside className="web-value__stats-rail" aria-label="Key metrics">
-            <ul className="web-value__stats-list">
-              {VALUE_COPY.stats.map((stat) => (
-                <li key={stat.id}>
-                  <div className="web-value__stat">
-                    <span className="web-value__stat-value">
-                      <span className="web-value__stat-metric">{stat.metric}</span>
-                      {"metricUnit" in stat && stat.metricUnit ? (
-                        <span className="web-value__stat-unit">{stat.metricUnit}</span>
-                      ) : null}
-                    </span>
-                    <span className="web-value__stat-label">{stat.title}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </aside>
         </div>
       </div>
     </section>
