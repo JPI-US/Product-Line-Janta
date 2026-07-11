@@ -44,7 +44,7 @@ export const HERO_COPY = {
   statsContext: "Compared to traditional solar",
   stats: [
     {
-      value: "50%",
+      value: "35%",
       label: "More Energy",
     },
     {
@@ -52,7 +52,8 @@ export const HERO_COPY = {
       label: "Power/Unit Area",
     },
     {
-      value: "32%",
+      value: "27%",
+      prefix: "Up to",
       label: "Capacity Factor",
     },
   ],
@@ -144,6 +145,7 @@ export const YIELD_COMPARE_COPY = {
     headingAccentPhrases: [
       "A *fraction* of the *land*.",
       "*More energy*.",
+      "*Higher capacity factor*.",
     ],
     lede: "Slide up the project size and watch the footprint diverge — traditional solar sprawls while Janta stays compact.",
     traditionalLabel: "Traditional",
@@ -526,4 +528,3 @@ export const FOOTER_COPY = {
   copyright: "© 2026 Janta Power, Inc. All rights reserved.",
   location: "2265 Monitor St, Dallas TX, 75207",
 } as const;
-

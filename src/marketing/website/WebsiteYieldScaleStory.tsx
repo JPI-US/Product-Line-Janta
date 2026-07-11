@@ -2,9 +2,11 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   acresAt,
+  annualMwhAt,
   blocksForAcres,
   formatAcres,
   formatMw,
+  formatMwh,
   SCALE_MAX_MW,
   SCALE_MIN_MW,
   SCALE_PRESETS_MW,
@@ -17,6 +19,11 @@ const copy = YIELD_COMPARE_COPY.scale;
 const AUTOPLAY_STEP_MS = 1500;
 const PHRASE_CYCLE_MS = 3400;
 const PHRASE_TRANSITION_MS = 480;
+
+/** "1 acre" vs "2 acres" — the readout rounds, so pluralise off the rounded value. */
+function acreUnit(acres: number): string {
+  return Math.round(acres) === 1 ? "acre" : "acres";
+}
 
 /** Renders a phrase, giving the `*starred*` words the gradient highlight. */
 function renderPhrase(phrase: string) {
@@ -174,8 +181,11 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
 
   const active = visible && !reducedMotion;
   const target = acresAt(mw);
+  const energy = annualMwhAt(mw);
   const tradAcres = useTweenedNumber(target.traditional, active);
   const jantaAcres = useTweenedNumber(target.janta, active);
+  const tradMwh = useTweenedNumber(energy.traditional, active);
+  const jantaMwh = useTweenedNumber(energy.janta, active);
   const saved = Math.max(0, tradAcres - jantaAcres);
   const fields = Math.round(saved / 1.32);
 
@@ -195,10 +205,16 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
             <span className="web-yield-scale__side-label">{copy.traditionalLabel}</span>
             <span className="web-yield-scale__acres">
               {formatAcres(tradAcres)}
-              <span className="web-yield-scale__acres-unit"> {copy.acresUnit}</span>
+              <span className="web-yield-scale__acres-unit"> {acreUnit(tradAcres)}</span>
             </span>
           </div>
           <FootprintGrid count={blocksForAcres(tradAcres)} variant="traditional" />
+          <p className="web-yield-scale__energy">
+            <span className="web-yield-scale__energy-label">Annual energy</span>
+            <span className="web-yield-scale__energy-value">
+              {formatMwh(tradMwh)} <span className="web-yield-scale__energy-unit">MWh</span>
+            </span>
+          </p>
         </div>
 
         <div className="web-yield-scale__side web-yield-scale__side--janta">
@@ -206,10 +222,16 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
             <span className="web-yield-scale__side-label">{copy.jantaLabel}</span>
             <span className="web-yield-scale__acres">
               {formatAcres(jantaAcres)}
-              <span className="web-yield-scale__acres-unit"> {copy.acresUnit}</span>
+              <span className="web-yield-scale__acres-unit"> {acreUnit(jantaAcres)}</span>
             </span>
           </div>
           <FootprintGrid count={blocksForAcres(jantaAcres)} variant="janta" />
+          <p className="web-yield-scale__energy">
+            <span className="web-yield-scale__energy-label">Annual energy</span>
+            <span className="web-yield-scale__energy-value web-yield-scale__energy-value--janta">
+              {formatMwh(jantaMwh)} <span className="web-yield-scale__energy-unit">MWh</span>
+            </span>
+          </p>
         </div>
       </div>
 

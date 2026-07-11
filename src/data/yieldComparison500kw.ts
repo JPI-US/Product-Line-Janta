@@ -1,22 +1,22 @@
 import type { TowerOutput } from "./towers";
 
 /**
- * 500 kW Dallas comparison — Janta at 50% above fixed solar, reached by
- * shifting each side equally (+62,400 Janta / −62,400 fixed from PVWatts baselines).
+ * 500 kW Dallas comparison from the marketing capacity-factor model:
+ * annual kWh = kW x 8760 h x capacity factor (20% fixed / 27% Janta).
  */
 export const YIELD_500KW_DALLAS = {
   siteLabel: "500 kW · Dallas, TX",
   systemKw: 500,
   fixed: {
-    annualKwh: 805_600,
-    monthlyKwh: 67_133,
-    dailyKwh: 2_207,
+    annualKwh: 876_000,
+    monthlyKwh: 73_000,
+    dailyKwh: 2_400,
     landAcres: 3.3,
   },
   janta: {
-    annualKwh: 1_208_400,
-    monthlyKwh: 100_700,
-    dailyKwh: 3_311,
+    annualKwh: 1_182_600,
+    monthlyKwh: 98_550,
+    dailyKwh: 3_240,
     landAcres: 1,
   },
 } as const;
@@ -42,7 +42,7 @@ export function yield500kwOutput(values: {
 }
 
 export function yield500kwMoreLabel(): string {
-  return "50% more yield";
+  return "35% more yield";
 }
 
 export function formatLandAcres(acres: number): { value: string; unit: string } {

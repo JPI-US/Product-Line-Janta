@@ -6690,6 +6690,7 @@ select.web-footer__select {
    ========================================================================== */
 .web-yield-scale {
   /* Sits between the section heading and the aerial photo split. */
+  --web-yield-text-gold: #c8930a;
   margin-top: clamp(1.5rem, 3.5vw, 2.5rem);
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
   max-width: 760px;
@@ -6734,12 +6735,22 @@ select.web-footer__select {
 .web-yield-scale__cycle-word {
   color: var(--web-ink, #1d1d1f);
 }
-/* Gradient emphasis — same treatment as "Where Janta Shines". */
+/* Gradient emphasis, "Where Janta Shines"-style. Ends on text-safe gold,
+   not the bright CTA gold: on this light background #ffbf14 has ~1.7:1
+   contrast, so long phrases visibly fade out at the tail. */
 .web-yield-scale__cycle-em {
-  background: linear-gradient(100deg, var(--web-accent, #6ba0e3), var(--web-cta, #ffbf14));
+  display: inline-block;
+  padding-inline-end: 0.06em;
+  margin-inline-end: -0.06em;
+  background: linear-gradient(
+    100deg,
+    var(--web-brand-blue, #3a84dc),
+    var(--web-yield-text-gold)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -6785,7 +6796,7 @@ select.web-footer__select {
   color: var(--web-ink-soft, #5a6478);
 }
 .web-yield-scale__side--janta .web-yield-scale__side-label {
-  color: var(--warm-cta, #c8930a);
+  color: var(--web-yield-text-gold);
 }
 .web-yield-scale__acres {
   font-family: var(--web-font-title, inherit);
@@ -6805,6 +6816,7 @@ select.web-footer__select {
   grid-template-columns: repeat(auto-fill, minmax(clamp(12px, 3.4vw, 22px), 1fr));
   gap: clamp(2px, 0.6vw, 5px);
   align-content: start;
+  min-height: clamp(3.25rem, 4.2vw, 3.75rem);
 }
 .web-yield-scale__block {
   aspect-ratio: 1;
@@ -6828,6 +6840,40 @@ select.web-footer__select {
     transform: scale(1);
   }
 }
+/* Annual generation under each footprint grid (kW x 8760 x capacity factor). */
+.web-yield-scale__energy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.7rem 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(51, 60, 78, 0.12);
+}
+.web-yield-scale__energy-label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--web-ink-soft, #5a6478);
+}
+.web-yield-scale__energy-value {
+  font-family: var(--web-font-title, inherit);
+  font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--web-ink, #1d1d1f);
+  white-space: nowrap;
+}
+.web-yield-scale__energy-value--janta {
+  color: var(--web-yield-text-gold);
+}
+.web-yield-scale__energy-unit {
+  font-size: 0.68em;
+  font-weight: 600;
+  color: var(--web-ink-soft, #5a6478);
+}
+
 .web-yield-scale__anchor {
   margin: clamp(1rem, 2.5vw, 1.5rem) 0;
   font-size: clamp(1rem, 2vw, 1.2rem);

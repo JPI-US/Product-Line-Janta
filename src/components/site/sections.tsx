@@ -87,16 +87,17 @@ export function Hero() {
       <div className="container-page hero-grid">
         <div className="hero-copy">
           <HeroHeading />
-          <p className="hero-lead">
-            Janta Power builds vertical 3D photovoltaic towers engineered for
-            airports, utilities, and developers who can't afford to waste an acre.
-          </p>
+          <p className="hero-lead">{HERO_COPY.sub}</p>
           <div className="hero-stats-wrap">
             <div className="hero-stats">
               {HERO_COPY.stats.map((stat, index) => (
                 <Fragment key={stat.label}>
                   {index > 0 ? <Divider /> : null}
-                  <Stat value={stat.value} label={stat.label} />
+                  <Stat
+                    value={stat.value}
+                    label={stat.label}
+                    prefix={"prefix" in stat ? stat.prefix : undefined}
+                  />
                 </Fragment>
               ))}
             </div>
@@ -119,10 +120,20 @@ export function Hero() {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({
+  value,
+  label,
+  prefix,
+}: {
+  value: string;
+  label: string;
+  /** Optional qualifier shown before the number (e.g. "Up to" a capacity factor). */
+  prefix?: string;
+}) {
   return (
     <div className="hero-stat">
       <div className="hero-stat__value">
+        {prefix ? <span className="hero-stat__prefix">{prefix} </span> : null}
         <CountUpValue value={value} />
       </div>
       <div className="hero-stat__label">{label}</div>

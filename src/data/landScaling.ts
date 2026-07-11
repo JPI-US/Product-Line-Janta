@@ -22,6 +22,27 @@ export const SCALE_PRESETS_MW = [0.5, 1, 5, 10] as const;
 export const SCALE_MIN_MW = 0.5;
 export const SCALE_MAX_MW = 10;
 
+/** Annual energy = kW × 8760 h × capacity factor. */
+export const CAPACITY_FACTOR = {
+  traditional: 0.2,
+  janta: 0.27,
+} as const;
+
+const HOURS_PER_YEAR = 8760;
+
+/** Annual generation in MWh for a given system size (MW). */
+export function annualMwhAt(mw: number): { traditional: number; janta: number } {
+  const kw = mw * 1000;
+  return {
+    traditional: (kw * HOURS_PER_YEAR * CAPACITY_FACTOR.traditional) / 1000,
+    janta: (kw * HOURS_PER_YEAR * CAPACITY_FACTOR.janta) / 1000,
+  };
+}
+
+export function formatMwh(mwh: number): string {
+  return Math.round(mwh).toLocaleString("en-US");
+}
+
 export function acresAt(mw: number): { traditional: number; janta: number } {
   return {
     traditional: mw * LAND_PER_MW.traditional,

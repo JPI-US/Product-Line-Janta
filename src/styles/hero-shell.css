@@ -208,9 +208,26 @@
 }
 
 .hero-stat__value {
+  position: relative;
+  /* Reserved on every stat so the "Up to" line can sit above one number
+     without pushing that stat's figure out of line with the others. */
+  padding-top: 0.9em;
   font-size: 1.5rem;
   font-weight: 600;
   color: #ffffff;
+}
+
+/* Qualifier sitting above a figure — small, so it reads as a caveat and keeps
+   the numbers on one baseline across the row. */
+.hero-stat__prefix {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 0.5em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.72;
 }
 
 /* Count-up wrapper — the hidden sizer reserves the final width so the row
