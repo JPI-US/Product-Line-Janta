@@ -12,6 +12,7 @@ import { CountUp } from "../../components/CountUp";
 import { YIELD_COMPARE_COPY } from "./websiteData";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 import { WebsiteYieldScaleStory } from "./WebsiteYieldScaleStory";
+import { useIsMobile } from "../../lib/useIsMobile";
 
 const { janta, fixed } = YIELD_500KW_DALLAS;
 
@@ -83,6 +84,8 @@ export function WebsiteYieldComparisonSection() {
   const reducedMotion = useWebsiteReducedMotion();
   const jantaLand = formatLandAcres(janta.landAcres);
   const fixedLand = formatLandAcres(fixed.landAcres);
+  // Phones show the scale tool only — the aerial photo split is desktop-only.
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (reducedMotion) {
@@ -115,39 +118,41 @@ export function WebsiteYieldComparisonSection() {
           <p className="web-yield-compare__description">{copy.description}</p>
         </header>
 
-        <div
-          className="web-yield-compare__split"
-          role="group"
-          aria-label={`${copy.description} comparison`}
-        >
-          <CompareLane
-            variant="traditional"
-            image={copy.fixed.image}
-            imageAlt={copy.fixed.imageAlt}
-            imagePosition={copy.fixed.imagePosition}
-            annualLabel={copy.metrics.annual}
-            annualKwh={fixed.annualKwh}
-            landLabel={copy.metrics.land}
-            landValue={`${fixedLand.value} ${fixedLand.unit}`}
-          />
-
-          <div className="web-yield-compare__split-rule" aria-hidden>
-            <span>vs</span>
-          </div>
-
-          <CompareLane
-            variant="janta"
-            image={copy.janta.image}
-            imageAlt={copy.janta.imageAlt}
-            imagePosition={copy.janta.imagePosition}
-            annualLabel={copy.metrics.annual}
-            annualKwh={janta.annualKwh}
-            landLabel={copy.metrics.land}
-            landValue={`${jantaLand.value} ${jantaLand.unit}`}
-          />
-        </div>
-
         <WebsiteYieldScaleStory visible={visible} />
+
+        {!isMobile ? (
+          <div
+            className="web-yield-compare__split"
+            role="group"
+            aria-label={`${copy.description} comparison`}
+          >
+            <CompareLane
+              variant="traditional"
+              image={copy.fixed.image}
+              imageAlt={copy.fixed.imageAlt}
+              imagePosition={copy.fixed.imagePosition}
+              annualLabel={copy.metrics.annual}
+              annualKwh={fixed.annualKwh}
+              landLabel={copy.metrics.land}
+              landValue={`${fixedLand.value} ${fixedLand.unit}`}
+            />
+
+            <div className="web-yield-compare__split-rule" aria-hidden>
+              <span>vs</span>
+            </div>
+
+            <CompareLane
+              variant="janta"
+              image={copy.janta.image}
+              imageAlt={copy.janta.imageAlt}
+              imagePosition={copy.janta.imagePosition}
+              annualLabel={copy.metrics.annual}
+              annualKwh={janta.annualKwh}
+              landLabel={copy.metrics.land}
+              landValue={`${jantaLand.value} ${jantaLand.unit}`}
+            />
+          </div>
+        ) : null}
       </div>
     </section>
   );

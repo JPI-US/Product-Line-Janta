@@ -139,28 +139,6 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
       </p>
 
       <div className="web-yield-scale__controls">
-        <div
-          className="web-yield-scale__chips"
-          role="group"
-          aria-label="Project size presets"
-        >
-          {SCALE_PRESETS_MW.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              className={
-                mw === preset
-                  ? "web-yield-scale__chip web-yield-scale__chip--active"
-                  : "web-yield-scale__chip"
-              }
-              aria-pressed={mw === preset}
-              onClick={() => takeControl(preset)}
-            >
-              {formatMw(preset)} MW
-            </button>
-          ))}
-        </div>
-
         <label className="web-yield-scale__slider">
           <span className="visually-hidden">Project size in megawatts</span>
           <input

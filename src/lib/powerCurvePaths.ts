@@ -83,29 +83,30 @@ export function jantaSummerPath(
   return parts.join(" ");
 }
 
-/** Winter Janta — plateau across daylight, anchored to chart edges */
+/**
+ * Winter Janta — plateau across daylight with rounded shoulders.
+ * Sampled from jantaWinterKw so the drawn line always matches the hover readout.
+ */
 export function jantaWinterPath(
   geom: ChartGeom,
   hourMin = 7,
   hourMax = 21,
   peakKw: number = REF_JANTA_WINTER_PEAK_KW
 ): string {
-  const y0 = geom.y(0);
-  const yPeak = geom.y(peakKw);
-  const span = hourMax - hourMin;
-  const riseEnd = hourMin + span * 0.2;
-  const plateauEnd = hourMin + span * 0.8;
-
-  return [
-    `M ${fmt(geom.x(hourMin))} ${fmt(y0)}`,
-    `L ${fmt(geom.x(riseEnd))} ${fmt(yPeak)}`,
-    `L ${fmt(geom.x(plateauEnd))} ${fmt(yPeak)}`,
-    `L ${fmt(geom.x(hourMax))} ${fmt(y0)}`,
-  ].join(" ");
+  const steps = 64;
+  const parts: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const hour = hourMin + ((hourMax - hourMin) * i) / steps;
+    const kw = jantaWinterKw(hour, hourMin, hourMax, peakKw);
+    parts.push(`${i === 0 ? "M" : "L"} ${fmt(geom.x(hour))} ${fmt(geom.y(kw))}`);
+  }
+  return parts.join(" ");
 }
 
-function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * t;
+/** Eases in and out with zero slope at both ends — rounds the plateau corners. */
+function smoothstep(t: number): number {
+  const c = Math.max(0, Math.min(1, t));
+  return c * c * (3 - 2 * c);
 }
 
 /** kW at hour — traditional bell (matches bellCurvePath) */
@@ -160,7 +161,7 @@ export function jantaSummerKw(
   return peakKw * factor;
 }
 
-/** kW at hour — winter Janta plateau */
+/** kW at hour — winter Janta plateau with rounded (eased) shoulders */
 export function jantaWinterKw(
   hour: number,
   hourMin = 7,
@@ -171,7 +172,9 @@ export function jantaWinterKw(
   const span = hourMax - hourMin;
   const riseEnd = hourMin + span * 0.2;
   const plateauEnd = hourMin + span * 0.8;
-  if (hour <= riseEnd) return lerp(0, peakKw, (hour - hourMin) / (riseEnd - hourMin));
+  if (hour <= riseEnd) {
+    return peakKw * smoothstep((hour - hourMin) / (riseEnd - hourMin));
+  }
   if (hour <= plateauEnd) return peakKw;
-  return lerp(peakKw, 0, (hour - plateauEnd) / (hourMax - plateauEnd));
+  return peakKw * smoothstep((hourMax - hour) / (hourMax - plateauEnd));
 }
