@@ -4536,10 +4536,33 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   flex: 1 1 0;
   min-width: clamp(4.5rem, 7vw, 7rem);
   overflow: hidden;
-  cursor: default;
+  /* Panels are interactive (tap / Enter / Space toggles them). */
+  cursor: pointer;
   border-left: 1px solid rgba(255, 255, 255, 0.42);
   --web-apps-pad: clamp(1.25rem, 2.5vw, 2rem);
   transition: flex 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animating `flex` re-runs layout every frame. Containment keeps that recalc
+     inside the panel instead of letting it ripple through the whole page. */
+  contain: layout paint;
+}
+
+.web-applications__panel:focus-visible {
+  outline: 2px solid var(--web-cta, #ffbf14);
+  outline-offset: -3px;
+}
+
+/* Touch: the expand is a height change on a stacked column — keep it short so a
+   tap feels instant rather than dragging a 500ms layout animation. */
+@media (hover: none) {
+  .web-applications__panel {
+    transition: flex 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-applications__panel {
+    transition: none;
+  }
 }
 
 .web-applications__panel:first-child {

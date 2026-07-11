@@ -5,11 +5,18 @@ type Props = {
   image: string;
   imagePosition: string;
   isActive: boolean;
+  /** Mouse/trackpad only — touch drives the panel by tap instead. */
+  hasHover: boolean;
+  onToggle: () => void;
   onActivate: () => void;
   onDeactivate: () => void;
 };
 
-/** Accordion column — expands on hover to reveal body copy */
+/**
+ * Accordion column. Expands on hover where hover exists; everywhere else (phones,
+ * keyboard) it toggles open/closed on tap or Enter/Space — pointerleave never
+ * fires on touch, so hover alone would leave a tapped panel stuck open.
+ */
 export function WebsiteApplicationsAccordionPanel({
   id,
   title,
@@ -17,6 +24,8 @@ export function WebsiteApplicationsAccordionPanel({
   image,
   imagePosition,
   isActive,
+  hasHover,
+  onToggle,
   onActivate,
   onDeactivate,
 }: Props) {
@@ -26,13 +35,26 @@ export function WebsiteApplicationsAccordionPanel({
     onDeactivate();
   };
 
+  const hoverProps = hasHover
+    ? { onPointerEnter: onActivate, onPointerLeave: handlePointerLeave }
+    : {};
+
   return (
     <div
       id={`web-applications-${id}`}
       className={`web-applications__panel${isActive ? " is-active" : ""}`}
-      onPointerEnter={onActivate}
-      onPointerLeave={handlePointerLeave}
-      role="listitem"
+      role="button"
+      tabIndex={0}
+      aria-expanded={isActive}
+      aria-label={title}
+      onClick={onToggle}
+      onKeyDown={(ev) => {
+        if (ev.key === "Enter" || ev.key === " ") {
+          ev.preventDefault();
+          onToggle();
+        }
+      }}
+      {...hoverProps}
     >
       <img
         className="web-applications__panel-bg"

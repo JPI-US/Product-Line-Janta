@@ -7,6 +7,25 @@ type PanelId = (typeof APPLICATIONS_COPY.panels)[number]["id"];
 
 const PANEL_RESIZE_MS = 400;
 
+/**
+ * True only where hover actually exists (mouse/trackpad). Touch screens fire
+ * pointerenter on tap but never pointerleave — which is why a tapped panel used
+ * to stay stuck open forever. On touch we drive the accordion by tap-to-toggle.
+ */
+function useHasHover(): boolean {
+  const query = "(hover: hover) and (pointer: fine)";
+  const [hasHover, setHasHover] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setHasHover(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return hasHover;
+}
+
 /** Where Janta Shines — image accordion panels */
 export function WebsiteApplicationsSection() {
   const accordionRef = useRef<HTMLDivElement>(null);
@@ -14,6 +33,7 @@ export function WebsiteApplicationsSection() {
   const [activeId, setActiveId] = useState<PanelId | null>(null);
   const [labelsReady, setLabelsReady] = useState(true);
   const reducedMotion = useWebsiteReducedMotion();
+  const hasHover = useHasHover();
 
   useEffect(() => {
     return () => {
@@ -24,6 +44,9 @@ export function WebsiteApplicationsSection() {
   useEffect(() => {
     const accordion = accordionRef.current;
     if (!accordion) return;
+    // Phones don't hover-preview panels, so don't eagerly pull all six full-size
+    // photos down on a mobile connection — the <img>s are lazy and load on tap.
+    if (!hasHover) return;
 
     let warmed = false;
     const warm = () => {
@@ -44,7 +67,7 @@ export function WebsiteApplicationsSection() {
     );
     observer.observe(accordion);
     return () => observer.disconnect();
-  }, []);
+  }, [hasHover]);
 
   const activatePanel = (id: PanelId) => {
     if (collapseTimerRef.current) {
@@ -52,6 +75,12 @@ export function WebsiteApplicationsSection() {
       collapseTimerRef.current = null;
     }
     setActiveId(id);
+  };
+
+  /** Tap/click/keyboard: same panel closes it, another one opens that instead. */
+  const togglePanel = (id: PanelId) => {
+    if (activeId === id) collapsePanels();
+    else activatePanel(id);
   };
 
   const collapsePanels = () => {
@@ -95,13 +124,16 @@ export function WebsiteApplicationsSection() {
         <div
           ref={accordionRef}
           className="web-applications__accordion"
-          onPointerLeave={(ev) => clearActiveUnlessMovingInside(ev.relatedTarget)}
+          onPointerLeave={
+            hasHover
+              ? (ev) => clearActiveUnlessMovingInside(ev.relatedTarget)
+              : undefined
+          }
         >
           <div
             className={`web-applications__accordion-panels${
               activeId ? " is-expanded" : ""
             }${labelsReady ? " labels-ready" : ""}`}
-            role="list"
           >
             {APPLICATIONS_COPY.panels.map((panel) => (
               <WebsiteApplicationsAccordionPanel
@@ -112,6 +144,8 @@ export function WebsiteApplicationsSection() {
                 image={panel.image}
                 imagePosition={panel.imagePosition}
                 isActive={activeId === panel.id}
+                hasHover={hasHover}
+                onToggle={() => togglePanel(panel.id)}
                 onActivate={() => activatePanel(panel.id)}
                 onDeactivate={() => {
                   if (activeId === panel.id) collapsePanels();
