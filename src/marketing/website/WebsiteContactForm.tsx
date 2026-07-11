@@ -5,6 +5,11 @@ type FormState = {
   name: string;
   email: string;
   company: string;
+  projectType: string;
+  projectTypeOther: string;
+  acreage: string;
+  projectSize: string;
+  energyUsage: string;
   message: string;
 };
 
@@ -12,15 +17,33 @@ const INITIAL: FormState = {
   name: "",
   email: "",
   company: "",
+  projectType: "",
+  projectTypeOther: "",
+  acreage: "",
+  projectSize: "",
+  energyUsage: "",
   message: "",
 };
+
+const PROJECT_TYPES = [
+  "Residential",
+  "Commercial",
+  "Industrial",
+  "Utility",
+  "Other (please specify)",
+] as const;
+
+const OTHER = "Other (please specify)";
 
 export function WebsiteContactForm({
   showTitle = true,
   labelledBy,
+  extended = false,
 }: {
   showTitle?: boolean;
   labelledBy?: string;
+  /** Contact page: show project-type + site fields. Footer keeps the compact form. */
+  extended?: boolean;
 }) {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
@@ -31,12 +54,18 @@ export function WebsiteContactForm({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const projectType =
+      form.projectType === OTHER ? form.projectTypeOther : form.projectType;
     const subject = encodeURIComponent(`Janta Power inquiry from ${form.name}`);
     const body = encodeURIComponent(
       [
         `Name: ${form.name}`,
         `Email: ${form.email}`,
         form.company ? `Company: ${form.company}` : null,
+        projectType ? `Project type: ${projectType}` : null,
+        form.acreage ? `Acreage: ${form.acreage}` : null,
+        form.projectSize ? `Project size: ${form.projectSize}` : null,
+        form.energyUsage ? `Energy usage: ${form.energyUsage}` : null,
         "",
         form.message,
       ]
@@ -64,7 +93,12 @@ export function WebsiteContactForm({
           {FOOTER_COPY.contactFormSuccess}
         </p>
       ) : (
-        <form className="web-footer__form" onSubmit={handleSubmit}>
+        <form
+          className={
+            extended ? "web-footer__form web-footer__form--extended" : "web-footer__form"
+          }
+          onSubmit={handleSubmit}
+        >
           <label className="web-footer__field">
             <span className="visually-hidden">Name</span>
             <input
@@ -91,7 +125,7 @@ export function WebsiteContactForm({
               onChange={(e) => updateField("email", e.target.value)}
             />
           </label>
-          <label className="web-footer__field">
+          <label className="web-footer__field web-footer__field--full">
             <span className="visually-hidden">Company (optional)</span>
             <input
               className="web-footer__input"
@@ -103,7 +137,80 @@ export function WebsiteContactForm({
               onChange={(e) => updateField("company", e.target.value)}
             />
           </label>
-          <label className="web-footer__field">
+
+          {extended ? (
+            <>
+              <label className="web-footer__field web-footer__field--full">
+                <span className="visually-hidden">Project type</span>
+                <select
+                  className="web-footer__input web-footer__select"
+                  name="projectType"
+                  value={form.projectType}
+                  onChange={(e) => updateField("projectType", e.target.value)}
+                >
+                  <option value="" disabled>
+                    Project type
+                  </option>
+                  {PROJECT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {form.projectType === OTHER ? (
+                <label className="web-footer__field web-footer__field--full">
+                  <span className="visually-hidden">Please specify project type</span>
+                  <input
+                    className="web-footer__input"
+                    type="text"
+                    name="projectTypeOther"
+                    placeholder="Please specify"
+                    value={form.projectTypeOther}
+                    onChange={(e) => updateField("projectTypeOther", e.target.value)}
+                  />
+                </label>
+              ) : null}
+
+              <label className="web-footer__field">
+                <span className="visually-hidden">Acreage</span>
+                <input
+                  className="web-footer__input"
+                  type="text"
+                  inputMode="decimal"
+                  name="acreage"
+                  placeholder="Acreage"
+                  value={form.acreage}
+                  onChange={(e) => updateField("acreage", e.target.value)}
+                />
+              </label>
+              <label className="web-footer__field">
+                <span className="visually-hidden">Project size in kW or MW (optional)</span>
+                <input
+                  className="web-footer__input"
+                  type="text"
+                  name="projectSize"
+                  placeholder="Project size, kW or MW (optional)"
+                  value={form.projectSize}
+                  onChange={(e) => updateField("projectSize", e.target.value)}
+                />
+              </label>
+              <label className="web-footer__field web-footer__field--full">
+                <span className="visually-hidden">Energy usage (optional)</span>
+                <input
+                  className="web-footer__input"
+                  type="text"
+                  name="energyUsage"
+                  placeholder="Energy usage (optional)"
+                  value={form.energyUsage}
+                  onChange={(e) => updateField("energyUsage", e.target.value)}
+                />
+              </label>
+            </>
+          ) : null}
+
+          <label className="web-footer__field web-footer__field--full">
             <span className="visually-hidden">Message</span>
             <textarea
               className="web-footer__textarea"

@@ -34,7 +34,11 @@ export default function WebsiteContactPage() {
             <h2 id="web-contact-form-title" className="web-contact-page__panel-title">
               Send a message
             </h2>
-            <WebsiteContactForm showTitle={false} labelledBy="web-contact-form-title" />
+            <WebsiteContactForm
+              showTitle={false}
+              labelledBy="web-contact-form-title"
+              extended
+            />
           </section>
 
           {SHOW_QUIZ ? (

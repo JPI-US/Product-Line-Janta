@@ -5588,6 +5588,27 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   display: block;
 }
 
+/* Extended contact form (contact page) — explicit spans instead of the footer
+   form's positional nth-child layout, so the extra fields lay out predictably:
+   Name/Email and Acreage/Project size sit as half pairs, everything else full. */
+.web-footer__form--extended .web-footer__field {
+  grid-column: auto;
+}
+.web-footer__form--extended .web-footer__field--full {
+  grid-column: 1 / -1;
+}
+
+/* Native select styled to match the text inputs, with a custom chevron. */
+select.web-footer__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%235a6478' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.5 6 6.5 11 1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+}
+
 .web-footer__input,
 .web-footer__textarea {
   width: 100%;
