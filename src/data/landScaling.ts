@@ -19,8 +19,13 @@ const ACRES_PER_FOOTBALL_FIELD = 1.32;
 export const ACRES_PER_BLOCK = 3;
 
 export const SCALE_PRESETS_MW = [0.5, 1, 5, 10] as const;
-export const SCALE_MIN_MW = 0.5;
+export const SCALE_MIN_MW = 0;
 export const SCALE_MAX_MW = 10;
+const MAX_FOOTPRINT_BLOCKS = Math.ceil((SCALE_MAX_MW * LAND_PER_MW.traditional) / ACRES_PER_BLOCK);
+
+function floorAtZero(value: number): number {
+  return Number.isFinite(value) ? Math.max(0, value) : 0;
+}
 
 /** Annual energy = kW × 8760 h × capacity factor. */
 export const CAPACITY_FACTOR = {
@@ -32,7 +37,7 @@ const HOURS_PER_YEAR = 8760;
 
 /** Annual generation in MWh for a given system size (MW). */
 export function annualMwhAt(mw: number): { traditional: number; janta: number } {
-  const kw = mw * 1000;
+  const kw = clampScaleMw(mw) * 1000;
   return {
     traditional: (kw * HOURS_PER_YEAR * CAPACITY_FACTOR.traditional) / 1000,
     janta: (kw * HOURS_PER_YEAR * CAPACITY_FACTOR.janta) / 1000,
@@ -40,35 +45,44 @@ export function annualMwhAt(mw: number): { traditional: number; janta: number } 
 }
 
 export function formatMwh(mwh: number): string {
-  return Math.round(mwh).toLocaleString("en-US");
+  return Math.round(floorAtZero(mwh)).toLocaleString("en-US");
 }
 
 export function acresAt(mw: number): { traditional: number; janta: number } {
+  const safeMw = clampScaleMw(mw);
   return {
-    traditional: mw * LAND_PER_MW.traditional,
-    janta: mw * LAND_PER_MW.janta,
+    traditional: safeMw * LAND_PER_MW.traditional,
+    janta: safeMw * LAND_PER_MW.janta,
   };
 }
 
 export function savedAcresAt(mw: number): number {
-  return mw * (LAND_PER_MW.traditional - LAND_PER_MW.janta);
+  return clampScaleMw(mw) * (LAND_PER_MW.traditional - LAND_PER_MW.janta);
 }
 
 export function footballFieldsAt(mw: number): number {
   return savedAcresAt(mw) / ACRES_PER_FOOTBALL_FIELD;
 }
 
-/** Block count for a footprint grid (min 1 so a side never renders empty). */
+/** Block count for a footprint grid, capped so bad input cannot flood the DOM. */
 export function blocksForAcres(acres: number): number {
-  return Math.max(1, Math.round(acres / ACRES_PER_BLOCK));
+  const safeAcres = floorAtZero(acres);
+  if (safeAcres === 0) return 0;
+  return Math.min(MAX_FOOTPRINT_BLOCKS, Math.max(1, Math.round(safeAcres / ACRES_PER_BLOCK)));
 }
 
-/** Round MW for display: 0.5 shows "0.5", whole numbers show as integers. */
+export function clampScaleMw(mw: number): number {
+  if (!Number.isFinite(mw)) return SCALE_MIN_MW;
+  return Math.min(SCALE_MAX_MW, Math.max(SCALE_MIN_MW, mw));
+}
+
+/** Round MW for display: decimals show one place, whole numbers show as integers. */
 export function formatMw(mw: number): string {
-  return Number.isInteger(mw) ? String(mw) : mw.toFixed(1);
+  const safeMw = clampScaleMw(mw);
+  return Number.isInteger(safeMw) ? String(safeMw) : safeMw.toFixed(1);
 }
 
 /** Round acres for readouts. */
 export function formatAcres(acres: number): string {
-  return Math.round(acres).toLocaleString("en-US");
+  return Math.round(floorAtZero(acres)).toLocaleString("en-US");
 }

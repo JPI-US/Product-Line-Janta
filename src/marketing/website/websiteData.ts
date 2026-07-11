@@ -52,7 +52,7 @@ export const HERO_COPY = {
       label: "Power/Unit Area",
     },
     {
-      value: "27%",
+      value: "34%",
       prefix: "Up to",
       label: "Capacity Factor",
     },
@@ -78,8 +78,8 @@ export const WEBSITE_SKY_GRADIENT = {
 } as const;
 
 export const ROI_COPY = {
-  title: "Save Millions Annually",
-  body: "Answer a few quick questions and we'll estimate project size, land usage, and lifetime savings for your project.",
+  title: "Power your land without giving it all away.",
+  body: "Janta Power delivers fast-deploying solar systems designed to save acres.",
   savingsCta: "Contact us",
   savingsHref: "/contact",
   image: "/marketing/roi-hero.png",
@@ -147,7 +147,7 @@ export const YIELD_COMPARE_COPY = {
       "*More energy*.",
       "*Higher capacity factor*.",
     ],
-    lede: "Slide up the project size and watch the footprint diverge — traditional solar sprawls while Janta stays compact.",
+    lede: "Slide the project size and watch the footprint diverge.  Traditional solar sprawls while Janta stays compact.",
     traditionalLabel: "Traditional",
     jantaLabel: "Janta",
     acresUnit: "acres",

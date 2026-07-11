@@ -4,6 +4,7 @@ import {
   acresAt,
   annualMwhAt,
   blocksForAcres,
+  clampScaleMw,
   formatAcres,
   formatMw,
   formatMwh,
@@ -22,7 +23,11 @@ const PHRASE_TRANSITION_MS = 480;
 
 /** "1 acre" vs "2 acres" — the readout rounds, so pluralise off the rounded value. */
 function acreUnit(acres: number): string {
-  return Math.round(acres) === 1 ? "acre" : "acres";
+  return Math.round(Math.max(0, acres)) === 1 ? "acre" : "acres";
+}
+
+function floorMetric(value: number): number {
+  return Number.isFinite(value) ? Math.max(0, value) : 0;
 }
 
 /** Renders a phrase, giving the `*starred*` words the gradient highlight. */
@@ -108,30 +113,37 @@ function CyclingHeadline({ phrases }: { phrases: readonly string[] }) {
  * glide smoothly with the slider, without re-triggering an animation each change.
  */
 function useTweenedNumber(target: number, active: boolean): number {
-  const [display, setDisplay] = useState(active ? 0 : target);
+  const safeTarget = floorMetric(target);
+  const [display, setDisplay] = useState(active ? 0 : safeTarget);
   const raf = useRef(0);
   const cur = useRef(display);
 
   useEffect(() => {
+    cancelAnimationFrame(raf.current);
     if (!active) {
-      cur.current = target;
-      setDisplay(target);
+      cur.current = safeTarget;
+      setDisplay(safeTarget);
       return;
     }
+    let cancelled = false;
     let last = performance.now();
     const tick = (now: number) => {
+      if (cancelled) return;
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      const next = cur.current + (target - cur.current) * Math.min(1, dt * 6);
-      cur.current = Math.abs(target - next) < 0.03 ? target : next;
+      const next = floorMetric(cur.current + (safeTarget - cur.current) * Math.min(1, dt * 6));
+      cur.current = Math.abs(safeTarget - next) < 0.03 ? safeTarget : next;
       setDisplay(cur.current);
-      if (cur.current !== target) raf.current = requestAnimationFrame(tick);
+      if (cur.current !== safeTarget) raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [target, active]);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf.current);
+    };
+  }, [safeTarget, active]);
 
-  return display;
+  return floorMetric(display);
 }
 
 function FootprintGrid({
@@ -159,6 +171,7 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
   const reducedMotion = useWebsiteReducedMotion();
   const [mw, setMw] = useState<number>(reducedMotion ? SCALE_MAX_MW : SCALE_PRESETS_MW[0]);
   const [autoplaying, setAutoplaying] = useState(!reducedMotion);
+  const safeMw = clampScaleMw(mw);
 
   // Step through the presets while auto-playing, ending at the widest gap.
   useEffect(() => {
@@ -176,17 +189,17 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
   // First interaction hands the controls to the visitor for good.
   function takeControl(value: number) {
     setAutoplaying(false);
-    setMw(value);
+    setMw(clampScaleMw(value));
   }
 
   const active = visible && !reducedMotion;
-  const target = acresAt(mw);
-  const energy = annualMwhAt(mw);
+  const target = acresAt(safeMw);
+  const energy = annualMwhAt(safeMw);
   const tradAcres = useTweenedNumber(target.traditional, active);
   const jantaAcres = useTweenedNumber(target.janta, active);
   const tradMwh = useTweenedNumber(energy.traditional, active);
   const jantaMwh = useTweenedNumber(energy.janta, active);
-  const saved = Math.max(0, tradAcres - jantaAcres);
+  const saved = floorMetric(tradAcres - jantaAcres);
   const fields = Math.round(saved / 1.32);
 
   return (
@@ -251,14 +264,14 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
             min={SCALE_MIN_MW}
             max={SCALE_MAX_MW}
             step={0.1}
-            value={mw}
-            aria-valuetext={`${formatMw(mw)} megawatts`}
+            value={safeMw}
+            aria-valuetext={`${formatMw(safeMw)} megawatts`}
             onChange={(e) => takeControl(Number(e.target.value))}
           />
         </label>
 
         <span className="web-yield-scale__current" aria-hidden>
-          {formatMw(mw)} MW
+          {formatMw(safeMw)} MW
         </span>
       </div>
 
