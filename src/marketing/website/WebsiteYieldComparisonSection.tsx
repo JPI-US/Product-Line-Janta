@@ -11,6 +11,7 @@ import {
 import { CountUp } from "../../components/CountUp";
 import { YIELD_COMPARE_COPY } from "./websiteData";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
+import { WebsiteYieldScaleStory } from "./WebsiteYieldScaleStory";
 
 const { janta, fixed } = YIELD_500KW_DALLAS;
 
@@ -145,6 +146,8 @@ export function WebsiteYieldComparisonSection() {
             landValue={`${jantaLand.value} ${jantaLand.unit}`}
           />
         </div>
+
+        <WebsiteYieldScaleStory visible={visible} />
       </div>
     </section>
   );

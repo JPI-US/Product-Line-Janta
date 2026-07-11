@@ -6683,3 +6683,183 @@ select.web-footer__select {
   }
 }
 
+
+/* ============================================================================
+   Yield "vs" scale story — footprint-block-grid scaling model + slider.
+   Namespaced web-yield-scale__*; token colors only (gold Janta / slate trad).
+   ========================================================================== */
+.web-yield-scale {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
+}
+.web-yield-scale__head {
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+.web-yield-scale__heading {
+  margin: 0 0 0.5rem;
+  font-family: var(--web-font-title, inherit);
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--web-ink, #1d1d1f);
+}
+.web-yield-scale__lede {
+  margin: 0 auto;
+  max-width: 46ch;
+  color: var(--web-ink-soft, #5a6478);
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  line-height: 1.5;
+}
+.web-yield-scale__stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.75rem, 3vw, 2rem);
+  align-items: start;
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+}
+.web-yield-scale__side {
+  min-width: 0;
+  text-align: left;
+}
+.web-yield-scale__side-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(51, 60, 78, 0.12);
+}
+.web-yield-scale__side-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--web-ink-soft, #5a6478);
+}
+.web-yield-scale__side--janta .web-yield-scale__side-label {
+  color: var(--warm-cta, #c8930a);
+}
+.web-yield-scale__acres {
+  font-family: var(--web-font-title, inherit);
+  font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--web-ink, #1d1d1f);
+  white-space: nowrap;
+}
+.web-yield-scale__acres-unit {
+  font-size: 0.62em;
+  font-weight: 600;
+  color: var(--web-ink-soft, #5a6478);
+}
+.web-yield-scale__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(12px, 3.4vw, 22px), 1fr));
+  gap: clamp(2px, 0.6vw, 5px);
+  align-content: start;
+}
+.web-yield-scale__block {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  animation: web-yield-scale-block-in 0.32s ease backwards;
+}
+.web-yield-scale__grid--traditional .web-yield-scale__block {
+  background: rgba(51, 60, 78, 0.34);
+}
+.web-yield-scale__grid--janta .web-yield-scale__block {
+  background: var(--web-cta, #ffbf14);
+  box-shadow: 0 1px 3px rgba(200, 147, 10, 0.35);
+}
+@keyframes web-yield-scale-block-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.web-yield-scale__anchor {
+  margin: clamp(1rem, 2.5vw, 1.5rem) 0;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--web-ink-soft, #5a6478);
+}
+.web-yield-scale__anchor strong {
+  color: var(--web-ink, #1d1d1f);
+  font-weight: 700;
+}
+.web-yield-scale__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+}
+.web-yield-scale__chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.web-yield-scale__chip {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(51, 60, 78, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--web-ink-soft, #5a6478);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.web-yield-scale__chip:hover {
+  border-color: rgba(51, 60, 78, 0.4);
+}
+.web-yield-scale__chip--active {
+  background: var(--web-cta, #ffbf14);
+  border-color: var(--web-cta, #ffbf14);
+  color: #1d1d1f;
+}
+.web-yield-scale__slider {
+  display: inline-flex;
+  align-items: center;
+  min-width: min(220px, 60vw);
+  flex: 1 1 180px;
+}
+.web-yield-scale__slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--web-cta, #ffbf14);
+  cursor: pointer;
+}
+.web-yield-scale__current {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--web-ink, #1d1d1f);
+  min-width: 4ch;
+}
+.web-yield-scale__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  background: var(--web-cta, #ffbf14);
+  color: #1d1d1f;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.web-yield-scale__cta:hover {
+  background: var(--cta-hover, #d9a612);
+}
+@media (prefers-reduced-motion: reduce) {
+  .web-yield-scale__block {
+    animation: none;
+  }
+}

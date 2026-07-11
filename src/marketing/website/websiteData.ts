@@ -137,6 +137,14 @@ export const YIELD_COMPARE_COPY = {
     annual: "Annual output",
     land: "Site footprint",
   },
+  scale: {
+    heading: "The same power. A fraction of the land.",
+    lede: "Slide up the project size and watch the footprint diverge — traditional solar sprawls while Janta stays compact.",
+    traditionalLabel: "Traditional",
+    jantaLabel: "Janta",
+    acresUnit: "acres",
+    ctaLabel: "See what your site could save",
+  },
 } as const;
 
 export const POWER_PROFILE_COPY = {
