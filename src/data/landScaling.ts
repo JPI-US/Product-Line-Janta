@@ -1,16 +1,15 @@
 /**
  * Land-footprint scaling model for the marketing "vs" scale story.
  *
- * PROVISIONAL per-MW land intensity — pending CEO sign-off. Traditional at
- * 6.6 acres/MW keeps this section internally consistent with the 500 kW photo
- * card above it (3.3 acres at 0.5 MW). Janta at 2 acres/MW matches ROI_COMPARE.
- * These are the single source of truth for every slider position, so blessing
- * them once makes the whole widget defensible. Bumping traditional to a round
- * 7 acres/MW is a one-line change here (and would nudge the card to 3.5).
+ * Per-MW land intensity from Janta's financial/operational model (CEO-blessed):
+ * Fixed Tilt 6.67 acres/MW, Janta 2.22 acres/MW → 4.44 acres saved per MW.
+ * These stay consistent with the 500 kW photo card above (6.67 × 0.5 ≈ 3.3
+ * acres traditional, 2.22 × 0.5 ≈ 1.1 → 1 acre Janta) and are the single source
+ * of truth for every slider position, so the whole widget is defensible.
  */
 export const LAND_PER_MW = {
-  traditional: 6.6,
-  janta: 2,
+  traditional: 6.67,
+  janta: 2.22,
 } as const;
 
 /** American football field incl. end zones ≈ 1.32 acres. */
