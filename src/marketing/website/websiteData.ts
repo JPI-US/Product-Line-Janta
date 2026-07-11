@@ -40,7 +40,7 @@ export const HERO_COPY = {
   eyebrow: "Janta Power",
   title: ["More MW.", "Less Land."],
   sub:
-    "Janta Power builds 3D, sun-tracking solar towers for commercial, industrial, and utility projects where land is at a premium.",
+    "Janta Power builds vertically scaling, sun-tracking solar towers for commercial, industrial, and utility projects where land is at a premium.",
   statsContext: "Compared to traditional solar",
   stats: [
     {
@@ -255,7 +255,7 @@ export const VALUE_COPY = {
     "Land Savings",
   ] as const,
   body:
-    "Janta's 3D solar technology delivers the lowest energy cost on the market, alongside 4-tier resilience, cutting edge software, and uncomparable energy density.",
+    "Janta's vertically scaling solar technology delivers the lowest energy cost on the market, alongside 4-tier resilience, cutting edge software, and uncomparable energy density.",
   items: [
     {
       id: "density",
