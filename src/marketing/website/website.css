@@ -230,6 +230,11 @@ body.website-active {
   .web-contact-page__grid {
     grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
   }
+  /* Quiz deferred (SHOW_QUIZ=false): single centered column, form only. */
+  .web-contact-page__grid--solo {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 46rem;
+  }
 }
 
 .web-contact-page__panel,

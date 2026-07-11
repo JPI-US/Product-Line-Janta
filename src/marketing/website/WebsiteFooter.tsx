@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { CSSProperties } from "react";
 import { lazy, Suspense } from "react";
 import { FOOTER_COPY } from "./websiteData";
+import { SHOW_QUIZ } from "../../config/featureFlags";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
 import { WebsiteContactForm } from "./WebsiteContactForm";
@@ -73,11 +74,13 @@ export function WebsiteFooter() {
         <nav className="web-footer__col" aria-label={FOOTER_COPY.exploreTitle}>
           <h2 className="web-footer__heading">{FOOTER_COPY.exploreTitle}</h2>
           <ul className="web-footer__list">
-            {FOOTER_COPY.exploreLinks.map((link) => (
-              <li key={link.label}>
-                <FooterLink href={link.href} label={link.label} />
-              </li>
-            ))}
+            {FOOTER_COPY.exploreLinks
+              .filter((link) => SHOW_QUIZ || link.href !== "/quiz")
+              .map((link) => (
+                <li key={link.label}>
+                  <FooterLink href={link.href} label={link.label} />
+                </li>
+              ))}
           </ul>
         </nav>
 

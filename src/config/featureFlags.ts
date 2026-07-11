@@ -8,3 +8,11 @@
  * and nothing gets orphaned during repo cleanup.
  */
 export const SHOW_GLOBE = false;
+
+/**
+ * SHOW_QUIZ — the "See your savings" estimator quiz (/quiz). Deferred: the page
+ * and all its code stay wired in, but every entry point (nav/footer/contact CTA)
+ * is hidden and /quiz redirects to /contact while this is false. Flip to `true`
+ * to relaunch it. Same pattern as SHOW_GLOBE — one edit re-enables it.
+ */
+export const SHOW_QUIZ = false;

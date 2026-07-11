@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { AppLoadingScreen } from "./components/AppLoadingScreen";
 import { AppNav } from "./components/AppNav";
+import { SHOW_QUIZ } from "./config/featureFlags";
 
 const WebsitePage = lazy(() => import("./marketing/website/WebsitePage"));
 const WebsiteCareersPage = lazy(
@@ -115,7 +116,12 @@ function AppRoutes() {
             <Route path="/website" element={<WebsitePage />} />
             <Route path="/careers" element={<WebsiteCareersPage />} />
             <Route path="/contact" element={<WebsiteContactPage />} />
-            <Route path="/quiz" element={<WebsiteQuizPage />} />
+            <Route
+              path="/quiz"
+              element={
+                SHOW_QUIZ ? <WebsiteQuizPage /> : <Navigate to="/contact" replace />
+              }
+            />
             <Route path="/products/designer" element={<DesignerTowerPage />} />
             <Route path="/products/utility" element={<UtilityTowerPage />} />
             <Route path="/" element={<Navigate to="/website" replace />} />

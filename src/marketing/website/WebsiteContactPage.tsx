@@ -3,6 +3,7 @@ import { WebsiteContactForm } from "./WebsiteContactForm";
 import { WebsiteMarketingShell } from "./WebsiteMarketingShell";
 import { CONTACT_PAGE_COPY } from "./websiteData";
 import { useDocumentMeta } from "../../lib/useDocumentMeta";
+import { SHOW_QUIZ } from "../../config/featureFlags";
 
 export default function WebsiteContactPage() {
   useDocumentMeta({
@@ -22,7 +23,13 @@ export default function WebsiteContactPage() {
           <p className="web-simple-page__lede">{CONTACT_PAGE_COPY.lede}</p>
         </header>
 
-        <div className="web-contact-page__grid">
+        <div
+          className={
+            SHOW_QUIZ
+              ? "web-contact-page__grid"
+              : "web-contact-page__grid web-contact-page__grid--solo"
+          }
+        >
           <section className="web-contact-page__panel" aria-labelledby="web-contact-form-title">
             <h2 id="web-contact-form-title" className="web-contact-page__panel-title">
               Send a message
@@ -30,20 +37,22 @@ export default function WebsiteContactPage() {
             <WebsiteContactForm showTitle={false} labelledBy="web-contact-form-title" />
           </section>
 
-          <aside
-            id="savings-quiz"
-            className="web-contact-page__quiz"
-            aria-labelledby="web-contact-quiz-title"
-          >
-            <h2 id="web-contact-quiz-title" className="web-contact-page__quiz-title">
-              {CONTACT_PAGE_COPY.quizTitle}
-            </h2>
-            <p className="web-contact-page__quiz-body">{CONTACT_PAGE_COPY.quizBody}</p>
-            <Link to={CONTACT_PAGE_COPY.quizHref} className="web-contact-page__quiz-cta">
-              {CONTACT_PAGE_COPY.quizCta}
-              <span aria-hidden> →</span>
-            </Link>
-          </aside>
+          {SHOW_QUIZ ? (
+            <aside
+              id="savings-quiz"
+              className="web-contact-page__quiz"
+              aria-labelledby="web-contact-quiz-title"
+            >
+              <h2 id="web-contact-quiz-title" className="web-contact-page__quiz-title">
+                {CONTACT_PAGE_COPY.quizTitle}
+              </h2>
+              <p className="web-contact-page__quiz-body">{CONTACT_PAGE_COPY.quizBody}</p>
+              <Link to={CONTACT_PAGE_COPY.quizHref} className="web-contact-page__quiz-cta">
+                {CONTACT_PAGE_COPY.quizCta}
+                <span aria-hidden> →</span>
+              </Link>
+            </aside>
+          ) : null}
         </div>
       </main>
     </WebsiteMarketingShell>
