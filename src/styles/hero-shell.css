@@ -275,6 +275,23 @@
   }
 }
 
+/* Tablets (above the 820px mobile cutoff, so the live 3D tower renders here).
+   The hero grid gives this column ~310px of width but the rule above makes it
+   780px tall — a 0.40 aspect. The camera's horizontal FOV scales with aspect
+   (hFov = 2·atan(tan(fov/2)·aspect)), so at 0.40 the horizontal view collapses
+   to roughly half the laptop's and the tower's left/right edges get cropped.
+   Even out the columns and shorten the box to bring the aspect back near the
+   ~0.75 the camera is framed for. */
+@media (min-width: 821px) and (max-width: 1100px) {
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-tower-col {
+    height: min(520px, 52vh);
+  }
+}
+
 /* Mobile hero: single-column stack is taller than 100dvh, so top-align the
    content below the fixed nav (instead of centering, which clipped the H1
    above the fold) and give the tower a shorter, fitting height. */
