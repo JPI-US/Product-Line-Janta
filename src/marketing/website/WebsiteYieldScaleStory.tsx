@@ -17,7 +17,7 @@ import { SHOW_QUIZ } from "../../config/featureFlags";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 
 const copy = YIELD_COMPARE_COPY.scale;
-const AUTOPLAY_STEP_MS = 1500;
+const AUTOPLAY_STEP_MS = 850;
 const PHRASE_CYCLE_MS = 3400;
 const PHRASE_TRANSITION_MS = 480;
 
@@ -131,7 +131,7 @@ function useTweenedNumber(target: number, active: boolean): number {
       if (cancelled) return;
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      const next = floorMetric(cur.current + (safeTarget - cur.current) * Math.min(1, dt * 6));
+      const next = floorMetric(cur.current + (safeTarget - cur.current) * Math.min(1, dt * 10));
       cur.current = Math.abs(safeTarget - next) < 0.03 ? safeTarget : next;
       setDisplay(cur.current);
       if (cur.current !== safeTarget) raf.current = requestAnimationFrame(tick);
