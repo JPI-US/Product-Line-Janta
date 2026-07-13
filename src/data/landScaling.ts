@@ -19,7 +19,10 @@ const ACRES_PER_FOOTBALL_FIELD = 1.32;
 export const ACRES_PER_BLOCK = 3;
 
 export const SCALE_PRESETS_MW = [0.5, 1, 5, 10] as const;
-export const SCALE_MIN_MW = 0;
+/* Floor the slider where BOTH sides still have real acreage. Janta is 2.22
+   acres/MW, so below 0.3 MW it rounds to "0 acres" and the readout degrades to
+   "0 acres saved - about 0 football fields". */
+export const SCALE_MIN_MW = 0.3;
 export const SCALE_MAX_MW = 10;
 const MAX_FOOTPRINT_BLOCKS = Math.ceil((SCALE_MAX_MW * LAND_PER_MW.traditional) / ACRES_PER_BLOCK);
 

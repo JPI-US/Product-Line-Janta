@@ -6949,9 +6949,10 @@ select.web-footer__select {
   min-width: min(220px, 60vw);
   flex: 1 1 180px;
 }
+/* Matches the Janta tiles — blue is the product, gold stays for actions. */
 .web-yield-scale__slider input[type="range"] {
   width: 100%;
-  accent-color: var(--web-cta, #ffbf14);
+  accent-color: var(--web-brand-blue, #3a84dc);
   cursor: pointer;
 }
 .web-yield-scale__current {

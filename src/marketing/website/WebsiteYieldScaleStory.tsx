@@ -249,7 +249,9 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
       </div>
 
       <p className="web-yield-scale__anchor" aria-live="polite">
-        <strong>{formatAcres(saved)} acres saved</strong>
+        <strong>
+          {formatAcres(saved)} {acreUnit(saved)} saved
+        </strong>
         <span className="web-yield-scale__anchor-sub">
           {" "}
           — about {fields} football {fields === 1 ? "field" : "fields"}

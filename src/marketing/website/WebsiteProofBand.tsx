@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import { ROI_COPY } from "./websiteData";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
@@ -66,15 +67,12 @@ export function WebsiteRoiSection() {
             </h2>
             <p className="web-ps-roi__body">{ROI_COPY.body}</p>
             <div className="web-ps-roi__actions">
-              {/* External Calendly booker — a router <Link> can't leave the SPA. */}
-              <a
+              <Link
                 className="web-ps-roi__btn web-ps-roi__btn--primary"
-                href={ROI_COPY.savingsHref}
-                target="_blank"
-                rel="noopener noreferrer"
+                to={ROI_COPY.savingsHref}
               >
                 {ROI_COPY.savingsCta}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

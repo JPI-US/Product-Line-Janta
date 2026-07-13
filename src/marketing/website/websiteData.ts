@@ -81,8 +81,7 @@ export const ROI_COPY = {
   title: "Power your land without giving it all away.",
   body: "Janta Power delivers fast-deploying solar systems designed to save acres.",
   savingsCta: "Schedule a Consultation",
-  /* External Calendly booker (opens in a new tab). */
-  savingsHref: "https://calendly.com/jantapower/connect",
+  savingsHref: "/contact",
   image: "/marketing/roi-hero.png",
   imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
 } as const;
