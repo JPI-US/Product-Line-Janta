@@ -180,12 +180,21 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* A small caption band above the figures. Both the "Compared to traditional
+   solar" line (left) and the "Up to" qualifier (above its figure) sit in it, so
+   they read on one level and the stats row stays symmetric. */
 .hero-stats-wrap {
+  --hero-stat-band: 1.15rem;
+  position: relative;
   margin-top: 1.75rem;
+  padding-top: var(--hero-stat-band);
 }
 
 .hero-stats__context {
-  margin: 0.65rem 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.03em;
@@ -209,9 +218,9 @@
 
 .hero-stat__value {
   position: relative;
-  /* Reserved on every stat so the "Up to" line can sit above one number
-     without pushing that stat's figure out of line with the others. */
-  padding-top: 0.2em;
+  /* No reserved padding here any more — the wrapper's caption band holds that
+     space, which keeps every figure on one baseline. */
+  padding-top: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: #ffffff;
@@ -219,9 +228,10 @@
 
 /* Qualifier sitting above a figure — small, so it reads as a caveat and keeps
    the numbers on one baseline across the row. */
+/* Pulled up exactly one band, landing it on the same line as the context copy. */
 .hero-stat__prefix {
   position: absolute;
-  top: -0.7em;
+  top: calc(-1 * var(--hero-stat-band));
   left: 0;
   font-size: 0.6875rem;
   font-weight: 500;

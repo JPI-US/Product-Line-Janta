@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { WebsiteJantaOsDashboardEmbed } from "./WebsiteJantaOsDashboardEmbed";
 import { SOFTWARE_SHOWCASE_COPY } from "./websiteData";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
+import { useIsMobile } from "../../lib/useIsMobile";
 
 /** Software dashboard — live Janta OS UI in a tablet frame */
 export function WebsiteSoftwareShowcaseSection() {
@@ -11,6 +12,7 @@ export function WebsiteSoftwareShowcaseSection() {
   const [animate, setAnimate] = useState(false);
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useWebsiteReducedMotion();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -57,7 +59,11 @@ export function WebsiteSoftwareShowcaseSection() {
     return () => observer.disconnect();
   }, [mounted]);
 
-  const showLiveDashboard = mounted && !reducedMotion;
+  // Phones get the static poster instead of the live dashboard. It's a wide
+  // desktop UI, so at phone width it shrinks to ~0.33 and the text is small —
+  // accepted trade-off (it's wanted on mobile). Bonus: the live dashboard's DOM
+  // and its data polling never mount on phones.
+  const showLiveDashboard = mounted && !reducedMotion && !isMobile;
 
   return (
     <section
