@@ -40,7 +40,7 @@ export const HERO_COPY = {
   eyebrow: "Janta Power",
   title: ["More MW.", "Less Land."],
   sub:
-    "Janta Power builds vertically scaling, sun-tracking solar towers for commercial, industrial, and utility projects where land is at a premium.",
+    "Janta Power builds vertically scaling, sun-tracking 3D solar towers for commercial, industrial, and utility projects where land is at a premium.",
   statsContext: "Compared to traditional solar",
   stats: [
     {
