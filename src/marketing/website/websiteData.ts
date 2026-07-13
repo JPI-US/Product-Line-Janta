@@ -44,7 +44,7 @@ export const HERO_COPY = {
   statsContext: "Compared to traditional solar",
   stats: [
     {
-      value: "35%",
+      value: "50%",
       label: "More Energy",
     },
     {
