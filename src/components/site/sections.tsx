@@ -10,7 +10,7 @@ const Tower3D = lazy(() =>
   import("./Tower3D").then((m) => ({ default: m.Tower3D })),
 );
 
-const HERO_HEADING_LINES = ["More power.", "Less land."] as const;
+const HERO_HEADING_LINES = ["More Power.", "Less Land."] as const;
 
 /** True on phone-sized screens — kept in sync so a resize swaps poster ↔ 3D. */
 function useIsMobile() {
