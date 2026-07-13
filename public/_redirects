@@ -11,6 +11,15 @@
 # --- Legacy internal paths ---
 /3d        /products/designer   301
 
+# --- Never let missing hashed build assets fall through to the SPA shell. ---
+# Without this, a request that races a deploy (asset not yet live at an edge
+# node) gets served index.html as a "200", which /assets/* and /models/*'s
+# `immutable, max-age=1y` header then caches forever as if it were the real
+# file — poisoning that URL with HTML disguised as JS until manually purged.
+# A real 404 here is never cached as a valid response.
+/assets/*   /assets/:splat   404
+/models/*   /models/:splat   404
+
 # --- SPA fallback: every unmatched path serves the app shell (BrowserRouter) ---
 # Keep this as the LAST rule. Without it, deep links like /quiz, /roots 404 on refresh.
 /*   /index.html   200
