@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { WebsiteJantaOsDashboardEmbed } from "./WebsiteJantaOsDashboardEmbed";
 import { SOFTWARE_SHOWCASE_COPY } from "./websiteData";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
@@ -98,12 +97,6 @@ export function WebsiteSoftwareShowcaseSection() {
           </div>
         </div>
 
-        <Link
-          className="web-ps-roi__btn web-ps-roi__btn--primary web-software-showcase__btn"
-          to={SOFTWARE_SHOWCASE_COPY.ctaHref}
-        >
-          {SOFTWARE_SHOWCASE_COPY.cta}
-        </Link>
       </div>
     </section>
   );

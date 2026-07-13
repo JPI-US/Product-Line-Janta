@@ -80,8 +80,9 @@ export const WEBSITE_SKY_GRADIENT = {
 export const ROI_COPY = {
   title: "Power your land without giving it all away.",
   body: "Janta Power delivers fast-deploying solar systems designed to save acres.",
-  savingsCta: "Contact us",
-  savingsHref: "/contact",
+  savingsCta: "Schedule a Consultation",
+  /* External Calendly booker (opens in a new tab). */
+  savingsHref: "https://calendly.com/jantapower/connect",
   image: "/marketing/roi-hero.png",
   imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
 } as const;
@@ -127,12 +128,15 @@ export const YIELD_COMPARE_COPY = {
     image: "/marketing/value-aerial-solar.png",
     imageAlt: "Aerial view of Janta solar arrays in a green field",
     imagePosition: "50% center",
-    imageScale: 1.2,
+    /* Rest: zoomed in so the towers read large. Hover eases to 1.0, which in a
+       4:3 cover frame is exactly 4x3 towers (the max the crop can reveal). */
+    imageScale: 1.28,
   },
   fixed: {
     image: "/marketing/yield-traditional-solar.jpg",
     imageAlt: "Aerial view of traditional fixed-tilt solar panels in a green field",
     imagePosition: "center center",
+    imageScale: 1.22,
   },
   metrics: {
     annual: "Annual output",
@@ -400,7 +404,7 @@ export const APPLICATIONS_COPY = {
     {
       id: "manufacturing",
       title: "Manufacturing",
-      body: "Maximize megawatts per acre on active factory sites — without sacrificing roofs, yards, or uptime.",
+      body: "Maximize megawatts per acre on active factory sites, without sacrificing roofs, yards, or uptime.",
       image: applicationsPhoto("photo-1727870752423-4d51d5b500c7"),
       imageAlt: "Modern manufacturing plant exterior",
       imagePosition: "center 50%",
@@ -408,7 +412,7 @@ export const APPLICATIONS_COPY = {
     {
       id: "logistics",
       title: "Logistics",
-      body: "High-density power for distribution hubs on tight footprints — keep truck lanes and staging yards clear.",
+      body: "High-density power for distribution hubs on tight footprints. Truck lanes and staging yards stay clear.",
       image: applicationsPhoto("photo-1586528116311-ad8dd3c8310d"),
       imageAlt: "Logistics and distribution facilities",
       imagePosition: "center 55%",
@@ -424,7 +428,7 @@ export const APPLICATIONS_COPY = {
     {
       id: "ev-charging",
       title: "EV Charging",
-      body: "Local, high-output power for fast chargers and fleet depots — scale charging without sprawling ground arrays.",
+      body: "Local, high-output power for fast chargers and fleet depots. Scale charging without sprawling ground arrays.",
       image: "/marketing/ev-charging.jpg",
       imageAlt: "Electric vehicle charging stations in a parking lot",
       imagePosition: "center 50%",

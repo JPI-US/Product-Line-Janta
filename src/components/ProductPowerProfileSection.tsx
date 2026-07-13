@@ -24,6 +24,8 @@ const CHART = {
 } as const;
 
 const SEASON_HOLD_MS = 4000;
+/** While the pointer rests on the chart, re-check this often so it resumes promptly. */
+const SEASON_HOVER_POLL_MS = 400;
 const SEASON_TRANSITION_MS = 1600;
 
 function easeInOutQuint(t: number): number {
@@ -374,6 +376,11 @@ export function ProductPowerProfileSection({
   const sectionRef = useRef<HTMLElement>(null);
   const settledSeasonRef = useRef<PowerSeason>("summer");
   const transitionRef = useRef(0);
+  /** True while a MOUSE rests on the chart — pauses the season auto-switch so it
+   *  never swaps out from under someone reading the tooltip. Mouse-only on
+   *  purpose: pointerenter fires on touch but pointerleave never does, which
+   *  would freeze the cycle permanently on phones. */
+  const hoveringRef = useRef(false);
   const [drawn, setDrawn] = useState(false);
   const [drawComplete, setDrawComplete] = useState(false);
   const [season, setSeason] = useState<PowerSeason>("summer");
@@ -424,14 +431,21 @@ export function ProductPowerProfileSection({
     let cancelled = false;
     let holdTimer = 0;
 
-    const queueNext = () => {
+    const queueNext = (delay = SEASON_HOLD_MS) => {
       holdTimer = window.setTimeout(() => {
         if (cancelled) return;
+        // Hovering: hold the current season and look again shortly. (Polling
+        // rather than tearing the effect down keeps an in-flight crossfade from
+        // being cancelled mid-morph.)
+        if (hoveringRef.current) {
+          queueNext(SEASON_HOVER_POLL_MS);
+          return;
+        }
         const next = settledSeasonRef.current === "summer" ? "winter" : "summer";
         animateToSeason(next, () => {
           if (!cancelled) queueNext();
         });
-      }, SEASON_HOLD_MS);
+      }, delay);
     };
 
     queueNext();
@@ -502,7 +516,15 @@ export function ProductPowerProfileSection({
           </span>
         </div>
 
-        <div className="tower-3d__power-profile__stage">
+        <div
+          className="tower-3d__power-profile__stage"
+          onPointerEnter={(ev) => {
+            if (ev.pointerType === "mouse") hoveringRef.current = true;
+          }}
+          onPointerLeave={(ev) => {
+            if (ev.pointerType === "mouse") hoveringRef.current = false;
+          }}
+        >
           <PowerProfileChart
             chart={charts.summer}
             opacity={summerOpacity}

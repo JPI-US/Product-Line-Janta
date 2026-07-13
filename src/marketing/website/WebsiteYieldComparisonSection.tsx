@@ -17,6 +17,8 @@ type CompareHalfProps = {
   image: string;
   imageAlt: string;
   imagePosition: string;
+  /** Default zoom. Desktop hover eases this back to 1 to reveal more towers. */
+  imageScale: number;
   name: string;
   spec: string;
   annualLabel: string;
@@ -31,6 +33,7 @@ function CompareHalf({
   image,
   imageAlt,
   imagePosition,
+  imageScale,
   name,
   spec,
   annualLabel,
@@ -48,7 +51,12 @@ function CompareHalf({
         alt={imageAlt}
         loading="lazy"
         decoding="async"
-        style={{ objectPosition: imagePosition }}
+        style={
+          {
+            objectPosition: imagePosition,
+            "--web-yield-zoom": String(imageScale),
+          } as React.CSSProperties
+        }
       />
       <div className="web-yield-compare__scrim" aria-hidden />
 
@@ -120,6 +128,7 @@ export function WebsiteYieldComparisonSection() {
               image={copy.fixed.image}
               imageAlt={copy.fixed.imageAlt}
               imagePosition={copy.fixed.imagePosition}
+              imageScale={copy.fixed.imageScale}
               name={copy.plates.traditionalName}
               spec={copy.plates.spec}
               annualLabel={copy.metrics.annual}
@@ -133,6 +142,7 @@ export function WebsiteYieldComparisonSection() {
               image={copy.janta.image}
               imageAlt={copy.janta.imageAlt}
               imagePosition={copy.janta.imagePosition}
+              imageScale={copy.janta.imageScale}
               name={copy.plates.jantaName}
               spec={copy.plates.spec}
               annualLabel={copy.metrics.annual}

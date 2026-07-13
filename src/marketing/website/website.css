@@ -2351,6 +2351,16 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   color: rgba(255, 255, 255, 0.88);
 }
 
+/* Desktop: let the line run full width so it sits on ONE line (the 42ch clamp
+   was forcing a wrap). Kept above a breakpoint only — the sentence is ~76 chars
+   and would overflow a narrow laptop, so below this it wraps as before. */
+@media (min-width: 1100px) {
+  .web-ps-roi__body {
+    max-width: none;
+    text-wrap: nowrap;
+  }
+}
+
 .web-ps-roi__actions {
   display: flex;
   flex-wrap: wrap;
@@ -6709,7 +6719,7 @@ select.web-footer__select {
 
 /* ============================================================================
    Yield "vs" scale story — footprint-block-grid scaling model + slider.
-   Namespaced web-yield-scale__*; token colors only (gold Janta / slate trad).
+   Namespaced web-yield-scale__*; token colors only (blue Janta / slate trad).
    ========================================================================== */
 .web-yield-scale {
   /* Sits between the section heading and the aerial photo split. */
@@ -6819,14 +6829,13 @@ select.web-footer__select {
   border-bottom: 1px solid rgba(51, 60, 78, 0.12);
 }
 .web-yield-scale__side-label {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--web-ink-soft, #5a6478);
 }
 .web-yield-scale__side--janta .web-yield-scale__side-label {
-  color: var(--web-yield-text-gold);
+  color: var(--web-brand-blue, #3a84dc);
 }
 .web-yield-scale__acres {
   font-family: var(--web-font-title, inherit);
@@ -6854,12 +6863,23 @@ select.web-footer__select {
   border-radius: 2px;
   animation: web-yield-scale-block-in 0.32s ease backwards;
 }
+/* Deepened so the pairing stays punchy now that Janta is blue rather than gold. */
 .web-yield-scale__grid--traditional .web-yield-scale__block {
-  background: rgba(51, 60, 78, 0.34);
+  background: rgba(51, 60, 78, 0.52);
 }
+/* Janta reads brand-blue (matching the hero sky + heading accent); gold is now
+   reserved for actions/CTAs. Glossy: gradient + top highlight so the tiles read
+   as glass rather than flat squares. */
 .web-yield-scale__grid--janta .web-yield-scale__block {
-  background: var(--web-cta, #ffbf14);
-  box-shadow: 0 1px 3px rgba(200, 147, 10, 0.35);
+  background: linear-gradient(
+    160deg,
+    var(--sky-light, #7ab6ea) 0%,
+    var(--web-brand-blue, #3a84dc) 55%,
+    #2a63a8 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 1px 3px rgba(42, 99, 168, 0.38);
 }
 @keyframes web-yield-scale-block-in {
   from {
@@ -6881,11 +6901,12 @@ select.web-footer__select {
   padding-top: 0.5rem;
   border-top: 1px solid rgba(51, 60, 78, 0.12);
 }
+/* Sentence case (no uppercase). The wide letter-spacing goes with it — it's a
+   caps mannerism and reads badly in sentence case. */
 .web-yield-scale__energy-label {
-  font-size: 0.64rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--web-ink-soft, #5a6478);
 }
 .web-yield-scale__energy-value {
@@ -6897,7 +6918,7 @@ select.web-footer__select {
   white-space: nowrap;
 }
 .web-yield-scale__energy-value--janta {
-  color: var(--web-yield-text-gold);
+  color: var(--web-brand-blue, #3a84dc);
 }
 .web-yield-scale__energy-unit {
   font-size: 0.68em;
@@ -7002,22 +7023,41 @@ select.web-footer__select {
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.28);
 }
 
+/* --web-yield-zoom is set per-photo (see YIELD_COMPARE_COPY.imageScale): it crops
+   in so the towers read at a legible size. On desktop, hovering eases the zoom
+   back out to 1 to reveal more of the array. */
 .web-yield-compare__combined .web-yield-compare__photo-img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.05);
+  transform: scale(calc(var(--web-yield-zoom, 1) * 1.05));
 }
 .web-yield-compare.is-visible
   .web-yield-compare__combined
   .web-yield-compare__photo-img {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(var(--web-yield-zoom, 1));
   transition:
     opacity 0.8s ease,
     transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover (mouse only): zoom out to reveal more towers. */
+@media (hover: hover) and (pointer: fine) {
+  .web-yield-compare.is-visible
+    .web-yield-compare__half:hover
+    .web-yield-compare__photo-img {
+    transform: scale(1);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .web-yield-compare__combined .web-yield-compare__photo-img,
+  .web-yield-compare.is-visible .web-yield-compare__half:hover .web-yield-compare__photo-img {
+    transition: none;
+  }
 }
 
 .web-yield-compare__scrim {
@@ -7066,11 +7106,10 @@ select.web-footer__select {
   border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 .web-yield-compare__plate-row dt {
-  font-size: 0.64rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.66);
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.72);
 }
 .web-yield-compare__plate-row dd {
   margin: 0;
@@ -7080,9 +7119,10 @@ select.web-footer__select {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-/* Janta side reads as the winner — gold figures. */
+/* Janta side reads as the winner. On the dark photo scrim the brand blue goes
+   muddy, so use the lighter sky blue for legibility while staying on-family. */
 .web-yield-compare__half--janta .web-yield-compare__plate-row dd {
-  color: var(--web-cta, #ffbf14);
+  color: var(--sky-light, #7ab6ea);
 }
 
 .web-yield-compare__seam {
