@@ -523,8 +523,11 @@ export const FOOTER_COPY = {
   contactFormBlurb:
     "Tell us about your site or project. We'll follow up by email within one business day.",
   contactFormCta: "Send message",
+  contactFormSending: "Sending…",
   contactFormSuccess:
-    "Thanks! Your email app should open with your message ready to send.",
+    "Thanks — your message is on its way. We'll reply within one business day.",
+  contactFormError:
+    "Sorry, that didn't go through. Please try again, or email us directly at info@jantaus.com.",
   contactEmail: "info@jantaus.com",
   contactPhone: "(469) 694-3818",
   contactPhoneTel: "+14696943818",

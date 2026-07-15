@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { AppLoadingScreen } from "./components/AppLoadingScreen";
 import { AppNav } from "./components/AppNav";
+import { WebsiteCookieConsent } from "./marketing/website/WebsiteCookieConsent";
 import { SHOW_QUIZ } from "./config/featureFlags";
 
 const WebsitePage = lazy(() => import("./marketing/website/WebsitePage"));
@@ -26,6 +27,9 @@ const WebsiteContactPage = lazy(
 );
 const WebsiteQuizPage = lazy(
   () => import("./marketing/website/WebsiteQuizPage"),
+);
+const WebsitePrivacyPage = lazy(
+  () => import("./marketing/website/WebsitePrivacyPage"),
 );
 const UtilityPrerenderBakePage = lazy(
   () => import("./pages/UtilityPrerenderBakePage")
@@ -39,6 +43,7 @@ const MARKETING_PATHS = new Set([
   "/careers",
   "/contact",
   "/quiz",
+  "/privacy",
 ]);
 
 function RouteSuspenseFallback() {
@@ -110,6 +115,7 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop />
+      <WebsiteCookieConsent />
       {showDevNav ? <AppNav /> : null}
       <RouteErrorBoundary>
         <Suspense fallback={<RouteSuspenseFallback />}>
@@ -121,6 +127,7 @@ function AppRoutes() {
             <Route path="/website" element={<Navigate to="/" replace />} />
             <Route path="/careers" element={<WebsiteCareersPage />} />
             <Route path="/contact" element={<WebsiteContactPage />} />
+            <Route path="/privacy" element={<WebsitePrivacyPage />} />
             <Route
               path="/quiz"
               element={

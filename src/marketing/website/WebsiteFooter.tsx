@@ -6,6 +6,7 @@ import { SHOW_QUIZ } from "../../config/featureFlags";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
 import { WebsiteContactForm } from "./WebsiteContactForm";
+import { openCookiePreferences } from "./WebsiteCookieConsent";
 
 const Aurora = lazy(() => import("./react-bits/Aurora/Aurora"));
 
@@ -98,6 +99,18 @@ export function WebsiteFooter() {
 
       <div className="web-footer__bar">
         <p className="web-footer__legal">{FOOTER_COPY.copyright}</p>
+        <div className="web-footer__legal-links">
+          <Link to="/privacy" className="web-footer__link">
+            Privacy Policy
+          </Link>
+          <button
+            type="button"
+            className="web-footer__link web-footer__link--button"
+            onClick={openCookiePreferences}
+          >
+            Cookie settings
+          </button>
+        </div>
         <div className="web-footer__contact-details">
           <span className="web-footer__address">{FOOTER_COPY.location}</span>
           <a href={`mailto:${FOOTER_COPY.contactEmail}`}>{FOOTER_COPY.contactEmail}</a>

@@ -1,0 +1,26 @@
+# Server-side secrets for the Cloudflare Pages Function (functions/api/contact.js).
+#
+# These are NOT client vars — they are read at request time on the server and are
+# never exposed in the browser bundle. Copy this file to `.dev.vars` (gitignored)
+# to test the function locally with `wrangler pages dev`, and set the same values
+# in Cloudflare Pages → Settings → Environment variables for production.
+
+# Resend API key (starts with re_). From resend.com after verifying jantaus.com.
+RESEND_API_KEY=
+
+# Apps Script web-app URL that appends a row to the private Google Sheet.
+# From deploying sheets-webapp.gs as a Web App (…/exec). Treat as a secret.
+SHEETS_WEBAPP_URL=
+
+# Shared secret guarding the Sheet endpoint. Must EXACTLY match the SHARED_SECRET
+# script property you set in the Apps Script. Any long random string.
+SHEETS_SHARED_SECRET=
+
+# Cloudflare Turnstile SECRET key (pairs with VITE_TURNSTILE_SITE_KEY). Never
+# expose this to the client. From the Cloudflare Turnstile dashboard.
+TURNSTILE_SECRET_KEY=
+
+# Optional overrides (sensible defaults are baked into the function):
+# CONTACT_TO=info@jantaus.com
+# CONTACT_FROM=Janta Power Website <form@jantaus.com>
+# SITE_ORIGIN=https://jantaus.com
