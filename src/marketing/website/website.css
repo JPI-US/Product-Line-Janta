@@ -5565,6 +5565,58 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
   color: rgba(26, 35, 50, 0.78);
 }
 
+.web-footer__col--brand {
+  gap: 1.15rem;
+}
+
+.web-footer__brand-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.web-footer__brand-contact a {
+  color: rgba(26, 35, 50, 0.82);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.web-footer__brand-contact a:hover {
+  color: var(--web-brand-blue, #3a84dc);
+}
+
+.web-footer__brand-contact .web-footer__address {
+  color: rgba(26, 35, 50, 0.6);
+  font-weight: 400;
+}
+
+.web-footer__contact-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  padding: 0.66rem 1.25rem;
+  border-radius: 999px;
+  background: var(--web-cta, #ffbf14);
+  color: var(--web-ink, #1a2332);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.web-footer__contact-cta:hover {
+  background: var(--web-cta-hover, #d9a612);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(217, 166, 18, 0.28);
+}
+
 .web-footer__heading {
   margin: 0 0 1rem;
   font-size: 0.68rem;
@@ -5851,12 +5903,8 @@ select.web-footer__select {
     grid-template-columns: 1fr 1fr;
   }
 
-  .web-footer__col--contact {
+  .web-footer__col--brand {
     grid-column: 1 / -1;
-  }
-
-  .web-footer__form {
-    max-width: min(44rem, 100%);
   }
 }
 

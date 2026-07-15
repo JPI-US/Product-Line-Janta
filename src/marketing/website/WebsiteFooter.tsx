@@ -5,7 +5,6 @@ import { FOOTER_COPY } from "./websiteData";
 import { SHOW_QUIZ } from "../../config/featureFlags";
 import { WEBSITE_REACT_BITS } from "./websiteReactBitsConfig";
 import { useReactBitActive } from "./useWebsiteReducedMotion";
-import { WebsiteContactForm } from "./WebsiteContactForm";
 import { openCookiePreferences } from "./WebsiteCookieConsent";
 
 const Aurora = lazy(() => import("./react-bits/Aurora/Aurora"));
@@ -62,14 +61,26 @@ export function WebsiteFooter() {
         </div>
       ) : null}
       <div className="web-footer__main">
-        <div
-          className="web-footer__col web-footer__col--contact"
-          aria-labelledby="web-footer-contact-title"
-        >
-          <h2 id="web-footer-contact-title" className="web-footer__heading">
-            {FOOTER_COPY.contactFormTitle}
-          </h2>
-          <WebsiteContactForm showTitle={false} labelledBy="web-footer-contact-title" />
+        <div className="web-footer__col web-footer__col--brand">
+          <Link
+            to="/"
+            className="web-footer__logo-link"
+            aria-label={`${FOOTER_COPY.brand} home`}
+          >
+            <span className="web-footer__mark" aria-hidden>
+              JP
+            </span>
+            <span className="web-footer__wordmark">{FOOTER_COPY.brand}</span>
+          </Link>
+          <p className="web-footer__blurb">{FOOTER_COPY.blurb}</p>
+          <div className="web-footer__brand-contact">
+            <a href={`mailto:${FOOTER_COPY.contactEmail}`}>{FOOTER_COPY.contactEmail}</a>
+            <a href={`tel:${FOOTER_COPY.contactPhoneTel}`}>{FOOTER_COPY.contactPhone}</a>
+            <span className="web-footer__address">{FOOTER_COPY.location}</span>
+          </div>
+          <Link to="/contact" className="web-footer__contact-cta">
+            Contact us <span aria-hidden>→</span>
+          </Link>
         </div>
 
         <nav className="web-footer__col" aria-label={FOOTER_COPY.exploreTitle}>
@@ -110,11 +121,6 @@ export function WebsiteFooter() {
           >
             Cookie settings
           </button>
-        </div>
-        <div className="web-footer__contact-details">
-          <span className="web-footer__address">{FOOTER_COPY.location}</span>
-          <a href={`mailto:${FOOTER_COPY.contactEmail}`}>{FOOTER_COPY.contactEmail}</a>
-          <a href={`tel:${FOOTER_COPY.contactPhoneTel}`}>{FOOTER_COPY.contactPhone}</a>
         </div>
       </div>
     </footer>
