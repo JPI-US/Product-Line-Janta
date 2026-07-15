@@ -1,0 +1,90 @@
+---
+description: Product vision, deployment/ops discipline, and data-safety rules — the team's north star
+alwaysApply: true
+---
+
+# Vision & ways of working
+
+Complements [design-system](design-system.mdc) and [engineering-standards](engineering-standards.mdc):
+those govern how the code *looks* and is *built*; this governs *what we're building,
+how it ships, and how we protect the people who use it.*
+
+## The vision (north star)
+
+- **Executive-ready polish.** Every screen should look like a finished product a CEO
+  can demo on the spot, not a draft. Elegant, calm, confident. "Make it pop" — but never
+  cluttered, generic, or stitched-together.
+- **The brand is sacred.** Janta = warm daylight: **blue (`#3a84dc`) is brand + sky,
+  gold (`#ffbf14`) is sun + action**, over warm paper. If it reads cool, off-palette, or
+  generic, it's wrong. (Details in design-system.)
+- **Real numbers only.** Public claims (acreage, capacity factor, savings) use the
+  CEO-blessed figures in `src/data/*`, kept self-consistent across the page. Never invent,
+  guess, or re-round a marketing number.
+- **Mobile is first-class.** The phone experience is a deliverable, not an afterthought —
+  and fixing mobile must never degrade the laptop experience.
+- **User trust is the product.** Collect the minimum, protect it, be honest about it.
+  Privacy is a feature, not a checkbox.
+
+## What SHOULD happen
+
+- Diagnose the **root cause** before changing code; land foundation/perf before polish.
+- Match the surrounding code, tokens, and copy conventions exactly.
+- Ship anything not ready for the public behind a **feature flag** (`src/config/featureFlags.ts`).
+- Copy: **Title Case for CTAs**, plain and confident. **No em-dashes** in user-facing text —
+  rewrite the sentence instead.
+- Explain changes in **plain language with the trade-offs**, leading with the outcome.
+  Assume the reader is smart but not deep in the code.
+- Treat production as real: **know the rollback path before you ship.**
+
+## What should NOT happen
+
+- **No secrets in the client bundle or in git.** Keys/tokens are server-side only
+  (Cloudflare env vars / `.dev.vars`, which is gitignored). Confirm `dist/` contains no
+  secret before shipping.
+- **No third-party trackers, pixels, or analytics cookies.** Analytics stays cookieless
+  (Cloudflare Web Analytics). Anything that sets a non-essential cookie must be gated
+  behind the consent bar and off by default.
+- **Don't break the laptop experience** while fixing mobile (or vice versa) — the desktop
+  scroll choreography is load-bearing.
+- **Don't hardcode brand hex, add new colors, or add dependencies** when a token or an
+  existing component already does the job.
+- **Don't scope-creep.** One concern, fewest files. A copy/image edit that touches
+  engine/build files is mis-scoped.
+- **Don't run `npm audit fix --force`** — the alerts are devDependencies; forcing it
+  breaks the build.
+
+## Deployment & production (Cloudflare Pages → jantaus.com)
+
+- **Branch flow:** work on `integration`; **fast-forward merge to `deployment` to go live.**
+  `deployment` builds production (jantaus.com); other branches build `*.pages.dev` previews.
+  Never edit `main` directly, never rewrite pushed history.
+- **Verify before promoting to `deployment`** (all gates + a visual check). Prefer a preview
+  deploy first when the change is risky.
+- **Cloudflare env-var changes only take effect on a NEW deployment** — always redeploy after
+  editing one. `VITE_*` vars are **build-time** (must exist before the build runs); server
+  secrets are runtime-only.
+- **Don't casually touch `public/_headers`.** It keeps `index.html` at `no-cache` and hashed
+  assets `immutable`; breaking that causes stale-deploy white screens.
+- If a deploy looks wrong: **Cloudflare → Deployments → Rollback** is one click. Use it.
+
+## Data safety & the contact pipeline
+
+- The contact form posts to `functions/api/contact.js`, which **stores nothing** — it
+  validates, checks Turnstile + a honeypot, then forwards to email (Resend) and a private
+  Google Sheet. Keep it that way: no logging of personal data, no IP/user-agent capture.
+- **Email is the source of truth** (must succeed); the Sheet write is **best-effort** and
+  must never fail the request.
+- The lead Sheet is auto-filled by a script writing **columns A–I of the first tab**.
+  Never insert columns among A–I, never add a below-data sidebar to that tab, and keep it
+  the first tab. Sales/workflow columns go to the **right (J+)**; analytics go on a
+  **separate tab**.
+
+## How to work with the team
+
+- Lead with the result; keep it jargon-light and honest about trade-offs.
+- When something is **risky, irreversible, or outward-facing** (a deploy, a delete, sending
+  data to a third party), **say so and confirm first.**
+- If asked "are you sure nothing leaks or breaks?" — **actually verify and show the
+  evidence.** Don't just reassure.
+- The founder/designer keeps creative control: **flag any visual-design change for approval
+  before making it.**

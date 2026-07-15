@@ -1,0 +1,34 @@
+---
+description: Janta Power visual design system — palette, motion, and cohesion rules
+alwaysApply: true
+---
+
+# Janta Power Design System
+
+Full guide: [docs/DESIGN_STYLE_GUIDE.md](../../docs/DESIGN_STYLE_GUIDE.md). Read it
+before any visual/color/motion/layout change. North star: one warm, daylight-driven
+material — **blue = brand + sky, gold = sun + action**, over warm paper. Never cool
+or stitched-together.
+
+## Non-negotiables
+
+- Use CSS tokens; never hardcode brand hex. Tokens live in `src/index.css` (`--warm-*`),
+  `src/marketing/website/website.css` (`--web-*`), `src/styles/tower-3d.css`.
+- Neutrals: `--warm-page` `#faf8f5`, `--warm-surface` `#ffffff`, `--warm-cloud` `#f8f9fb`,
+  `--warm-night` `#0a1018`. Never reintroduce cool grays (`#f5f5f7`, `#f7faff`, `#f9f8f4`).
+- Gold: one ramp — `--warm-cta` `#ffbf14`, `--warm-cta-hover` `#d9a612`,
+  `--warm-cta-wash`. Action/emphasis only; never gold body text on light bg.
+- Blues: only `--web-brand-blue` `#3a84dc`, `--web-vision-sky` `#4e91d3`, and tints
+  `--accent-blue` `#6ba0e3` / `--accent-blue-muted` `#7fa3cf`. No new blues.
+- Inks: one slate family — `--warm-ink-display` `#1a2332`, `--warm-ink` `#333c4e`,
+  `--warm-ink-soft` `#5a6478`. Retire `#6e6e73`.
+
+## Motion & cohesion
+
+- Preserve the scroll choreography (night→day hero, tower/sun orbit, content flow).
+- Progress bar `.web-scroll-progress` is white, scoped to the hero, fades when hero clears.
+- DSR/LFM tower tap eases to the split info state; homepage hero tower advances one beat.
+- Night fireflies (`HubFirefliesCanvas` lite) are yellow-gold, fade with the sunrise,
+  respect reduced motion.
+- Section seams: short, eased, token-colored to the neighbor; no wide white gaps.
+- Always honor `prefers-reduced-motion`. Reuse existing components over new deps.

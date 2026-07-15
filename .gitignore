@@ -23,7 +23,9 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.cursor/
+# Keep the shared Cursor rules tracked, but ignore everything else under .cursor/
+.cursor/*
+!.cursor/rules/
 .idea
 .DS_Store
 *.suo

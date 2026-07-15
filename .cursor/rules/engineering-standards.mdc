@@ -1,0 +1,51 @@
+---
+description: Engineering standards & guardrails — how work MUST be done in this repo
+alwaysApply: true
+---
+
+# Engineering standards (authoritative)
+
+Base every decision on **[docs/AGENT-PLAYBOOK.md](../../docs/AGENT-PLAYBOOK.md)** —
+read it before non-trivial work. It governs the 3D/asset pipeline, bundle
+budget, performance, UX/motion, git, security, the non-engineer content
+workflow (§11), the plan-first working method (§12), deployment readiness
+(§13), and the UX "feel" toolbox (§14). Worked examples of the method are in
+`docs/plans/`. If a request conflicts with the playbook, follow the playbook
+and say so.
+
+## Hard rules (do not violate without the user's explicit, in-context approval)
+
+- **Definition of Done.** Never call work complete, commit, or push until all
+  four gates pass: `npx tsc -b`, `npx vite build`, `npm run check:bundle`,
+  `npm run test:visual`. A red gate is a blocker — report it, don't push.
+- **Red-zone files need approval first.** Do NOT edit without asking:
+  `src/components/three/**`, `src/three/**`, `scripts/**`, any `*.glb` /
+  `public/models/**`, `src/components/three/sceneConfig.ts`, `vite.config.ts`,
+  `tsconfig*.json`, `package.json`, lockfiles, `check-bundle.mjs`. If a task
+  seems to need one, stop and explain why before touching it.
+- **Content in data files, not components.** Copy/specs/image lists live in
+  typed data modules (`websiteData.ts`, `websiteRootsData.ts`, `src/data/*`).
+- **Images:** after replacing any raster in `public/`, regenerate its
+  `.avif`/`.webp` siblings (`npm run compress:images`) — the browser serves
+  the old art otherwise. Diagnose blank/mismatched assets with `file`.
+- **Colors:** only via existing design tokens (`--warm-*`, `--web-*`); never
+  hardcode brand hex. See `design-system.mdc`.
+- **Scope discipline.** Keep a change to one concern and the fewest files. A
+  copy/image edit that touches engine or build files is wrong — re-scope it.
+- **Git:** work on a branch, never edit `main` directly; never rewrite pushed
+  history; commit messages state the *why* (with numbers for tuning changes).
+- **Verify visual changes** with screenshots; refresh visual-test baselines
+  only after reading the diffs, and commit them with the change.
+- **Plan non-trivial work in review-gated phases** (§12): diagnose root cause
+  first, land foundation/perf before polish, state what's out of scope, and
+  **flag any change to the visual design for approval before making it** — the
+  designer keeps creative control; you keep the discipline.
+- **Deployment:** don't call anything production-ready until the §13 checklist
+  passes (SPA rewrites, no preview-only URLs, graceful fallbacks, meta/OG,
+  asset diet, every route 404-free in `vite preview`).
+
+## When unsure
+
+Prefer the conservative path in the playbook, reuse existing
+components/tokens over new dependencies, and ask the user rather than edit a
+red-zone file or push a red gate.
