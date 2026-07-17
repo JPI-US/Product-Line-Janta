@@ -33,6 +33,7 @@ const LIMITS = {
   name: 100,
   email: 254,
   company: 120,
+  phone: 40,
   projectType: 80,
   acreage: 40,
   projectSize: 40,
@@ -131,6 +132,7 @@ export async function onRequestPost(context) {
     name: clean(payload.name, LIMITS.name),
     email: clean(payload.email, LIMITS.email),
     company: clean(payload.company, LIMITS.company),
+    phone: clean(payload.phone, LIMITS.phone),
     projectType: clean(payload.projectType, LIMITS.projectType),
     acreage: clean(payload.acreage, LIMITS.acreage),
     projectSize: clean(payload.projectSize, LIMITS.projectSize),
@@ -139,6 +141,10 @@ export async function onRequestPost(context) {
   };
 
   if (!fields.name || !isEmail(fields.email) || !fields.message) {
+    return json({ ok: false, error: "invalid_input" }, 422);
+  }
+  // Contact page (extended form) requires project type; compact footer does not.
+  if (payload.extended === true && !fields.projectType) {
     return json({ ok: false, error: "invalid_input" }, 422);
   }
 
@@ -152,6 +158,7 @@ export async function onRequestPost(context) {
     ["Name", fields.name],
     ["Email", fields.email],
     ["Company", fields.company],
+    ["Phone", fields.phone],
     ["Project type", fields.projectType],
     ["Acreage", fields.acreage],
     ["Project size", fields.projectSize],

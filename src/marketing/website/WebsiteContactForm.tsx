@@ -1,12 +1,14 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { FOOTER_COPY } from "./websiteData";
+import { CONTACT_PAGE_COPY, FOOTER_COPY } from "./websiteData";
 import { WebsiteTurnstile } from "./WebsiteTurnstile";
+import { useIsMobile } from "../../lib/useIsMobile";
 
 type FormState = {
   name: string;
   email: string;
   company: string;
+  phone: string;
   projectType: string;
   projectTypeOther: string;
   acreage: string;
@@ -21,6 +23,7 @@ const INITIAL: FormState = {
   name: "",
   email: "",
   company: "",
+  phone: "",
   projectType: "",
   projectTypeOther: "",
   acreage: "",
@@ -42,15 +45,28 @@ const OTHER = "Other (please specify)";
 
 type Status = "idle" | "submitting" | "error";
 
+function RequiredMark() {
+  return (
+    <span className="web-footer__req" aria-hidden="true">
+      *
+    </span>
+  );
+}
+
 export function WebsiteContactForm({
   showTitle = true,
   labelledBy,
   extended = false,
+  layout = "default",
+  ctaLabel,
 }: {
   showTitle?: boolean;
   labelledBy?: string;
   /** Contact page: show project-type + site fields. Footer keeps the compact form. */
   extended?: boolean;
+  /** `hero` = centered contact-page layout (CTA + privacy). */
+  layout?: "default" | "hero";
+  ctaLabel?: string;
 }) {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
@@ -60,6 +76,7 @@ export function WebsiteContactForm({
   // The bot-check script loads only once a visitor actually engages the form,
   // not on every page view (this form sits in the footer site-wide).
   const [engaged, setEngaged] = useState(false);
+  const isMobile = useIsMobile("(max-width: 700px)");
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -69,10 +86,20 @@ export function WebsiteContactForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "submitting") return;
-    setStatus("submitting");
 
     const projectType =
-      form.projectType === OTHER ? form.projectTypeOther : form.projectType;
+      form.projectType === OTHER ? form.projectTypeOther.trim() : form.projectType.trim();
+
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setStatus("error");
+      return;
+    }
+    if (extended && !projectType) {
+      setStatus("error");
+      return;
+    }
+
+    setStatus("submitting");
 
     try {
       const res = await fetch("/api/contact", {
@@ -82,6 +109,7 @@ export function WebsiteContactForm({
           name: form.name,
           email: form.email,
           company: form.company,
+          phone: form.phone,
           projectType,
           acreage: form.acreage,
           projectSize: form.projectSize,
@@ -89,6 +117,7 @@ export function WebsiteContactForm({
           message: form.message,
           website: form.website,
           turnstileToken: token,
+          extended,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean };
@@ -107,6 +136,79 @@ export function WebsiteContactForm({
     setResetSignal((n) => n + 1);
   }
 
+  const projectSizeField = (
+    <label className="web-footer__field web-footer__field--unit">
+      <span className="visually-hidden">Project size in kW or MW</span>
+      <input
+        className="web-footer__input"
+        type="text"
+        name="projectSize"
+        placeholder="Project size"
+        value={form.projectSize}
+        onChange={(e) => updateField("projectSize", e.target.value)}
+      />
+      <span className="web-footer__unit" aria-hidden>
+        (kW)
+      </span>
+    </label>
+  );
+
+  const siteDetailFields = (
+    <div className="web-footer__field-row web-footer__field-row--2">
+      <label className="web-footer__field">
+        <span className="visually-hidden">Acreage</span>
+        <input
+          className="web-footer__input"
+          type="text"
+          inputMode="decimal"
+          name="acreage"
+          placeholder="Acreage"
+          value={form.acreage}
+          onChange={(e) => updateField("acreage", e.target.value)}
+        />
+      </label>
+      <label className="web-footer__field web-footer__field--unit">
+        <span className="visually-hidden">Energy usage in kWh, if applicable</span>
+        <input
+          className="web-footer__input"
+          type="text"
+          name="energyUsage"
+          placeholder="Energy usage (if applicable)"
+          value={form.energyUsage}
+          onChange={(e) => updateField("energyUsage", e.target.value)}
+        />
+        <span className="web-footer__unit" aria-hidden>
+          (kWh)
+        </span>
+      </label>
+    </div>
+  );
+
+  const projectTypeSelect = (
+    <label
+      className={`web-footer__field web-footer__field--required${isMobile ? " web-footer__field--full" : ""}`}
+    >
+      <span className="visually-hidden">Project type (required)</span>
+      <select
+        className="web-footer__input web-footer__select"
+        name="projectType"
+        value={form.projectType}
+        required
+        onChange={(e) => updateField("projectType", e.target.value)}
+      >
+        <option value="" disabled>
+          Project type
+        </option>
+        {PROJECT_TYPES.map((type) => (
+          <option key={type} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
+      <RequiredMark />
+    </label>
+  );
+
   return (
     <div
       id="contact"
@@ -124,136 +226,183 @@ export function WebsiteContactForm({
         </p>
       ) : (
         <form
-          className={
-            extended ? "web-footer__form web-footer__form--extended" : "web-footer__form"
-          }
+          className={[
+            extended ? "web-footer__form web-footer__form--extended" : "web-footer__form",
+            layout === "hero" ? "web-footer__form--hero" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
           onSubmit={handleSubmit}
           onFocusCapture={() => setEngaged(true)}
           noValidate
         >
-          <label className="web-footer__field">
-            <span className="visually-hidden">Name</span>
-            <input
-              className="web-footer__input"
-              type="text"
-              name="name"
-              placeholder="Name"
-              autoComplete="name"
-              required
-              value={form.name}
-              onChange={(e) => updateField("name", e.target.value)}
-            />
-          </label>
-          <label className="web-footer__field">
-            <span className="visually-hidden">Email</span>
-            <input
-              className="web-footer__input"
-              type="email"
-              name="email"
-              placeholder="Email"
-              autoComplete="email"
-              required
-              value={form.email}
-              onChange={(e) => updateField("email", e.target.value)}
-            />
-          </label>
-          <label className="web-footer__field web-footer__field--full">
-            <span className="visually-hidden">Company (optional)</span>
-            <input
-              className="web-footer__input"
-              type="text"
-              name="company"
-              placeholder="Company (optional)"
-              autoComplete="organization"
-              value={form.company}
-              onChange={(e) => updateField("company", e.target.value)}
-            />
-          </label>
-
           {extended ? (
             <>
-              <label className="web-footer__field web-footer__field--full">
-                <span className="visually-hidden">Project type</span>
-                <select
-                  className="web-footer__input web-footer__select"
-                  name="projectType"
-                  value={form.projectType}
-                  onChange={(e) => updateField("projectType", e.target.value)}
-                >
-                  <option value="" disabled>
-                    Project type
-                  </option>
-                  {PROJECT_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
+              <div className="web-footer__field-row">
+                <label className="web-footer__field web-footer__field--required">
+                  <span className="visually-hidden">Name (required)</span>
+                  <input
+                    className="web-footer__input"
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    autoComplete="name"
+                    required
+                    value={form.name}
+                    onChange={(e) => updateField("name", e.target.value)}
+                  />
+                  <RequiredMark />
+                </label>
+                <label className="web-footer__field">
+                  <span className="visually-hidden">Company</span>
+                  <input
+                    className="web-footer__input"
+                    type="text"
+                    name="company"
+                    placeholder="Company"
+                    autoComplete="organization"
+                    value={form.company}
+                    onChange={(e) => updateField("company", e.target.value)}
+                  />
+                </label>
+                <label className="web-footer__field">
+                  <span className="visually-hidden">Phone</span>
+                  <input
+                    className="web-footer__input"
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={(e) => updateField("phone", e.target.value)}
+                  />
+                </label>
+              </div>
+              <label className="web-footer__field web-footer__field--full web-footer__field--required">
+                <span className="visually-hidden">Email (required)</span>
+                <input
+                  className="web-footer__input"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  autoComplete="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
+                />
+                <RequiredMark />
               </label>
 
+              {isMobile ? (
+                projectTypeSelect
+              ) : (
+                <div className="web-footer__field-row web-footer__field-row--2">
+                  {projectTypeSelect}
+                  {projectSizeField}
+                </div>
+              )}
+
               {form.projectType === OTHER ? (
-                <label className="web-footer__field web-footer__field--full">
-                  <span className="visually-hidden">Please specify project type</span>
+                <label className="web-footer__field web-footer__field--full web-footer__field--required">
+                  <span className="visually-hidden">Please specify project type (required)</span>
                   <input
                     className="web-footer__input"
                     type="text"
                     name="projectTypeOther"
                     placeholder="Please specify"
+                    required
                     value={form.projectTypeOther}
                     onChange={(e) => updateField("projectTypeOther", e.target.value)}
                   />
+                  <RequiredMark />
                 </label>
               ) : null}
 
-              <label className="web-footer__field">
-                <span className="visually-hidden">Acreage</span>
+              {isMobile ? null : siteDetailFields}
+
+              <label className="web-footer__field web-footer__field--full web-footer__field--required">
+                <span className="visually-hidden">Message (required)</span>
+                <textarea
+                  className="web-footer__textarea"
+                  name="message"
+                  placeholder={layout === "hero" ? "Message" : "How can we help?"}
+                  rows={layout === "hero" ? (isMobile ? 3 : 5) : 3}
+                  required
+                  value={form.message}
+                  onChange={(e) => updateField("message", e.target.value)}
+                />
+                <RequiredMark />
+              </label>
+
+              {isMobile ? (
+                <details className="web-footer__details web-footer__field--full">
+                  <summary className="web-footer__details-summary">
+                    {CONTACT_PAGE_COPY.detailsToggle}
+                  </summary>
+                  <div className="web-footer__details-body">
+                    {projectSizeField}
+                    {siteDetailFields}
+                  </div>
+                </details>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <label className="web-footer__field web-footer__field--required">
+                <span className="visually-hidden">Name (required)</span>
                 <input
                   className="web-footer__input"
                   type="text"
-                  inputMode="decimal"
-                  name="acreage"
-                  placeholder="Acreage"
-                  value={form.acreage}
-                  onChange={(e) => updateField("acreage", e.target.value)}
+                  name="name"
+                  placeholder="Name"
+                  autoComplete="name"
+                  required
+                  value={form.name}
+                  onChange={(e) => updateField("name", e.target.value)}
                 />
+                <RequiredMark />
+              </label>
+              <label className="web-footer__field web-footer__field--required">
+                <span className="visually-hidden">Email (required)</span>
+                <input
+                  className="web-footer__input"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  autoComplete="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
+                />
+                <RequiredMark />
               </label>
               <label className="web-footer__field">
-                <span className="visually-hidden">Project size in kW or MW (optional)</span>
+                <span className="visually-hidden">Phone</span>
                 <input
                   className="web-footer__input"
-                  type="text"
-                  name="projectSize"
-                  placeholder="Project size, kW or MW (optional)"
-                  value={form.projectSize}
-                  onChange={(e) => updateField("projectSize", e.target.value)}
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone"
+                  autoComplete="tel"
+                  value={form.phone}
+                  onChange={(e) => updateField("phone", e.target.value)}
                 />
               </label>
-              <label className="web-footer__field web-footer__field--full">
-                <span className="visually-hidden">Energy usage (optional)</span>
-                <input
-                  className="web-footer__input"
-                  type="text"
-                  name="energyUsage"
-                  placeholder="Energy usage (optional)"
-                  value={form.energyUsage}
-                  onChange={(e) => updateField("energyUsage", e.target.value)}
+              <label className="web-footer__field web-footer__field--full web-footer__field--required">
+                <span className="visually-hidden">Message (required)</span>
+                <textarea
+                  className="web-footer__textarea"
+                  name="message"
+                  placeholder="How can we help?"
+                  rows={3}
+                  required
+                  value={form.message}
+                  onChange={(e) => updateField("message", e.target.value)}
                 />
+                <RequiredMark />
               </label>
             </>
-          ) : null}
-
-          <label className="web-footer__field web-footer__field--full">
-            <span className="visually-hidden">Message</span>
-            <textarea
-              className="web-footer__textarea"
-              name="message"
-              placeholder="How can we help?"
-              rows={3}
-              required
-              value={form.message}
-              onChange={(e) => updateField("message", e.target.value)}
-            />
-          </label>
+          )}
 
           {/* Honeypot: off-screen and hidden from assistive tech; bots fill it. */}
           <div className="web-footer__hp" aria-hidden>
@@ -289,15 +438,15 @@ export function WebsiteContactForm({
           >
             {status === "submitting"
               ? FOOTER_COPY.contactFormSending
-              : FOOTER_COPY.contactFormCta}
+              : (ctaLabel ?? FOOTER_COPY.contactFormCta)}
           </button>
 
           <p className="web-footer__consent web-footer__field--full">
-            By sending this you agree to our{" "}
+            By sending this inquiry you agree to our{" "}
             <Link to="/privacy" className="web-footer__consent-link">
               Privacy Policy
             </Link>
-            . We use your details only to reply to your inquiry.
+            .
           </p>
         </form>
       )}

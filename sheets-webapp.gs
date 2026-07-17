@@ -31,8 +31,9 @@
  * (pencil) → New version, so the same /exec URL keeps working.
  */
 
-// Column order written to the Sheet. Add a matching header row yourself if you
-// want labels at the top.
+// Column order written to the Sheet. A–I stay stable for existing leads;
+// phone is appended as column J (never insert among A–I). Add a matching
+// header row yourself if you want labels at the top.
 var COLUMNS = [
   "timestamp",
   "name",
@@ -43,6 +44,7 @@ var COLUMNS = [
   "projectSize",
   "energyUsage",
   "message",
+  "phone",
 ];
 
 function doPost(e) {

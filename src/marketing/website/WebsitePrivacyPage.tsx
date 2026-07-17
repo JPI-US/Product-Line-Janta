@@ -34,9 +34,11 @@ export default function WebsitePrivacyPage() {
             </h2>
             <p>
               Only what you type into our contact form: your name, email, and
-              message, plus optional details you choose to add — company, project
-              type, acreage, project size, and energy usage. We do not ask for or
-              store anything else.
+              message are always collected. On the contact page we also require
+              project type. Optional details you may choose to add include
+              company, phone, acreage, project size, and energy usage (only
+              when applicable). We do not
+              ask for or store anything else.
             </p>
           </section>
 

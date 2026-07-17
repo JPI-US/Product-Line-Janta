@@ -77,24 +77,32 @@ export const WEBSITE_SKY_GRADIENT = {
   bottom: WEBSITE_PAGE_BG,
 } as const;
 
+/** HubSpot meetings page for intro / consultation booking. */
+export const CONSULTATION_HREF =
+  "https://meetings-na2.hubspot.com/introduction/janta-power";
+
 export const ROI_COPY = {
-  title: "Power your land without giving it all away.",
+  title: "Power your land without giving it all away",
   body: "Janta Power delivers fast-deploying solar systems designed to save acres.",
   savingsCta: "Schedule a Consultation",
-  savingsHref: "/contact",
+  savingsHref: CONSULTATION_HREF,
   image: "/marketing/roi-hero.png",
   imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
 } as const;
 
 export const CONTACT_PAGE_COPY = {
-  eyebrow: "Get in touch",
-  title: "Contact us",
-  lede:
-    "Tell us about your site or project. We'll follow up by email within one business day.",
+  title: "Contact Us",
+  ledeBefore: "Fill out the form below or ",
+  scheduleLinkLabel: "Schedule a Consultation",
+  consultHref: CONSULTATION_HREF,
+  formCta: "Send Message",
+  detailsToggle: "Add project details (optional)",
+  // Kept for when SHOW_QUIZ is flipped back on.
+  quizEyebrow: "Estimator",
   quizTitle: "See your savings",
   quizBody:
     "Answer a few quick questions and we'll estimate project size, land usage, and lifetime savings for your project.",
-  quizCta: "Start savings quiz",
+  quizCta: "Start Savings Quiz",
   quizHref: "/quiz",
 } as const;
 
@@ -142,13 +150,10 @@ export const YIELD_COMPARE_COPY = {
     land: "Site footprint",
   },
   scale: {
-    heading: "The same power.",
-    /* Cycles under the static line — same nameplate power, but less land AND more
-       yield. `*word*` marks the words that get the gradient highlight. */
+    heading: "The same power,",
+    /* Single accent line under the static heading (`*word*` = gradient highlight). */
     headingAccentPhrases: [
-      "A *fraction* of the *land*.",
-      "*More energy*.",
-      "*Higher capacity factor*.",
+      "A *fraction* of the *land*",
     ],
     lede: "Slide the project size and watch the footprint diverge.  Traditional solar sprawls while Janta stays compact.",
     traditionalLabel: "Traditional",
@@ -495,29 +500,21 @@ export const SOLUTIONS_COPY = {
 
 export const FOOTER_COPY = {
   brand: "Janta Power",
-  blurb:
-    "Three-dimensional solar for campuses, commercial sites, and utility-scale deployments.",
+  blurb: "3D solar for commercial, industrial, and utility-scale deployments.",
   exploreTitle: "Explore",
   exploreLinks: [
     { label: "Home", href: "/" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
-    { label: "Savings quiz", href: "/quiz" },
+    { label: "Meet", href: CONSULTATION_HREF },
+    { label: "Savings Quiz", href: "/quiz" },
   ],
-  pressTitle: "In the press",
+  pressTitle: "In the Press",
   pressLinks: [
     { label: "D3 Accelerator Portfolio", href: "https://www.third-derivative.org/portfolio/janta-power" },
     { label: "Dallas Innovates", href: "https://dallasinnovates.com/dallas-based-3d-solar-tower-developer-janta-power-raises-5-5m-seed-round/" },
     { label: "Inside Climate News", href: "https://insideclimatenews.org/news/22102025/dallas-startup-3d-solar-towers/" },
     { label: "PV Magazine USA", href: "https://pv-magazine-usa.com/2025/10/24/3d-solar-tower-increases-capacity-factor-50-triples-solar-surface-area/" },
-    {
-      label: "Fox News",
-      href: "https://www.foxnews.com/tech/texas-startup-raises-5-5m-revolutionary-solar-towers-produce-50-more-energy",
-    },
-    {
-      label: "CleanTechnica",
-      href: "https://cleantechnica.com/2025/10/13/texas-startup-aims-to-erect-solar-power-towers-here-there-everywhere/",
-    },
   ],
   contactFormTitle: "Contact us",
   contactFormBlurb:
@@ -533,4 +530,23 @@ export const FOOTER_COPY = {
   contactPhoneTel: "+14696943818",
   copyright: "© 2026 Janta Power, Inc. All rights reserved.",
   location: "2265 Monitor St, Dallas TX, 75207",
+  locationMapsHref:
+    "https://www.google.com/maps/search/?api=1&query=2265+Monitor+St,+Dallas+TX,+75207",
+  socialLinks: [
+    {
+      id: "linkedin",
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/company/janta-power-inc",
+    },
+    {
+      id: "instagram",
+      label: "Instagram",
+      href: "https://www.instagram.com/jantapower_/",
+    },
+    {
+      id: "x",
+      label: "X",
+      href: "https://x.com/JantaPower_",
+    },
+  ],
 } as const;

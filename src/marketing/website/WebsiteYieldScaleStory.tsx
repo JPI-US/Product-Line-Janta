@@ -13,7 +13,6 @@ import {
   SCALE_PRESETS_MW,
 } from "../../data/landScaling";
 import { YIELD_COMPARE_COPY } from "./websiteData";
-import { SHOW_QUIZ } from "../../config/featureFlags";
 import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 
 const copy = YIELD_COMPARE_COPY.scale;
@@ -47,9 +46,9 @@ function renderPhrase(phrase: string) {
 }
 
 /**
- * Cycles the emphasised second line of the heading ("A fraction of the land." →
- * "More energy."). Hidden sizers reserve the tallest phrase so the heading never
- * reflows mid-swap. Only the starred words carry the "Where Janta Shines" gradient.
+ * Emphasised second line of the heading. With one phrase it stays static;
+ * with several it cycles. Hidden sizers reserve the tallest phrase so the
+ * heading never reflows mid-swap. Only the starred words carry the gradient.
  */
 function CyclingHeadline({ phrases }: { phrases: readonly string[] }) {
   const reducedMotion = useWebsiteReducedMotion();
@@ -277,10 +276,7 @@ export function WebsiteYieldScaleStory({ visible }: { visible: boolean }) {
         </span>
       </div>
 
-      <Link
-        className="web-yield-scale__cta"
-        to={SHOW_QUIZ ? "/quiz" : "/contact"}
-      >
+      <Link className="web-yield-scale__cta" to="/contact">
         {copy.ctaLabel}
         <span aria-hidden> →</span>
       </Link>
