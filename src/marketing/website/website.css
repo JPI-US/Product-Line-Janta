@@ -6715,6 +6715,16 @@ select.web-footer__select {
   padding-inline: var(--web-rail-x, clamp(1.25rem, 5vw, 4.5rem));
 }
 
+@media (min-width: 900px) {
+  .web-careers-hero {
+    min-height: clamp(24rem, 58vh, 38rem);
+  }
+
+  .web-careers-hero__img {
+    object-position: center 40%;
+  }
+}
+
 .web-careers-hero__media {
   position: absolute;
   inset: 0;
