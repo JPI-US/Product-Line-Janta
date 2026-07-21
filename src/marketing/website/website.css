@@ -6032,13 +6032,12 @@ select.web-footer__select {
   padding: 0.72rem 1.15rem;
   border: none;
   border-radius: 999px;
-  background: var(--warm-surface, #ffffff);
+  background: var(--web-cta, #ffbf14);
   color: var(--warm-ink-display, #1a2332);
   font: inherit;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(12, 32, 58, 0.12);
   transition:
     background 0.2s ease,
     transform 0.2s ease,
@@ -6046,14 +6045,14 @@ select.web-footer__select {
 }
 
 .web-footer__submit:hover {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--web-cta-hover, #d9a612);
   transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(12, 32, 58, 0.16);
+  box-shadow: 0 8px 20px rgba(217, 166, 18, 0.28);
 }
 
 .web-footer__submit:active {
   transform: translateY(0);
-  box-shadow: 0 6px 16px rgba(12, 32, 58, 0.1);
+  box-shadow: none;
 }
 
 .web-footer__contact-success {
