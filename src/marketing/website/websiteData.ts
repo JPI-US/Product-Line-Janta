@@ -92,8 +92,8 @@ export const ROI_COPY = {
 
 export const CONTACT_PAGE_COPY = {
   title: "Contact Us",
-  ledeBefore: "Fill out the form below or ",
-  scheduleLinkLabel: "Schedule a Consultation",
+  lede: "Tell us about your site or project. We'll follow up within 2-3 business days.",
+  scheduleLabel: "Schedule a Meeting",
   consultHref: CONSULTATION_HREF,
   formCta: "Send Message",
   detailsToggle: "Add project details (optional)",
@@ -518,11 +518,11 @@ export const FOOTER_COPY = {
   ],
   contactFormTitle: "Contact us",
   contactFormBlurb:
-    "Tell us about your site or project. We'll follow up by email within one business day.",
+    "Tell us about your site or project. We'll follow up within 2-3 business days.",
   contactFormCta: "Send message",
   contactFormSending: "Sending…",
   contactFormSuccess:
-    "Thanks — your message is on its way. We'll reply within one business day.",
+    "Thanks, your message is on its way. We'll reply within 2-3 business days.",
   contactFormError:
     "Sorry, that didn't go through. Please try again, or email us directly at info@jantaus.com.",
   contactEmail: "info@jantaus.com",

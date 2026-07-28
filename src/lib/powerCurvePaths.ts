@@ -1,12 +1,12 @@
-/** SVG paths matched to the original designer power curve reference (kW on 0–5 scale) */
+/** SVG paths matched to the designer power-curve reference (kW on 0–5 scale) */
 
 export type ChartGeom = {
   x: (hour: number) => number;
   y: (kw: number) => number;
 };
 
-export const CHART_COLOR_TRADITIONAL = "#6eb8e0";
-export const CHART_COLOR_JANTA = "#e8bc58";
+export const CHART_COLOR_TRADITIONAL = "#ffbf14";
+export const CHART_COLOR_JANTA = "#3a84dc";
 
 /** Y-axis top — reference charts use 0–5 kW */
 export const CHART_Y_MAX = 5;
@@ -14,15 +14,30 @@ export const CHART_Y_MAX = 5;
 /** Reference nameplate values (5 kW baseline), not scaled to tower kW */
 export const REF_TRAD_SUMMER_PEAK_KW = 4.5;
 export const REF_JANTA_SUMMER_PEAK_KW = 4.5;
-/** Matches dashboard midday dip (~11% below peak → ~4.0 on a 4.5 scale) */
-export const REF_JANTA_SUMMER_TROUGH_KW = 4.0;
-/** Just under 4 kW on the 0–5 axis */
-export const REF_TRAD_WINTER_PEAK_KW = 3.98;
+/** Midday trough ~68% of peak — soft M, not a deep cut */
+export const REF_JANTA_SUMMER_TROUGH_KW = 3.05;
+/** Winter fixed peak ~80% of the Janta plateau — clear gap, no crossover */
+export const REF_TRAD_WINTER_PEAK_KW = 3.7;
 export const REF_JANTA_WINTER_PEAK_KW = 4.6;
 
-/** Summer daylight window — aligned with dashboard charts (ends 8 PM) */
-export const JANTA_SUMMER_HOUR_MIN = 7;
+/** Summer daylight — 6am to 8pm, mirrored about midday */
+export const JANTA_SUMMER_HOUR_MIN = 6;
 export const JANTA_SUMMER_HOUR_MAX = 20;
+/** Fixed solar starts ~1h after Janta, centered under the day */
+export const TRAD_SUMMER_HOUR_MIN = 7;
+export const TRAD_SUMMER_HOUR_MAX = 19;
+
+/** Winter daylight — 9am to 7pm, mirrored about midday */
+export const WINTER_CHART_HOUR_MIN = 9;
+export const WINTER_CHART_HOUR_MAX = 19;
+export const JANTA_WINTER_HOUR_MIN = 9;
+export const JANTA_WINTER_HOUR_MAX = 19;
+/** Fixed solar centered under Janta; starts at 9:32 */
+const WINTER_JANTA_MID =
+  (JANTA_WINTER_HOUR_MIN + JANTA_WINTER_HOUR_MAX) / 2;
+export const TRAD_WINTER_HOUR_MIN = 9 + 32 / 60;
+export const TRAD_WINTER_HOUR_MAX =
+  WINTER_JANTA_MID + (WINTER_JANTA_MID - TRAD_WINTER_HOUR_MIN);
 
 function fmt(n: number): string {
   return n.toFixed(2);
@@ -38,7 +53,7 @@ export function bellCurvePath(
   startHour: number,
   endHour: number,
   peakHour: number,
-  peakKw: number
+  peakKw: number,
 ): string {
   const x0 = geom.x(startHour);
   const xP = geom.x(peakHour);
@@ -49,51 +64,49 @@ export function bellCurvePath(
   return `M ${fmt(x0)} ${fmt(y0)} Q ${fmt(xP)} ${fmt(yCtrl)} ${fmt(x1)} ${fmt(y0)}`;
 }
 
-/** Summer traditional — smooth bell across the full plotted day */
+/** Summer traditional — smooth bell, delayed vs Janta dawn */
 export function traditionalSummerPath(
   geom: ChartGeom,
-  hourMin = JANTA_SUMMER_HOUR_MIN,
-  hourMax = JANTA_SUMMER_HOUR_MAX,
-  peakKw: number = REF_TRAD_SUMMER_PEAK_KW
+  hourMin = TRAD_SUMMER_HOUR_MIN,
+  hourMax = TRAD_SUMMER_HOUR_MAX,
+  peakKw: number = REF_TRAD_SUMMER_PEAK_KW,
 ): string {
   const peakHour = hourMin + (hourMax - hourMin) * 0.5;
   return bellCurvePath(geom, hourMin, hourMax, peakHour, peakKw);
 }
 
 /**
- * Summer Janta — same profile as the dashboard power chart:
- * mirrored 2h ramps, flat shoulders, centered midday saddle, ends at 8 PM.
+ * Summer Janta — M-profile: steep rise, morning plateau, midday saddle,
+ * evening plateau, steep fall. Sampled so the drawn line matches hover kW.
  */
 export function jantaSummerPath(
   geom: ChartGeom,
   hourMin = JANTA_SUMMER_HOUR_MIN,
   hourMax = JANTA_SUMMER_HOUR_MAX,
   peakKw: number = REF_JANTA_SUMMER_PEAK_KW,
-  troughKw: number = REF_JANTA_SUMMER_TROUGH_KW
+  troughKw: number = REF_JANTA_SUMMER_TROUGH_KW,
 ): string {
-  const steps = 56;
+  const steps = 180;
   const parts: string[] = [];
   for (let i = 0; i <= steps; i++) {
     const hour = hourMin + ((hourMax - hourMin) * i) / steps;
     const kw = jantaSummerKw(hour, hourMin, hourMax, peakKw, troughKw);
-    parts.push(
-      `${i === 0 ? "M" : "L"} ${fmt(geom.x(hour))} ${fmt(geom.y(kw))}`,
-    );
+    parts.push(`${i === 0 ? "M" : "L"} ${fmt(geom.x(hour))} ${fmt(geom.y(kw))}`);
   }
   return parts.join(" ");
 }
 
 /**
- * Winter Janta — plateau across daylight with rounded shoulders.
+ * Winter Janta — boxy plateau with short rounded shoulders.
  * Sampled from jantaWinterKw so the drawn line always matches the hover readout.
  */
 export function jantaWinterPath(
   geom: ChartGeom,
-  hourMin = 7,
-  hourMax = 21,
-  peakKw: number = REF_JANTA_WINTER_PEAK_KW
+  hourMin = JANTA_WINTER_HOUR_MIN,
+  hourMax = JANTA_WINTER_HOUR_MAX,
+  peakKw: number = REF_JANTA_WINTER_PEAK_KW,
 ): string {
-  const steps = 64;
+  const steps = 72;
   const parts: string[] = [];
   for (let i = 0; i <= steps; i++) {
     const hour = hourMin + ((hourMax - hourMin) * i) / steps;
@@ -123,7 +136,12 @@ export function tradBellKw(
   return Math.max(0, peakKw * (1 - t * t));
 }
 
-/** kW at hour — summer Janta (matches dashboard jantaPowerFactor shape) */
+/**
+ * kW at hour — summer Janta M-shape.
+ * Each peak is one parabola (same curvature inside and out). Peaks are
+ * mirrored about midday so both lobes are the same length.
+ * Joins are C1-matched so the line doesn't show seams.
+ */
 export function jantaSummerKw(
   hour: number,
   hourMin = JANTA_SUMMER_HOUR_MIN,
@@ -133,48 +151,81 @@ export function jantaSummerKw(
 ): number {
   if (hour <= hourMin || hour >= hourMax) return 0;
 
-  const rampH = 2;
-  const riseEnd = hourMin + rampH;
-  const fallStart = hourMax - rampH;
-  const dip = Math.max(0, Math.min(1, 1 - troughKw / Math.max(peakKw, 0.001)));
+  const dayMid = (hourMin + hourMax) / 2;
+  const amPeak = 9 + 15 / 60; // 9:15
+  const pmPeak = 2 * dayMid - amPeak;
 
-  let factor: number;
-  if (hour < riseEnd) {
-    const p = (hour - hourMin) / rampH;
-    factor = 1 - (1 - p) ** 2.2;
-  } else if (hour > fallStart) {
-    const p = (hourMax - hour) / rampH;
-    factor = 1 - (1 - p) ** 2.2;
-  } else {
-    const dipStart = hourMin + 3;
-    const dipEnd = hourMax - 3;
-    const mid = (hourMin + hourMax) / 2;
-    if (hour >= dipStart && hour <= dipEnd) {
-      const half = (dipEnd - dipStart) / 2;
-      const x = Math.max(-1, Math.min(1, (hour - mid) / half));
-      factor = 1 - dip * (0.5 + 0.5 * Math.cos(x * Math.PI));
-    } else {
-      factor = 1;
-    }
+  const gapHalf = 0.72; // shorter mid gap; peaks run longer toward center
+  const mesaHalf = (pmPeak - amPeak) / 2 - gapHalf;
+  const dipStart = amPeak + mesaHalf;
+  const dipEnd = pmPeak - mesaHalf;
+  const dipMid = (dipStart + dipEnd) / 2;
+  const dipHalf = gapHalf;
+
+  // Curvature chosen so parabola ↔ dip share the same edge slope (no kink)
+  const a =
+    (peakKw - troughKw) /
+    Math.max(mesaHalf * (mesaHalf + dipHalf), 0.001);
+  const joinKw = peakKw - a * mesaHalf * mesaHalf;
+
+  const parabola = (h: number, peak: number) =>
+    Math.max(0, peakKw - a * (h - peak) ** 2);
+  const parabolaSlope = (h: number, peak: number) => -2 * a * (h - peak);
+
+  /** Cubic Hermite in t∈[0,1]; m0/m1 are dy/dt. */
+  const hermite = (t: number, y0: number, y1: number, m0: number, m1: number) => {
+    const t2 = t * t;
+    const t3 = t2 * t;
+    return (
+      (2 * t3 - 3 * t2 + 1) * y0 +
+      (t3 - 2 * t2 + t) * m0 +
+      (-2 * t3 + 3 * t2) * y1 +
+      (t3 - t2) * m1
+    );
+  };
+
+  // Soft outer skirts with matching slope into the parabola (avoids a vertical shoot)
+  const outerRamp = 1.5;
+  const amJoin = hourMin + outerRamp;
+  const pmJoin = hourMax - outerRamp;
+
+  if (hour < amJoin) {
+    const y1 = parabola(amJoin, amPeak);
+    const t = (hour - hourMin) / outerRamp;
+    return hermite(t, 0, y1, 0, parabolaSlope(amJoin, amPeak) * outerRamp);
+  }
+  if (hour > pmJoin) {
+    const y0 = parabola(pmJoin, pmPeak);
+    const t = (hour - pmJoin) / outerRamp;
+    return hermite(t, y0, 0, parabolaSlope(pmJoin, pmPeak) * outerRamp, 0);
   }
 
-  return peakKw * factor;
+  if (hour <= dipStart) return parabola(hour, amPeak);
+  if (hour >= dipEnd) return parabola(hour, pmPeak);
+
+  // Same-family parabolic bowl — C1 with the peak lobes
+  const x = Math.min(1, Math.abs((hour - dipMid) / dipHalf));
+  return troughKw + (joinKw - troughKw) * x * x;
 }
 
-/** kW at hour — winter Janta plateau with rounded (eased) shoulders */
+/**
+ * kW at hour — winter Janta: steep rise, long flat plateau, steep fall
+ * (equal ramps, always above the fixed bell).
+ */
 export function jantaWinterKw(
   hour: number,
-  hourMin = 7,
-  hourMax = 21,
+  hourMin = JANTA_WINTER_HOUR_MIN,
+  hourMax = JANTA_WINTER_HOUR_MAX,
   peakKw: number = REF_JANTA_WINTER_PEAK_KW,
 ): number {
   if (hour <= hourMin || hour >= hourMax) return 0;
   const span = hourMax - hourMin;
-  const riseEnd = hourMin + span * 0.2;
-  const plateauEnd = hourMin + span * 0.8;
+  const rampH = span * 0.14;
+  const riseEnd = hourMin + rampH;
+  const fallStart = hourMax - rampH;
   if (hour <= riseEnd) {
-    return peakKw * smoothstep((hour - hourMin) / (riseEnd - hourMin));
+    return peakKw * smoothstep((hour - hourMin) / rampH);
   }
-  if (hour <= plateauEnd) return peakKw;
-  return peakKw * smoothstep((hourMax - hour) / (hourMax - plateauEnd));
+  if (hour <= fallStart) return peakKw;
+  return peakKw * smoothstep((hourMax - hour) / rampH);
 }

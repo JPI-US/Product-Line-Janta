@@ -20,10 +20,9 @@ export const ACRES_PER_BLOCK = 3;
 
 /* More stops so the auto-play story steps through the scale rather than jumping. */
 export const SCALE_PRESETS_MW = [0.5, 1, 2, 5, 10, 20] as const;
-/* Floor the slider where BOTH sides still have real acreage. Janta is 2.22
-   acres/MW, so below 0.3 MW it rounds to "0 acres" and the readout degrades to
-   "0 acres saved - about 0 football fields". */
-export const SCALE_MIN_MW = 0.3;
+/* Floor the slider at 0.1 MW (100 kW). At the low end, rounded acreage can
+   drop below 1 acre on the denser Janta side. */
+export const SCALE_MIN_MW = 0.1;
 export const SCALE_MAX_MW = 20;
 const MAX_FOOTPRINT_BLOCKS = Math.ceil((SCALE_MAX_MW * LAND_PER_MW.traditional) / ACRES_PER_BLOCK);
 

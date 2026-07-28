@@ -1060,20 +1060,20 @@ html:not(.tower-3d-dragging) .tower-3d__page-below {
 
 .tower-3d__power-profile__line--trad {
   stroke: var(--warm-cta, #ffbf14);
-  stroke-width: 2.5;
-  stroke-dasharray: 5 5;
-  stroke-linecap: round;
-}
-
-.tower-3d__power-profile__line--janta {
-  stroke: var(--web-brand-blue, #3a84dc);
-  stroke-width: 2.75;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-/* Draw the chart in when its section scrolls into view. The solid blue line
-   draws left-to-right (dashoffset), the dashed line and area fade up behind
+.tower-3d__power-profile__line--janta {
+  stroke: var(--web-brand-blue, #3a84dc);
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Draw the chart in when its section scrolls into view. The Janta line
+   draws left-to-right (dashoffset), the fixed line and area fade up behind
    it. .is-drawn is a one-way latch, so season auto-cycle remounts render at
    the final state without re-animating. */
 .tower-3d__power-profile__line--janta {

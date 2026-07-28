@@ -3,14 +3,22 @@ import {
   CHART_Y_MAX,
   JANTA_SUMMER_HOUR_MAX,
   JANTA_SUMMER_HOUR_MIN,
+  JANTA_WINTER_HOUR_MAX,
+  JANTA_WINTER_HOUR_MIN,
   jantaSummerKw,
   jantaSummerPath,
   jantaWinterKw,
   jantaWinterPath,
   REF_TRAD_SUMMER_PEAK_KW,
   REF_TRAD_WINTER_PEAK_KW,
+  TRAD_SUMMER_HOUR_MAX,
+  TRAD_SUMMER_HOUR_MIN,
+  TRAD_WINTER_HOUR_MAX,
+  TRAD_WINTER_HOUR_MIN,
   tradBellKw,
   traditionalSummerPath,
+  WINTER_CHART_HOUR_MAX,
+  WINTER_CHART_HOUR_MIN,
   type ChartGeom,
 } from "../lib/powerCurvePaths";
 
@@ -78,8 +86,9 @@ export const designerPowerCharts: Record<PowerSeason, PowerCurveChart> = {
         id: "traditional",
         label: "Traditional solar",
         buildPath: (geom) =>
-          traditionalSummerPath(geom, JANTA_SUMMER_HOUR_MIN, JANTA_SUMMER_HOUR_MAX),
-        kwAtHour: (h, min, max) => tradBellKw(h, min, max, REF_TRAD_SUMMER_PEAK_KW),
+          traditionalSummerPath(geom, TRAD_SUMMER_HOUR_MIN, TRAD_SUMMER_HOUR_MAX),
+        kwAtHour: (h) =>
+          tradBellKw(h, TRAD_SUMMER_HOUR_MIN, TRAD_SUMMER_HOUR_MAX, REF_TRAD_SUMMER_PEAK_KW),
       },
       {
         id: "janta",
@@ -93,22 +102,31 @@ export const designerPowerCharts: Record<PowerSeason, PowerCurveChart> = {
   winter: {
     id: "winter",
     title: "Winter",
-    hourMin: 7,
-    hourMax: 21,
+    hourMin: WINTER_CHART_HOUR_MIN,
+    hourMax: WINTER_CHART_HOUR_MAX,
     yMax: CHART_Y_MAX,
     series: [
       {
         id: "traditional",
         label: "Traditional solar",
         buildPath: (geom) =>
-          bellCurvePath(geom, 7, 21, 14, REF_TRAD_WINTER_PEAK_KW),
-        kwAtHour: (h, min, max) => tradBellKw(h, min, max, REF_TRAD_WINTER_PEAK_KW),
+          bellCurvePath(
+            geom,
+            TRAD_WINTER_HOUR_MIN,
+            TRAD_WINTER_HOUR_MAX,
+            (TRAD_WINTER_HOUR_MIN + TRAD_WINTER_HOUR_MAX) / 2,
+            REF_TRAD_WINTER_PEAK_KW,
+          ),
+        kwAtHour: (h) =>
+          tradBellKw(h, TRAD_WINTER_HOUR_MIN, TRAD_WINTER_HOUR_MAX, REF_TRAD_WINTER_PEAK_KW),
       },
       {
         id: "janta",
         label: "Janta",
-        buildPath: (geom) => jantaWinterPath(geom, 7, 21),
-        kwAtHour: (h, min, max) => jantaWinterKw(h, min, max),
+        buildPath: (geom) =>
+          jantaWinterPath(geom, JANTA_WINTER_HOUR_MIN, JANTA_WINTER_HOUR_MAX),
+        kwAtHour: (h) =>
+          jantaWinterKw(h, JANTA_WINTER_HOUR_MIN, JANTA_WINTER_HOUR_MAX),
       },
     ],
   },

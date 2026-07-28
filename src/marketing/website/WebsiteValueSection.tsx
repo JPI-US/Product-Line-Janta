@@ -5,11 +5,16 @@ import { useWebsiteReducedMotion } from "./useWebsiteReducedMotion";
 const CYCLE_MS = 3400;
 const TRANSITION_MS = 480;
 
-function CyclingTitleWord({ words }: { words: readonly string[] }) {
-  const reducedMotion = useWebsiteReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
+function CyclingTitleWord({
+  words,
+  activeIndex,
+}: {
+  words: readonly string[];
+  activeIndex: number;
+}) {
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
+  const [displayedIndex, setDisplayedIndex] = useState(activeIndex);
 
   useEffect(() => {
     const id = window.requestAnimationFrame(() => setReady(true));
@@ -17,25 +22,18 @@ function CyclingTitleWord({ words }: { words: readonly string[] }) {
   }, []);
 
   useEffect(() => {
-    if (reducedMotion || words.length <= 1) return;
-
-    const id = window.setInterval(() => {
-      setActiveIndex((current) => {
-        setPrevIndex(current);
-        return (current + 1) % words.length;
-      });
-    }, CYCLE_MS);
-
-    return () => window.clearInterval(id);
-  }, [reducedMotion, words.length]);
+    if (activeIndex === displayedIndex) return;
+    setPrevIndex(displayedIndex);
+    setDisplayedIndex(activeIndex);
+  }, [activeIndex, displayedIndex]);
 
   useEffect(() => {
     if (prevIndex === null) return;
     const id = window.setTimeout(() => setPrevIndex(null), TRANSITION_MS);
     return () => window.clearTimeout(id);
-  }, [prevIndex, activeIndex]);
+  }, [prevIndex, displayedIndex]);
 
-  const activeWord = words[activeIndex] ?? words[0];
+  const activeWord = words[displayedIndex] ?? words[0];
   const prevWord = prevIndex !== null ? words[prevIndex] : null;
 
   return (
@@ -50,7 +48,7 @@ function CyclingTitleWord({ words }: { words: readonly string[] }) {
           </span>
         ) : null}
         <span
-          key={activeIndex}
+          key={displayedIndex}
           className={`web-value__title-word is-active${ready && prevWord ? " is-entering" : ""}`}
         >
           {activeWord}
@@ -60,15 +58,28 @@ function CyclingTitleWord({ words }: { words: readonly string[] }) {
   );
 }
 
-/** Bringing You Value — split copy + cycling image, stats band below */
+/** Bringing You Value — split copy + cycling image, kept in lockstep */
 export function WebsiteValueSection() {
   const reducedMotion = useWebsiteReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [beat, setBeat] = useState(0);
   const [cycleKey, setCycleKey] = useState(0);
   const items = VALUE_COPY.items;
+  const words = VALUE_COPY.titleEmphasisWords;
+  const wordIndex = beat % words.length;
+  const imageIndex = beat % items.length;
 
-  const goToIndex = (index: number) => {
-    setActiveIndex(index);
+  const advance = () => {
+    setBeat((current) => current + 1);
+    setCycleKey((key) => key + 1);
+  };
+
+  const goToImage = (index: number) => {
+    // Keep title/image phase lock: jump to the next beat that shows this image.
+    setBeat((current) => {
+      const currentImage = current % items.length;
+      const steps = (index - currentImage + items.length) % items.length;
+      return steps === 0 ? current : current + steps;
+    });
     setCycleKey((key) => key + 1);
   };
 
@@ -76,7 +87,7 @@ export function WebsiteValueSection() {
     if (reducedMotion || items.length <= 1) return;
 
     const id = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % items.length);
+      setBeat((current) => current + 1);
     }, CYCLE_MS);
 
     return () => window.clearInterval(id);
@@ -95,21 +106,27 @@ export function WebsiteValueSection() {
               <h2 id="web-value-title" className="web-value__title">
                 {VALUE_COPY.title}
                 <br />
-                <CyclingTitleWord words={VALUE_COPY.titleEmphasisWords} />
+                <CyclingTitleWord words={words} activeIndex={wordIndex} />
               </h2>
               <p className="web-value__lead">{VALUE_COPY.body}</p>
             </div>
 
             <figure className="web-value__media">
-              <div className="web-value__img-shell">
+              <button
+                type="button"
+                className="web-value__img-shell"
+                aria-label={`Next image (${(imageIndex + 1) % items.length + 1} of ${items.length})`}
+                onClick={advance}
+              >
                 {items.map((item, index) => (
                   <img
                     key={item.id}
-                    className={`web-value__img${index === activeIndex ? " is-active" : ""}`}
+                    className={`web-value__img${index === imageIndex ? " is-active" : ""}`}
                     src={item.image}
                     alt={item.imageAlt}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
+                    draggable={false}
                     style={{
                       objectPosition: item.imagePosition,
                       ...("imageScale" in item && item.imageScale != null
@@ -121,7 +138,7 @@ export function WebsiteValueSection() {
                     }}
                   />
                 ))}
-              </div>
+              </button>
 
               <div className="web-value__dots" role="tablist" aria-label="Product gallery">
                 {items.map((item, index) => (
@@ -129,14 +146,14 @@ export function WebsiteValueSection() {
                     key={item.id}
                     type="button"
                     className={
-                      index === activeIndex
+                      index === imageIndex
                         ? "web-value__dot web-value__dot--active"
                         : "web-value__dot"
                     }
                     role="tab"
-                    aria-selected={index === activeIndex}
+                    aria-selected={index === imageIndex}
                     aria-label={`${item.title}, slide ${index + 1} of ${items.length}`}
-                    onClick={() => goToIndex(index)}
+                    onClick={() => goToImage(index)}
                   />
                 ))}
               </div>

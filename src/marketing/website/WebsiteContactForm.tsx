@@ -431,15 +431,28 @@ export function WebsiteContactForm({
             </p>
           ) : null}
 
-          <button
-            type="submit"
-            className="web-footer__submit"
-            disabled={status === "submitting"}
-          >
-            {status === "submitting"
-              ? FOOTER_COPY.contactFormSending
-              : (ctaLabel ?? FOOTER_COPY.contactFormCta)}
-          </button>
+          <div className="web-footer__actions">
+            <button
+              type="submit"
+              className="web-footer__submit"
+              disabled={status === "submitting"}
+            >
+              {status === "submitting"
+                ? FOOTER_COPY.contactFormSending
+                : (ctaLabel ?? FOOTER_COPY.contactFormCta)}
+            </button>
+            {layout === "hero" ? (
+              <a
+                className="web-footer__schedule"
+                href={CONTACT_PAGE_COPY.consultHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {CONTACT_PAGE_COPY.scheduleLabel}
+                <span aria-hidden="true"> →</span>
+              </a>
+            ) : null}
+          </div>
 
           <p className="web-footer__consent web-footer__field--full">
             By sending this inquiry you agree to our{" "}

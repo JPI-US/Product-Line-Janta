@@ -29,7 +29,7 @@ export const CAREERS_COPY = {
         title: "Supply Chain Leader",
         tags: ["Dallas, TX", "Hybrid", "Full-time", "$50-$60 / hr"] as const,
         description:
-          "Lead end-to-end supply chain and sourcing so product reaches install sites safely, on time, and at the lowest landed cost, partnering closely with engineering, sales, and operations.",
+          "Drive supply chain and sourcing strategy to safely scale new technology from design to deployment across cross-functional teams.",
         applyHref:
           "https://www.indeed.com/job/supply-chain-leader-ae7f7f059498fe09",
         applyLabel: "Learn more",

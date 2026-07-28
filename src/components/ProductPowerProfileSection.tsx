@@ -99,10 +99,18 @@ function PowerProfileChart({
   const [hover, setHover] = useState<HoverState | null>(null);
   const geom = useMemo(() => chartGeometry(chart), [chart]);
 
-  const step = chart.hourMax - chart.hourMin > 13 ? 3 : 2;
+  const hourSpan = chart.hourMax - chart.hourMin;
+  // Prefer a step that lands on both endpoints (e.g. 6→20 needs step 2 for 8pm)
+  const step = hourSpan % 2 === 0 ? 2 : hourSpan > 13 ? 3 : 2;
   const xTicks = useMemo(() => {
     const ticks: number[] = [];
-    for (let h = chart.hourMin; h <= chart.hourMax; h += step) ticks.push(h);
+    for (let h = chart.hourMin; h <= chart.hourMax + 1e-9; h += step) {
+      ticks.push(Number(h.toFixed(4)));
+    }
+    const last = ticks[ticks.length - 1];
+    if (last == null || Math.abs(last - chart.hourMax) > 1e-6) {
+      ticks.push(chart.hourMax);
+    }
     return ticks;
   }, [chart.hourMin, chart.hourMax, step]);
 
