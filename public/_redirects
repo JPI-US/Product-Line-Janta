@@ -11,6 +11,9 @@
 # --- Legacy internal paths ---
 /3d        /products/designer   301
 
+# --- Vanity URL: /meet forwards to the HubSpot consultation booking page. ---
+/meet      https://meetings-na2.hubspot.com/introduction/janta-power   302
+
 # --- Never let missing hashed build assets fall through to the SPA shell. ---
 # Without this, a request that races a deploy (asset not yet live at an edge
 # node) gets served index.html as a "200", which /assets/* and /models/*'s

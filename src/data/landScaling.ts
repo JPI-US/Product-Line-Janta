@@ -19,11 +19,11 @@ const ACRES_PER_FOOTBALL_FIELD = 1.32;
 export const ACRES_PER_BLOCK = 3;
 
 /* More stops so the auto-play story steps through the scale rather than jumping. */
-export const SCALE_PRESETS_MW = [0.5, 1, 2, 5, 10, 20] as const;
+export const SCALE_PRESETS_MW = [0.5, 1, 2, 5, 10, 20, 50] as const;
 /* Floor the slider at 0.1 MW (100 kW). At the low end, rounded acreage can
    drop below 1 acre on the denser Janta side. */
-export const SCALE_MIN_MW = 0.1;
-export const SCALE_MAX_MW = 20;
+export const SCALE_MIN_MW = 0.3;
+export const SCALE_MAX_MW = 50;
 const MAX_FOOTPRINT_BLOCKS = Math.ceil((SCALE_MAX_MW * LAND_PER_MW.traditional) / ACRES_PER_BLOCK);
 
 function floorAtZero(value: number): number {
