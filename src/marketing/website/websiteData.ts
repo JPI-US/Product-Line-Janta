@@ -150,10 +150,10 @@ export const YIELD_COMPARE_COPY = {
     land: "Site footprint",
   },
   scale: {
-    heading: "The same power,",
+    heading: "Same power,",
     /* Single accent line under the static heading (`*word*` = gradient highlight). */
     headingAccentPhrases: [
-      "A *fraction* of the *land*",
+      "*Less land*",
     ],
     lede: "Slide the project size and watch the footprint diverge.  Traditional solar sprawls while Janta stays compact.",
     traditionalLabel: "Traditional",
@@ -263,7 +263,7 @@ export const VALUE_COPY = {
     "Land Savings",
   ] as const,
   body:
-    "Janta's vertically scaling solar technology delivers the lowest energy cost on the market, alongside 4-tier resilience, cutting edge software, and uncomparable energy density.",
+    "Janta's vertically scaling solar technology delivers the lowest energy cost on the market, alongside 4-tier resilience, cutting edge software, and incomparable energy density.",
   items: [
     {
       id: "density",
