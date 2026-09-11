@@ -2,18 +2,55 @@ import { useEffect } from "react";
 import * as CookieConsent from "vanilla-cookieconsent";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 
+/** Zaraz purpose id for the Analytics purpose (Cloudflare → Zaraz → Consent). */
+const ZARAZ_ANALYTICS_PURPOSE = "YWGh";
+
+declare global {
+  interface Window {
+    zaraz?: {
+      consent?: {
+        APIReady?: boolean;
+        set?: (purposes: Record<string, boolean>) => void;
+        sendQueuedEvents?: () => void;
+      };
+    };
+  }
+}
+
+/**
+ * Mirrors this banner's "analytics" category into Zaraz, which gates GA4.
+ * Zaraz's own consent modal is disabled so this bar is the single source of
+ * truth; without this bridge Zaraz never learns the visitor's choice.
+ */
+function syncZarazConsent() {
+  const granted = CookieConsent.acceptedCategory("analytics");
+  const apply = () => {
+    try {
+      window.zaraz?.consent?.set?.({ [ZARAZ_ANALYTICS_PURPOSE]: granted });
+      if (granted) window.zaraz?.consent?.sendQueuedEvents?.();
+    } catch (err) {
+      console.error("zaraz consent sync failed", err);
+    }
+  };
+  // Zaraz may not have loaded yet on a first paint.
+  if (window.zaraz?.consent?.APIReady) apply();
+  else document.addEventListener("zarazConsentAPIReady", apply, { once: true });
+}
+
 /**
  * Site-wide cookie consent (self-hosted vanilla-cookieconsent — bundled, never
  * loaded from a CDN). A bar across the top with Accept / Reject / Preferences.
  *
- * IMPORTANT — current state: the site sets NO non-essential cookies. Our only
- * analytics is Cloudflare Web Analytics, which is cookieless. So today the
- * "analytics" category below gates nothing; the bar exists to give visitors a
- * visible, honest choice and to be ready. The day a real tracker is added
- * (e.g. GA, a Calendly embed), load it only inside
+ * IMPORTANT — current state: the "analytics" category gates Google Analytics 4,
+ * which is loaded through Cloudflare Zaraz and DOES set cookies (_ga, _ga_*).
+ * Zaraz's own consent modal is switched off, so this bar is the single source of
+ * truth and syncZarazConsent() below is what actually grants or withholds
+ * consent. Any future tracker must be gated the same way — either behind the
+ * Zaraz Analytics purpose, or behind
  *   if (CookieConsent.acceptedCategory("analytics")) { ... }
- * and register it on the "cc:onConsent" / "cc:onChange" events so Reject keeps
- * it off. Nothing may set a non-essential cookie before consent.
+ * registered on onConsent / onChange so Reject keeps it off. Nothing may set a
+ * non-essential cookie before consent, and the copy below must keep describing
+ * what we actually load.
  */
 const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
   guiOptions: {
@@ -24,6 +61,8 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
     },
     preferencesModal: { layout: "box" },
   },
+  onConsent: syncZarazConsent,
+  onChange: syncZarazConsent,
   categories: {
     necessary: { enabled: true, readOnly: true },
     analytics: { enabled: false },
@@ -35,7 +74,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
         consentModal: {
           title: "We value your privacy",
           description:
-            "We use only anonymous, cookieless analytics to understand site traffic — no tracking or advertising cookies. You can allow optional cookies below; they stay off unless you choose to enable them.",
+            "We use Google Analytics to understand how visitors use our site, which sets cookies. We set no advertising cookies. Analytics stays off unless you enable it below.",
           acceptAllBtn: "Accept",
           acceptNecessaryBtn: "Reject",
           showPreferencesBtn: "Preferences",
@@ -50,7 +89,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
             {
               title: "How we use cookies",
               description:
-                "Today Janta Power's website sets no tracking or advertising cookies, and our traffic analytics are anonymous and cookieless. These controls let you decide about any optional cookies we may add in the future — your choice is remembered and respected.",
+                "Janta Power's website sets no advertising cookies. We use Google Analytics to understand how visitors use the site; it sets cookies and runs only if you enable it here. These controls let you decide — your choice is remembered and respected.",
             },
             {
               title: "Strictly necessary",
@@ -61,7 +100,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
             {
               title: "Analytics (optional)",
               description:
-                "Reserved for optional, privacy-respecting analytics. This currently sets no cookies; if enabled in the future it will only run with your consent.",
+                "Google Analytics, used to understand how visitors use jantaus.com. Sets cookies and only runs with your consent.",
               linkedCategory: "analytics",
             },
           ],

@@ -3,13 +3,13 @@ import { useDocumentMeta } from "../../lib/useDocumentMeta";
 import { openCookiePreferences } from "./WebsiteCookieConsent";
 import { FOOTER_COPY } from "./websiteData";
 
-const LAST_UPDATED = "July 2026";
+const LAST_UPDATED = "September 2026";
 
 export default function WebsitePrivacyPage() {
   useDocumentMeta({
     title: "Privacy Policy",
     description:
-      "How Janta Power handles the information you share through our website contact form, and our cookieless approach to analytics.",
+      "How Janta Power handles the information you share through our website contact form, and how we use cookies and analytics.",
   });
 
   return (
@@ -73,12 +73,13 @@ export default function WebsitePrivacyPage() {
               Cookies &amp; analytics
             </h2>
             <p>
-              Our website sets no tracking or advertising cookies. We measure
-              traffic with Cloudflare Web Analytics, which is anonymous and
-              cookieless. We also use Cloudflare Turnstile on our form — a
-              privacy-preserving check that confirms you are human and blocks
-              spam, without profiling you. You can review or change your cookie
-              choice at any time:
+              Our website sets no advertising cookies. We use Google Analytics
+              to understand how visitors use jantaus.com; it sets cookies and
+              runs only if you accept analytics cookies, which you can decline
+              or withdraw at any time. We also use Cloudflare Turnstile on our
+              form — a privacy-preserving check that confirms you are human and
+              blocks spam, without profiling you. You can review or change your
+              cookie choice at any time:
             </p>
             <p>
               <button
