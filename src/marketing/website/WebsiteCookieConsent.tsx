@@ -42,21 +42,25 @@ function syncZarazConsent() {
  * loaded from a CDN). A bar across the top with Accept / Reject / Preferences.
  *
  * IMPORTANT — current state: the "analytics" category gates Google Analytics 4,
- * which is loaded through Cloudflare Zaraz and DOES set cookies (_ga, _ga_*).
+ * which Zaraz sends server-side. Verified on the live site: the only cookies
+ * present are cc_cookie (this banner's own record) and zaraz-consent — GA4 sets
+ * no _ga/_ga_* cookies here. Consent still matters, because server-side GA4
+ * ships visitor data to Google whether or not a cookie is involved.
  * Zaraz's own consent modal is switched off, so this bar is the single source of
  * truth and syncZarazConsent() below is what actually grants or withholds
  * consent. Any future tracker must be gated the same way — either behind the
  * Zaraz Analytics purpose, or behind
  *   if (CookieConsent.acceptedCategory("analytics")) { ... }
  * registered on onConsent / onChange so Reject keeps it off. Nothing may set a
- * non-essential cookie before consent, and the copy below must keep describing
- * what we actually load.
+ * non-essential cookie before consent. If GA4 is ever switched to client-side
+ * gtag it will start setting _ga cookies and the copy below goes stale again —
+ * re-check document.cookie before trusting it.
  */
 const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
   guiOptions: {
     consentModal: {
       layout: "bar",
-      position: "top",
+      position: "bottom",
       equalWeightButtons: true,
     },
     preferencesModal: { layout: "box" },
@@ -74,7 +78,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
         consentModal: {
           title: "We value your privacy",
           description:
-            "We use Google Analytics to understand how visitors use our site, which sets cookies. We set no advertising cookies. Analytics stays off unless you enable it below.",
+            "We use Google Analytics to understand how visitors use our site. It sets no cookies on your device and stays off unless you enable it below.",
           acceptAllBtn: "Accept",
           acceptNecessaryBtn: "Reject",
           showPreferencesBtn: "Preferences",
@@ -89,7 +93,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
             {
               title: "How we use cookies",
               description:
-                "Janta Power's website sets no advertising cookies. We use Google Analytics to understand how visitors use the site; it sets cookies and runs only if you enable it here. These controls let you decide — your choice is remembered and respected.",
+                "Janta Power's website sets no tracking or advertising cookies — the only cookies we set remember your cookie choice. We use Google Analytics to understand how visitors use the site; it runs only if you enable it here, and in our setup it sets no cookies on your device.",
             },
             {
               title: "Strictly necessary",
@@ -100,7 +104,7 @@ const COOKIE_CONFIG: CookieConsent.CookieConsentConfig = {
             {
               title: "Analytics (optional)",
               description:
-                "Google Analytics, used to understand how visitors use jantaus.com. Sets cookies and only runs with your consent.",
+                "Google Analytics, used to understand how visitors use jantaus.com. Runs only with your consent and sets no cookies on your device.",
               linkedCategory: "analytics",
             },
           ],

@@ -15,7 +15,7 @@ body.website-active {
   --cta: #ffbf14;
   --cta-hover: #d9a612;
   --web-motion-spring: cubic-bezier(0.22, 1, 0.36, 1);
-  --web-font-display: "Aktiv Grotesk", "Aktiv Grotesk Trial", sans-serif;
+  --web-font-display: "Aktiv Grotesk", "Aktiv Grotesk Trial", "DM Sans", sans-serif;
   --web-font-body: "DM Sans", system-ui, sans-serif;
   background: var(--hub-zenith, #151f28);
   font-family: var(--web-font-body);
@@ -1020,7 +1020,7 @@ body.website-active {
   --web-content-max: 1180px;
   --web-section-max: min(1280px, 100%);
   --web-section-cta-gap: clamp(1.5rem, 3vh, 2rem);
-  --web-font-title: "Aktiv Grotesk", "Aktiv Grotesk Trial", sans-serif;
+  --web-font-title: "Aktiv Grotesk", "Aktiv Grotesk Trial", "DM Sans", sans-serif;
   --web-font-body: "DM Sans", system-ui, sans-serif;
   --web-intro-blend: 0;
   --web-sky-blend: 0;
@@ -1580,7 +1580,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-hero-chip__value {
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -3318,7 +3318,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 .web-yield-compare__title {
   margin: 0 0 0.5rem;
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(1.75rem, 3.8vw, 2.5rem);
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -3523,7 +3523,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 
 .web-specs-lite__title {
   margin: 0 0 0.75rem;
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(1.85rem, 3.8vw, 2.55rem);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -3598,7 +3598,7 @@ html.web-hero-dragging .web-hero-product-line__stage .web__drag-surface {
 }
 
 .web-specs-lite__value {
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(1.65rem, 3vw, 2.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -7015,7 +7015,7 @@ select.web-footer__select {
 }
 .web-yield-compare__title {
   margin: 0 0 0.5rem;
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(1.75rem, 3.8vw, 2.5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -7164,7 +7164,7 @@ select.web-footer__select {
   display: none;
 }
 .web-yield-compare__summary-value {
-  font-family: var(--web-font-title, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(1.05rem, 2vw, 1.4rem);
   font-weight: 700;
   letter-spacing: -0.02em;

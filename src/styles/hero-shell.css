@@ -160,7 +160,7 @@
 
 .hero-heading {
   margin: 0;
-  font-family: var(--web-font-display, "Aktiv Grotesk", sans-serif);
+  font-family: var(--web-font-display, "Aktiv Grotesk", "DM Sans", sans-serif);
   font-size: clamp(2.75rem, 5vw, 4.5rem);
   font-weight: 700;
   line-height: 1.02;

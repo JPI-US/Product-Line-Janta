@@ -73,13 +73,14 @@ export default function WebsitePrivacyPage() {
               Cookies &amp; analytics
             </h2>
             <p>
-              Our website sets no advertising cookies. We use Google Analytics
-              to understand how visitors use jantaus.com; it sets cookies and
-              runs only if you accept analytics cookies, which you can decline
-              or withdraw at any time. We also use Cloudflare Turnstile on our
-              form — a privacy-preserving check that confirms you are human and
-              blocks spam, without profiling you. You can review or change your
-              cookie choice at any time:
+              Our website sets no tracking or advertising cookies — the only
+              cookies we set remember your cookie choice. We use Google
+              Analytics to understand how visitors use jantaus.com; it runs only
+              if you accept analytics, which you can decline or withdraw at any
+              time, and in our setup it sets no cookies on your device. We also
+              use Cloudflare Turnstile on our form — a privacy-preserving check
+              that confirms you are human and blocks spam, without profiling
+              you. You can review or change your cookie choice at any time:
             </p>
             <p>
               <button
