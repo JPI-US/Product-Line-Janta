@@ -16,7 +16,7 @@ export function WebsiteExperience() {
     <Canvas
       className="web__canvas"
       frameloop={heroCanvasActive ? "always" : "never"}
-      shadows
+      shadows="percentage"
       dpr={TOWER_CANVAS_DPR}
       gl={HUB_CANVAS_GL}
       camera={{ near: 0.1, far: 80 }}

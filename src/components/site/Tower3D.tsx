@@ -402,7 +402,7 @@ export function Tower3D({
         </>
       )}
       <Canvas
-        shadows
+        shadows="percentage"
         dpr={[1, 1.75]}
         frameloop={visible ? "always" : "demand"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
