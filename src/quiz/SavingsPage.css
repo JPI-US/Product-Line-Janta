@@ -119,7 +119,7 @@
 
 .savings__title {
   margin: 0;
-  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
+  font-family: var(--web-font-title, "DM Sans", sans-serif);
   font-size: clamp(2.05rem, 4.8vw, 2.85rem);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -492,7 +492,7 @@
 }
 
 .savings-estimate__hero-value {
-  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
+  font-family: var(--web-font-title, "DM Sans", sans-serif);
   font-size: clamp(2.6rem, 7.5vw, 3.6rem);
   font-weight: 700;
   letter-spacing: -0.035em;
@@ -664,7 +664,7 @@
 
 .savings-contact__title {
   margin: 0 0 0.35rem;
-  font-family: var(--web-font-title, "Aktiv Grotesk", "DM Sans", sans-serif);
+  font-family: var(--web-font-title, "DM Sans", sans-serif);
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.02em;
