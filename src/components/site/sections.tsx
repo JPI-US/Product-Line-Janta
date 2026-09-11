@@ -32,7 +32,7 @@ function HeroTowerPoster({ decorative = false }: { decorative?: boolean }) {
   return (
     <img
       className="hero-tower-poster"
-      src="/hero-tower.png"
+      src="/hero-tower.webp"
       width={760}
       height={962}
       alt={decorative ? "" : "Janta Power vertical 3D solar tower"}

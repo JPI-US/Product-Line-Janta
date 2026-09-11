@@ -18,14 +18,14 @@ export const productGalleryPhoto = {
 export const designerGallerySlides: ProductGallerySlide[] = [
   {
     id: "custom-panel-field",
-    imageUrl: "/towers/gallery/designer-tower-custom-panel.png",
+    imageUrl: "/towers/gallery/designer-tower-custom-panel.webp",
     imageObjectPosition: "center 32%",
     alt: "DSR tower with custom space-themed side panel on site next to a brick building",
     caption: "Custom side panels",
   },
   {
     id: "office-campus",
-    imageUrl: "/towers/gallery/designer-tower-office-park.png",
+    imageUrl: "/towers/gallery/designer-tower-office-park.webp",
     imageObjectPosition: "center 38%",
     alt: "DSR solar tower with hexagonal side panel on a green office campus lawn",
     caption: "Commercial campus",
@@ -36,14 +36,14 @@ export const designerGallerySlides: ProductGallerySlide[] = [
 export const utilityGallerySlides: ProductGallerySlide[] = [
   {
     id: "lfm-field",
-    imageUrl: "/marketing/lfm-tower.png",
+    imageUrl: "/marketing/lfm-tower.webp",
     imageObjectPosition: "center 58%",
     alt: "LFM solar tower arrays deployed outdoors at a Dallas event",
     caption: "Field deployment",
   },
   {
     id: "utility-scale",
-    imageUrl: "/marketing/value-aerial-solar.png",
+    imageUrl: "/marketing/value-aerial-solar.webp",
     imageObjectPosition: "48% center",
     alt: "Aerial view of Janta solar arrays in a green field",
     caption: "Utility-scale sites",

@@ -4,7 +4,7 @@ import FlowingMenu from "./react-bits/FlowingMenu/FlowingMenu";
 import { NAV_COPY } from "./websiteData";
 
 const MENU_ITEMS = [
-  { link: NAV_COPY.contactHref, text: NAV_COPY.contact, image: "/marketing/energy-cta.png" },
+  { link: NAV_COPY.contactHref, text: NAV_COPY.contact, image: "/marketing/energy-cta.webp" },
 ];
 
 type Props = {

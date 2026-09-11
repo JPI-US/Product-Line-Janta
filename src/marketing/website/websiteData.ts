@@ -86,7 +86,7 @@ export const ROI_COPY = {
   body: "Janta Power delivers fast-deploying solar systems designed to save acres.",
   savingsCta: "Schedule a Consultation",
   savingsHref: CONSULTATION_HREF,
-  image: "/marketing/roi-hero.png",
+  image: "/marketing/roi-hero.webp",
   imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
 } as const;
 
@@ -132,7 +132,7 @@ export const YIELD_COMPARE_COPY = {
   title: "Traditional Solar vs. Janta Towers",
   description: "500 kW · Dallas, TX",
   janta: {
-    image: "/marketing/value-aerial-solar.png",
+    image: "/marketing/value-aerial-solar.webp",
     imageAlt: "Aerial view of Janta solar arrays in a green field",
     imagePosition: "50% center",
     /* Rest: zoomed in so the towers read large. Hover eases to 1.0, which in a
@@ -140,7 +140,7 @@ export const YIELD_COMPARE_COPY = {
     imageScale: 1.28,
   },
   fixed: {
-    image: "/marketing/yield-traditional-solar.jpg",
+    image: "/marketing/yield-traditional-solar.webp",
     imageAlt: "Aerial view of traditional fixed-tilt solar panels in a green field",
     imagePosition: "center center",
     imageScale: 1.22,
@@ -176,7 +176,7 @@ export const POWER_PROFILE_COPY = {
 export const SPECS_LITE_COPY = {
   title: "Built for real-world sites",
   lead: "Structural ratings and power flexibility at a glance.",
-  image: "/marketing/specs-real-world-sites.png",
+  image: "/marketing/specs-real-world-sites.webp",
   imageAlt: "Janta solar towers on an urban plaza with a city skyline behind",
   imagePosition: "center 42%",
 } as const;
@@ -273,7 +273,7 @@ export const VALUE_COPY = {
       title: "Power density per acre",
       detail:
         "More power from the same footprint, without giving up operational land.",
-      image: "/marketing/value-field-towers.jpg",
+      image: "/marketing/value-field-towers.webp",
       imageAlt: "Three Janta solar towers on a grassy hillside under a cloudy sky",
       imagePosition: "center 48%",
       imageScale: 1.2,
@@ -286,7 +286,7 @@ export const VALUE_COPY = {
       title: "Average U.S. LCOE",
       detail:
         "Project-lifetime energy that undercuts flat arrays, with costs that stay predictable.",
-      image: "/marketing/value-dsr-campus.png",
+      image: "/marketing/value-dsr-campus.webp",
       imageAlt: "Janta DSR solar tower on a commercial campus",
       imagePosition: "52% center",
       imageScale: 1.32,
@@ -299,7 +299,7 @@ export const VALUE_COPY = {
       title: "Plug & play backup power",
       detail:
         "Layered backup power that installs fast and keeps critical loads running when the grid drops.",
-      image: "/marketing/roi-hero.png",
+      image: "/marketing/roi-hero.webp",
       imageAlt: "Solar towers in a field beside a vegetable garden at golden hour",
       imagePosition: "28% 42%",
       imageScale: 1.12,
@@ -332,7 +332,7 @@ export const SOFTWARE_SHOWCASE_COPY = {
   body: "Monitor output, health, and performance across your fleet in real time.",
   cta: "Contact us",
   ctaHref: "/contact",
-  poster: "/marketing/software-dashboard-hero.png",
+  poster: "/marketing/software-dashboard-hero.webp",
   imageAlt:
     "Janta Power dashboard showing system status, energy output, climate, and environmental impact",
 } as const;
@@ -433,7 +433,7 @@ export const APPLICATIONS_COPY = {
       id: "ev-charging",
       title: "EV Charging",
       body: "Local, high-output power for fast chargers and fleet depots. Scale charging without sprawling ground arrays.",
-      image: "/marketing/ev-charging.jpg",
+      image: "/marketing/ev-charging.webp",
       imageAlt: "Electric vehicle charging stations in a parking lot",
       imagePosition: "center 50%",
     },
@@ -470,7 +470,7 @@ export const SOLUTIONS_COPY = {
         "5.4 kW azimuthal tracking.",
         "Custom enclosure built for your site.",
       ],
-      image: "/marketing/dsr-tower.png",
+      image: "/marketing/dsr-tower.webp",
       imageAlt: "Janta Power DSR solar tower installed beside a building on a sunny day",
       imagePosition: "center 58%",
       navImage: "/marketing/nav-renders/lfm-tower.png",
@@ -488,7 +488,7 @@ export const SOLUTIONS_COPY = {
         "5.6 kW utility-scale output.",
         "Deploy more MW in less land.",
       ],
-      image: "/marketing/lfm-tower.png",
+      image: "/marketing/lfm-tower.webp",
       imageAlt: "LFM solar tower arrays deployed outdoors at a Dallas event",
       imagePosition: "center 58%",
       navImage: "/marketing/nav-renders/dsr-tower.png",

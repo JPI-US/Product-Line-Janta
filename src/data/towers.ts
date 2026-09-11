@@ -34,7 +34,7 @@ export const towers: TowerProduct[] = [
       monthlyKwh: "840–1,080",
       annualKwh: "10,000–13,000",
     },
-    imageUrl: "/towers/5kw-tower.png",
+    imageUrl: "/towers/5kw-tower.webp",
     imageObjectPosition: "center 64%",
   },
   {

@@ -39,6 +39,22 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Static art (towers, marketing, project types, root-level images).
+# NOTE: unlike /assets/*, these filenames are NOT content-hashed -- re-exporting
+# an image reuses its name. So no `immutable`: a week of caching with
+# stale-while-revalidate gives near-immutable speed while still letting a
+# replaced image roll out within days instead of a year.
+/towers/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/marketing/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/project-types/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/*.jpg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/*.png
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
 # Long-cache the heavy 3D models & textures.
 /models/*
   Cache-Control: public, max-age=31536000, immutable

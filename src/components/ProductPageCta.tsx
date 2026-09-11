@@ -3,7 +3,7 @@ import type { ProductId } from "../data/productPages";
 
 const CTA_BY_PRODUCT = {
   designer: {
-    image: "/towers/designer-cta-field.png",
+    image: "/towers/designer-cta-field.webp",
     eyebrow: "DSR Tower",
     title: "Ready for your next site?",
     lead:
@@ -12,7 +12,7 @@ const CTA_BY_PRODUCT = {
     secondary: { label: "Explore LFM Tower", href: "/products/utility" },
   },
   utility: {
-    image: "/marketing/lfm-tower.png",
+    image: "/marketing/lfm-tower.webp",
     eyebrow: "LFM Tower",
     title: "Ready to deploy at scale?",
     lead:
